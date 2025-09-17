@@ -1,57 +1,44 @@
+const peopletBtn = document.getElementById("peopletBtn");
+const peopleModal = document.getElementById("peopleModal");
+const applyBtn = document.getElementById("applyPeople");
+const roomCount = document.getElementById("roomCount");
+const guestCount = document.getElementById("guestCount");
+const currentPeople = document.getElementById("currentPeople");
 
+let rooms = 1;
+let guests = 1;
 
+// 인원 수 창  열기
+peopletBtn.addEventListener("click", () => {
+    peopleModal.style.display = "flex";
+});
 
+// 선택하고 자동으로 창 닫히기
+peopleModal.addEventListener("click", (e) => {
+    if (e.target === peopleModal) {
+        peopleModal.style.display = "none";
+    }
+});
 
+// 인원수 버튼
+document.querySelectorAll(".controls button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const type = btn.dataset.type;
+        if (type === "room") {
+            if (btn.classList.contains("increase")) rooms++;
+            if (btn.classList.contains("decrease") && rooms > 1) rooms--;
+            roomCount.textContent = rooms;
+        }
+        if (type === "guest") {
+            if (btn.classList.contains("increase")) guests++;
+            if (btn.classList.contains("decrease") && guests > 1) guests--;
+            guestCount.textContent = guests;
+        }
+    });
+});
 
-
-
-
-
-// const guestsInput = document.getElementById("guests");
-// const guestDropdown = document.getElementById("guestDropdown");
-//
-// function updateInput() {
-//     const rooms = document.getElementById("roomCount").textContent;
-//     const adults = document.getElementById("adultCount").textContent;
-//     guestsInput.value = `Rooms ${rooms}, Adults ${adults}`;
-// }
-//
-// // 인원수 버튼 기능
-// function setupCounter(id, min = 0) {
-//     const countEl = document.getElementById(id);
-//     const minusBtn = countEl.previousElementSibling;
-//     const plusBtn = countEl.nextElementSibling;
-//
-//     minusBtn.addEventListener("click", () => {
-//         let count = parseInt(countEl.textContent);
-//         if (count > min) count--;
-//         countEl.textContent = count;
-//         updateInput();
-//     });
-//
-//     plusBtn.addEventListener("click", () => {
-//         let count = parseInt(countEl.textContent);
-//         count++;
-//         countEl.textContent = count;
-//         updateInput();
-//     });
-// }
-//
-// // 최소 1룸, 최소 1성인
-// setupCounter("roomCount", 1);
-// setupCounter("adultCount", 1);
-//
-// // input 클릭 시 드롭다운 열기, 닫기
-// guestsInput.addEventListener("click", () => {
-//     guestDropdown.style.display =
-//         guestDropdown.style.display === "block" ? "none" : "block";
-// });
-//
-// // 바깥 클릭 시 드롭다운 닫기
-// document.addEventListener("click", (e) => {
-//     if (!e.target.closest(".dropdown-container")) {
-//         guestDropdown.style.display = "none";
-//     }
-// });
-//
-// updateInput();
+// 적용 버튼
+applyBtn.addEventListener("click", () => {
+    currentPeople.textContent = `${rooms} Room${rooms > 1 ? "s" : ""}, ${guests} Guest${guests > 1 ? "s" : ""}`;
+    peopleModal.style.display = "none";
+});

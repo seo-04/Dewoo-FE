@@ -142,13 +142,15 @@
 
         <nav class="nav-container">
             <!-- 왼쪽 -->
-            <div class="item">
+            <nav class="header_tabs">
+                <div class="nav-left">
+                    <div class="tab active">
+                        <i class="fa-solid fa-bed"></i>
+                        hotel
+                    </div>
+                </div>
+            </nav>
 
-            <span>
-                <i class="fa-solid fa-bed"></i>
-                hotels
-            </span>
-            </div>
             <!-- 오른쪽 -->
             <div class="item">
                 <div class="flex vertical-center">
@@ -191,8 +193,13 @@
     <!-- 검색 박스 부분 -->
     <div class="search_box">
         <h3 class="search_title">Where are you staying?</h3>
+
         <div class="search_inputs">
+
+            <div class="input-group">
+            <label for="destination">Enter Destination</label>
             <input type="text" id="destination" placeholder="Enter Destination">
+            </div>
 
             <div class="input-group">
                 <label for="checkin">Check-in</label>
@@ -204,23 +211,62 @@
                 <input type="date" id="checkout" placeholder="Check-out">
             </div>
 
+            <!-- Rooms & Guests -->
             <div class="input-group dropdown-container">
-                <label for="guests">Rooms & Guests</label>
-                <input type="text" id="guests" readonly placeholder="Rooms & Guests">
+                <label for="peopletBtn">Rooms & Guests</label>
+                <button class="number_people" id="peopletBtn">
+                    <span id="currentPeople">1 Room, 1 Guest</span>
+                </button>
             </div>
-
+        </div>
             <button class="search_icon">
                 <i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
     </div>
 </section>
 
+<!-- Rooms & Guests 모델 -->
+<div class="people_modal" id="peopleModal">
+    <div class="people_content">
+        <h3>방 개수와 인원수 선택</h3>
+        <div class="counter">
+            <span>Rooms</span>
+            <div class="controls">
+                <button class="decrease" data-type="room">-</button>
+                <span id="roomCount">1</span>
+                <button class="increase" data-type="room">+</button>
+            </div>
+        </div>
+
+        <div class="counter">
+            <span>Guests</span>
+            <div class="controls">
+                <button class="decrease" data-type="guest">-</button>
+                <span id="guestCount">1</span>
+                <button class="increase" data-type="guest">+</button>
+            </div>
+        </div>
+
+        <div class="warning">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <p>최소 1명이상 선택해주세요.</p>
+        </div>
+        <button id="applyPeople" class="apply_btn">Check</button>
+    </div>
+</div>
+
+
+
+
+
 <!-- 두번째 섹션 -->
 <section class="travel_container">
     <h3>여행에 빠지다</h3>
     <p>특가상품으로 진행하는 여행을 예약해보세요.</p>
-    <div class="travel_box">
 
+
+    <div class="travel_box">
+        <div class="slider">
         <div class="card">
             <img src="../../../hotel/image/melbourne.jpg" alt="멜버른">
             <div class="card_text">
@@ -230,7 +276,6 @@
                 <button>Book a Hotel</button>
             </div>
         </div>
-
         <div class="card">
             <img src="../../../hotel/image/paris.jpg" alt="파리">
             <div class="card_text">
@@ -260,9 +305,52 @@
                 <button>Book a Hotel</button>
             </div>
         </div>
+
+            <div class="card">
+                <img src="../../../hotel/image/Tokyo.jpg" alt="도쿄">
+                <div class="card_text">
+                    <h4>도쿄</h4>
+                    <p class="setting">Amazing journey</p>
+                    <p>₩180,000</p>
+                    <button>Book a Hotel</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="../../../hotel/image/Sydney.jpg" alt="시드니">
+                <div class="card_text">
+                    <h4>시드니</h4>
+                    <p class="setting">Amazing journey</p>
+                    <p>₩300,000</p>
+                    <button>Book a Hotel</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="../../../hotel/image/Dubai.jpg" alt="두바이">
+                <div class="card_text">
+                    <h4>두바이</h4>
+                    <p class="setting">Amazing journey</p>
+                    <p>₩450,000</p>
+                    <button>Book a Hotel</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="../../../hotel/image/New_York.jpg" alt="뉴욕">
+                <div class="card_text">
+                    <h4>뉴욕</h4>
+                    <p class="setting">Amazing journey</p>
+                    <p>₩800,000</p>
+                    <button>Book a Hotel</button>
+                </div>
+            </div>
+
+<!--   slider 마침    -->
+        </div>
+    <!--  travel_box 마침 div  -->
     </div>
-    <div class="slide_btn" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></div>
-    <div class="slide_btn" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></div>
+
 </section>
 
 <!-- 세번째 섹션 -->
