@@ -6,6 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/hlisting.css">
+    <link rel="stylesheet" href="../css/listing_serch.css">
+    <link rel="stylesheet" href="../css/listing_tab_menu.css">
+    <link rel="stylesheet" href="../css/listing_filters.css">
+    <link rel="stylesheet" href="../css/listing_stays_information.css">
+
+
     <script src="../js/hlisting.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
           integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
@@ -19,13 +25,13 @@
     }
     .container{
         width: 100%;
-        max-width: 1440px;
         margin: 0 auto;
     } .nav-container {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          width: 100%; margin: 0 auto;
+          width: 100%;
+              margin: 0 auto;
           background-color: #FFFFFF;
           padding: 0 105px;
           height: 87px;
@@ -33,8 +39,9 @@
       }
     .item span {
         display: flex;
-        gap: 4px;
+        gap: 5px;
     }
+
     .circle {
         width: 45px;
         height: 45px;
@@ -148,8 +155,8 @@
                     Find Stays
                 </div>
             </div>
-
             </nav>
+
             <!-- 오른쪽 -->
             <div class="item">
                 <div class="flex vertical-center">
@@ -175,49 +182,893 @@
 </header>
 
 <body>
-<!--첫번째 섹션-->
 
-    <!-- 검색 박스 부분 -->
-    <div class="search_box">
-        <div class="search_inputs">
-            <input type="text" id="destination" placeholder="Enter Destination">
-
-            <div class="input-group">
-                <label for="checkin">Check-in</label>
-                <input type="date" id="checkin" placeholder="Check-in">
-            </div>
-
-            <div class="input-group">
-                <label for="checkout">Check-out</label>
-                <input type="date" id="checkout" placeholder="Check-out">
-            </div>
-
-            <div class="input-group dropdown-container">
-                <label for="guests">Rooms & Guests</label>
-                <input type="text" id="guests" readonly placeholder="Rooms & Guests">
-            </div>
-
-            <button class="search_icon">
-                <i class="fa-solid fa-magnifying-glass"></i></button>
-        </div>
+<!-- 호텔 , 모텔, 리조트 탭 메뉴-->
+<div class="tab_menu">
+    <div class="tab_item active" data-category="hotels">
+        <h4>Hotels</h4>
+        <p>257 places</p>
     </div>
-</section>
-
-<!--Filters -->
-<aside>
-    <div class="filter_box">
-    <p>Filters</p>
-        <div class="price">
-            <p>Price</p>
-        </div>
+    <div class="tab_item" data-category="motels">
+        <h4>Motels</h4>
+        <p>51 places</p>
+    </div>
+    <div class="tab_item" data-category="resorts">
+        <h4>Resorts</h4>
+        <p>72 places</p>
     </div>
 
 
+</div>
+
+    <!--필터, 숙소 부분 하나로 묶기-->
+    <div class="listing_layout">
+
+    <!--Filters -->
+<div class="filter_box">
+    <p class="filter_text">Filters</p>
+    <!-- Price -->
+    <div class="filter_section">
+        <p>Price</p>
+        <input type="range" min="50" max="1200" value="600" class="slider" id="priceRange">
+        <div class="price_labels">
+            <span>$50</span>
+            <span>$1200</span>
+        </div>
+    </div>
+
+    <!-- Rating -->
+    <div class="filter_section">
+        <p>Rating</p>
+        <div class="rating_buttons">
+            <button>0+</button>
+            <button>1+</button>
+            <button>2+</button>
+            <button>3+</button>
+            <button>4+</button>
+        </div>
+    </div>
+
+    <!-- Freebies -->
+    <div class="filter_section">
+        <p>Freebies</p>
+        <label><input type="checkbox"> 조식포함</label><br>
+        <label><input type="checkbox"> 무료주차</label><br>
+        <label><input type="checkbox"> WIFI</label><br>
+        <label><input type="checkbox"> 공항셔틀버스</label><br>
+        <label><input type="checkbox"> 무료취소</label>
+    </div>
+
+    <!-- Amenities -->
+    <div class="filter_section">
+        <p>Amenities</p>
+        <label><input type="checkbox"> 24시 프론트데스크</label><br>
+        <label><input type="checkbox"> 에어컨</label><br>
+        <label><input type="checkbox"> 피트니스</label><br>
+        <label><input type="checkbox"> 수영장</label>
+    </div>
+</div>
+
+        <!--  오른쪽 영역-->
+        <div class="content_box">
+    <!--  추천인-->
+    <div class="showing" id="showingBox" style="display:none;">
+        <div class="place">
+            <p></p>
+        </div>
+
+        <!-- Sort by 버튼 -->
+        <button class="menu" id="sortBtn">
+            <p>Sort by <span id="currentSort">Recommended</span></p>
+            <i class="fa-solid fa-up-down"></i>
+        </button>
+    </div>
+
+<!-- 정렬 옵션 모달 -->
+    <div class="sort_modal" id="sortModal">
+    <div class="sort_content">
+        <ol data-value="Recommended">Recommended</ol>
+        <ol data-value="Popularity">Popularity</ol>
+        <ol data-value="Low price order">Low price order</ol>
+        <ol data-value="High price order">High price order</ol>
+    </div>
+    </div>
+
+    <!--숙소 내역 호텔 -->
+    <div class="room_list" data-category="hotels">
+    <div class="room_box">
+        <!-- 이미지 -->
+        <div class="image">
+            <img src="../../image/Hatton_Hotel.jpg" alt="해튼호텔 사진">
+        </div>
+
+        <!-- 오른쪽 컨텐츠 -->
+        <div class="content">
+
+            <!-- ONE : 상단 호텔 정보 -->
+            <div class="one">
+
+                <h3>해튼호텔</h3>
+                <div class="locate">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p>Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</p>
+                </div>
+
+                <!-- 별점 리뷰 -->
+                <div class="review_container">
+                    <div class="star_icon">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <p>5 Star Hotel</p>
+                    </div>
+
+                    <!-- 주변 사람들? -->
+                    <div class="AMinities_box">
+                        <i class="fa-solid fa-mug-saucer"></i>
+                        <p>Amenities</p>
+                    </div>
+                </div>
+
+                <!--점수 리뷰  -->
+                <div class="score_review_box">
+                    <div class="score"><p>4.2</p></div>
+                    <div class="review_text"><p><b>Very Good</b> 371 reviews</p></div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+            <!-- 가격 -->
+            <div class="price">
+                <p>starting from</p>
+                <h2>₩240,000<span>/night</span></h2>
+                <small>excl. tax</small>
+            </div>
+
+            <!-- TWO : 하단 버튼 -->
+            <div class="two">
+                <button class="heart">
+                    <i class="fa-regular fa-heart"></i></button>
+                <button class="view">View Place</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="room_box">
+        <!-- 이미지 -->
+        <div class="image">
+            <img src="../../image/Malacca.jpg" alt="마제스틱 말라카 호텔 사진">
+        </div>
+
+        <!-- 오른쪽 컨텐츠 -->
+        <div class="content">
+
+            <!-- ONE : 상단 호텔 정보 -->
+            <div class="one">
+
+                <h3>마제스틱 말라카 호텔</h3>
+                <div class="locate">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                </div>
+
+                <!-- 별점 리뷰 -->
+                <div class="review_container">
+                    <div class="star_icon">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <p>5 Star Hotel</p>
+                    </div>
+
+                    <!-- 주변 사람들? -->
+                    <div class="AMinities_box">
+                        <i class="fa-solid fa-mug-saucer"></i>
+                        <p>Amenities</p>
+                    </div>
+                </div>
+
+                <!--점수 리뷰  -->
+                <div class="score_review_box">
+                    <div class="score"><p>4.2</p></div>
+                    <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- 가격 -->
+            <div class="price">
+                <p>starting from</p>
+                <h2>₩120,000<span>/night</span></h2>
+                <small>excl. tax</small>
+            </div>
+
+            <!-- TWO : 하단 버튼 -->
+            <div class="two">
+                <button class="heart">
+                    <i class="fa-regular fa-heart"></i></button>
+                <button class="view">View Place</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="room_box">
+        <!-- 이미지 -->
+        <div class="image">
+            <img src="../../image/Canardel.jpg" alt="카나델 리오 호텔 사진">
+        </div>
+
+        <!-- 오른쪽 컨텐츠 -->
+        <div class="content">
+
+            <!-- ONE : 상단 호텔 정보 -->
+            <div class="one">
+
+                <h3>카나델 리오 호텔</h3>
+                <div class="locate">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                </div>
+
+                <!-- 별점 리뷰 -->
+                <div class="review_container">
+                    <div class="star_icon">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <p>5 Star Hotel</p>
+                    </div>
+
+                    <!-- 주변 사람들? -->
+                    <div class="AMinities_box">
+                        <i class="fa-solid fa-mug-saucer"></i>
+                        <p>Amenities</p>
+                    </div>
+                </div>
+
+                <!--점수 리뷰  -->
+                <div class="score_review_box">
+                    <div class="score"><p>4.2</p></div>
+                    <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- 가격 -->
+            <div class="price">
+                <p>starting from</p>
+                <h2>₩130,000<span>/night</span></h2>
+                <small>excl. tax</small>
+            </div>
+
+            <!-- TWO : 하단 버튼 -->
+            <div class="two">
+                <button class="heart">
+                    <i class="fa-regular fa-heart"></i></button>
+                <button class="view">View Place</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="room_box">
+        <!-- 이미지 -->
+        <div class="image">
+            <img src="../../image/Bayview.jpg" alt="베이뷰 호텔 사진">
+        </div>
+
+        <!-- 오른쪽 컨텐츠 -->
+        <div class="content">
+
+            <!-- ONE : 상단 호텔 정보 -->
+            <div class="one">
+
+                <h3>베이뷰 호텔</h3>
+                <div class="locate">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                </div>
+
+                <!-- 별점 리뷰 -->
+                <div class="review_container">
+                    <div class="star_icon">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <p>5 Star Hotel</p>
+                    </div>
+
+                    <!-- 주변 사람들? -->
+                    <div class="AMinities_box">
+                        <i class="fa-solid fa-mug-saucer"></i>
+                        <p>Amenities</p>
+                    </div>
+                </div>
+
+                <!--점수 리뷰  -->
+                <div class="score_review_box">
+                    <div class="score"><p>4.2</p></div>
+                    <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- 가격 -->
+            <div class="price">
+                <p>starting from</p>
+                <h2>₩104,000<span>/night</span></h2>
+                <small>excl. tax</small>
+            </div>
+
+            <!-- TWO : 하단 버튼 -->
+            <div class="two">
+                <button class="heart">
+                    <i class="fa-regular fa-heart"></i></button>
+                <button class="view">View Place</button>
+            </div>
+
+        </div>
+    </div>
+        <!--  룸 리스트 끝 마침-->
+    </div>
+
+    <!--숙소 내역 모텔 -->
+    <div class="room_list" data-category="motels">
+        <div class="room_box">
+            <!-- 이미지 -->
+            <div class="image">
+                <img src="../../image/Hatton_Hotel.jpg" alt="해튼호텔 사진">
+            </div>
+
+            <!-- 오른쪽 컨텐츠 -->
+            <div class="content">
+
+                <!-- ONE : 상단 모텔 정보 -->
+                <div class="one">
+
+                    <h3>해튼모텔</h3>
+                    <div class="locate">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</p>
+                    </div>
+
+                    <!-- 별점 리뷰 -->
+                    <div class="review_container">
+                        <div class="star_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <p>5 Star Hotel</p>
+                        </div>
+
+                        <!-- 주변 사람들? -->
+                        <div class="AMinities_box">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                            <p>Amenities</p>
+                        </div>
+                    </div>
+
+                    <!--점수 리뷰  -->
+                    <div class="score_review_box">
+                        <div class="score"><p>4.2</p></div>
+                        <div class="review_text"><p><b>Very Good</b> 371 reviews</p></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <!-- 가격 -->
+                <div class="price">
+                    <p>starting from</p>
+                    <h2>₩240,000<span>/night</span></h2>
+                    <small>excl. tax</small>
+                </div>
+
+                <!-- TWO : 하단 버튼 -->
+                <div class="two">
+                    <button class="heart">
+                        <i class="fa-regular fa-heart"></i></button>
+                    <button class="view">View Place</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="room_box">
+            <!-- 이미지 -->
+            <div class="image">
+                <img src="../../image/Malacca.jpg" alt="마제스틱 말라카 호텔 사진">
+            </div>
+
+            <!-- 오른쪽 컨텐츠 -->
+            <div class="content">
+
+                <!-- ONE : 상단 모텔 정보 -->
+                <div class="one">
+
+                    <h3>마제스틱 말라카 모텔</h3>
+                    <div class="locate">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                    </div>
+
+                    <!-- 별점 리뷰 -->
+                    <div class="review_container">
+                        <div class="star_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <p>5 Star Hotel</p>
+                        </div>
+
+                        <!-- 주변 사람들? -->
+                        <div class="AMinities_box">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                            <p>Amenities</p>
+                        </div>
+                    </div>
+
+                    <!--점수 리뷰  -->
+                    <div class="score_review_box">
+                        <div class="score"><p>4.2</p></div>
+                        <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 가격 -->
+                <div class="price">
+                    <p>starting from</p>
+                    <h2>₩120,000<span>/night</span></h2>
+                    <small>excl. tax</small>
+                </div>
+
+                <!-- TWO : 하단 버튼 -->
+                <div class="two">
+                    <button class="heart">
+                        <i class="fa-regular fa-heart"></i></button>
+                    <button class="view">View Place</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="room_box">
+            <!-- 이미지 -->
+            <div class="image">
+                <img src="../../image/Canardel.jpg" alt="카나델 리오 호텔 사진">
+            </div>
+
+            <!-- 오른쪽 컨텐츠 -->
+            <div class="content">
+
+                <!-- ONE : 상단 모텔 정보 -->
+                <div class="one">
+
+                    <h3>카나델 리오 모텔</h3>
+                    <div class="locate">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                    </div>
+
+                    <!-- 별점 리뷰 -->
+                    <div class="review_container">
+                        <div class="star_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <p>5 Star Hotel</p>
+                        </div>
+
+                        <!-- 주변 사람들? -->
+                        <div class="AMinities_box">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                            <p>Amenities</p>
+                        </div>
+                    </div>
+
+                    <!--점수 리뷰  -->
+                    <div class="score_review_box">
+                        <div class="score"><p>4.2</p></div>
+                        <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 가격 -->
+                <div class="price">
+                    <p>starting from</p>
+                    <h2>₩130,000<span>/night</span></h2>
+                    <small>excl. tax</small>
+                </div>
+
+                <!-- TWO : 하단 버튼 -->
+                <div class="two">
+                    <button class="heart">
+                        <i class="fa-regular fa-heart"></i></button>
+                    <button class="view">View Place</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="room_box">
+            <!-- 이미지 -->
+            <div class="image">
+                <img src="../../image/Bayview.jpg" alt="베이뷰 호텔 사진">
+            </div>
+
+            <!-- 오른쪽 컨텐츠 -->
+            <div class="content">
+
+                <!-- ONE : 상단 모텔 정보 -->
+                <div class="one">
+
+                    <h3>베이뷰 모텔</h3>
+                    <div class="locate">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                    </div>
+
+                    <!-- 별점 리뷰 -->
+                    <div class="review_container">
+                        <div class="star_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <p>5 Star Hotel</p>
+                        </div>
+
+                        <!-- 주변 사람들? -->
+                        <div class="AMinities_box">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                            <p>Amenities</p>
+                        </div>
+                    </div>
+
+                    <!--점수 리뷰  -->
+                    <div class="score_review_box">
+                        <div class="score"><p>4.2</p></div>
+                        <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 가격 -->
+                <div class="price">
+                    <p>starting from</p>
+                    <h2>₩104,000<span>/night</span></h2>
+                    <small>excl. tax</small>
+                </div>
+
+                <!-- TWO : 하단 버튼 -->
+                <div class="two">
+                    <button class="heart">
+                        <i class="fa-regular fa-heart"></i></button>
+                    <button class="view">View Place</button>
+                </div>
+
+            </div>
+        </div>
+        <!--  룸 리스트 끝 마침-->
+    </div>
+
+    <!--숙소 내역 리조트 -->
+    <div class="room_list" data-category="resorts">
+        <div class="room_box">
+            <!-- 이미지 -->
+            <div class="image">
+                <img src="../../image/Hatton_Hotel.jpg" alt="해튼호텔 사진">
+            </div>
+
+            <!-- 오른쪽 컨텐츠 -->
+            <div class="content">
+
+                <!-- ONE : 상단 리조트 정보 -->
+                <div class="one">
+
+                    <h3>해튼리조트</h3>
+                    <div class="locate">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</p>
+                    </div>
+
+                    <!-- 별점 리뷰 -->
+                    <div class="review_container">
+                        <div class="star_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <p>5 Star Hotel</p>
+                        </div>
+
+                        <!-- 주변 사람들? -->
+                        <div class="AMinities_box">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                            <p>Amenities</p>
+                        </div>
+                    </div>
+
+                    <!--점수 리뷰  -->
+                    <div class="score_review_box">
+                        <div class="score"><p>4.2</p></div>
+                        <div class="review_text"><p><b>Very Good</b> 371 reviews</p></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <!-- 가격 -->
+                <div class="price">
+                    <p>starting from</p>
+                    <h2>₩240,000<span>/night</span></h2>
+                    <small>excl. tax</small>
+                </div>
+
+                <!-- TWO : 하단 버튼 -->
+                <div class="two">
+                    <button class="heart">
+                        <i class="fa-regular fa-heart"></i></button>
+                    <button class="view">View Place</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="room_box">
+            <!-- 이미지 -->
+            <div class="image">
+                <img src="../../image/Malacca.jpg" alt="마제스틱 말라카 호텔 사진">
+            </div>
+
+            <!-- 오른쪽 컨텐츠 -->
+            <div class="content">
+
+                <!-- ONE : 상단 리조트 정보 -->
+                <div class="one">
+
+                    <h3>마제스틱 말라카 리조트</h3>
+                    <div class="locate">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                    </div>
+
+                    <!-- 별점 리뷰 -->
+                    <div class="review_container">
+                        <div class="star_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <p>5 Star Hotel</p>
+                        </div>
+
+                        <!-- 주변 사람들? -->
+                        <div class="AMinities_box">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                            <p>Amenities</p>
+                        </div>
+                    </div>
+
+                    <!--점수 리뷰  -->
+                    <div class="score_review_box">
+                        <div class="score"><p>4.2</p></div>
+                        <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 가격 -->
+                <div class="price">
+                    <p>starting from</p>
+                    <h2>₩120,000<span>/night</span></h2>
+                    <small>excl. tax</small>
+                </div>
+
+                <!-- TWO : 하단 버튼 -->
+                <div class="two">
+                    <button class="heart">
+                        <i class="fa-regular fa-heart"></i></button>
+                    <button class="view">View Place</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="room_box">
+            <!-- 이미지 -->
+            <div class="image">
+                <img src="../../image/Canardel.jpg" alt="카나델 리오 호텔 사진">
+            </div>
+
+            <!-- 오른쪽 컨텐츠 -->
+            <div class="content">
+
+                <!-- ONE : 상단 리조트 정보 -->
+                <div class="one">
+
+                    <h3>카나델 리오 리조트</h3>
+                    <div class="locate">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                    </div>
+
+                    <!-- 별점 리뷰 -->
+                    <div class="review_container">
+                        <div class="star_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <p>5 Star Hotel</p>
+                        </div>
+
+                        <!-- 주변 사람들? -->
+                        <div class="AMinities_box">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                            <p>Amenities</p>
+                        </div>
+                    </div>
+
+                    <!--점수 리뷰  -->
+                    <div class="score_review_box">
+                        <div class="score"><p>4.2</p></div>
+                        <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 가격 -->
+                <div class="price">
+                    <p>starting from</p>
+                    <h2>₩130,000<span>/night</span></h2>
+                    <small>excl. tax</small>
+                </div>
+
+                <!-- TWO : 하단 버튼 -->
+                <div class="two">
+                    <button class="heart">
+                        <i class="fa-regular fa-heart"></i></button>
+                    <button class="view">View Place</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="room_box">
+            <!-- 이미지 -->
+            <div class="image">
+                <img src="../../image/Bayview.jpg" alt="베이뷰 호텔 사진">
+            </div>
+
+            <!-- 오른쪽 컨텐츠 -->
+            <div class="content">
+
+                <!-- ONE : 상단 리조트 정보 -->
+                <div class="one">
+
+                    <h3>베이뷰 리조트</h3>
+                    <div class="locate">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</p>
+                    </div>
+
+                    <!-- 별점 리뷰 -->
+                    <div class="review_container">
+                        <div class="star_icon">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <p>5 Star Hotel</p>
+                        </div>
+
+                        <!-- 주변 사람들? -->
+                        <div class="AMinities_box">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                            <p>Amenities</p>
+                        </div>
+                    </div>
+
+                    <!--점수 리뷰  -->
+                    <div class="score_review_box">
+                        <div class="score"><p>4.2</p></div>
+                        <div class="review_text"><p><b>Very Good</b> 54 reviews</p></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- 가격 -->
+                <div class="price">
+                    <p>starting from</p>
+                    <h2>₩104,000<span>/night</span></h2>
+                    <small>excl. tax</small>
+                </div>
+
+                <!-- TWO : 하단 버튼 -->
+                <div class="two">
+                    <button class="heart">
+                        <i class="fa-regular fa-heart"></i></button>
+                    <button class="view">View Place</button>
+                </div>
+
+            </div>
+        </div>
+        <!--  룸 리스트 끝 마침-->
+    </div>
+
+        <!-- content_box 끝 div  -->
+        </div>
+
+<!-- listing_layout 끝 div   -->
+    </div>
+<!--</div>-->
+<div class="button_result">
+    <button>Show more results</button>
+</div>
+
+
+<!-- 검색 박스 -->
+<div class="search_box">
+    <div class="search_inputs">
+        <!-- 목적지 입력 -->
+        <div class="input-group">
+            <label for="destination">Enter Destination</label>
+        <input type="text" id="destination" placeholder="Enter Destination">
+        </div>
+
+        <!-- 체크인 -->
+        <div class="input-group">
+            <label for="checkin">Check-in</label>
+            <input type="date" id="checkin" placeholder="Check-in">
+        </div>
+
+        <!-- 체크아웃 -->
+        <div class="input-group">
+            <label for="checkout">Check-out</label>
+            <input type="date" id="checkout" placeholder="Check-out">
+        </div>
+
+        <!-- 객실 & 인원 -->
+        <div class="input-group dropdown-container">
+            <label for="guests">Rooms & Guests</label>
+            <input type="text" id="guests" readonly placeholder="Rooms & Guests">
+        </div>
+
+        <!-- 검색 버튼 -->
+        <button class="search_icon">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </div>
+</div>
 
 
 
-</aside>
+
+
 </body>
+
 
 <footer>
     <section class="subscription-box">

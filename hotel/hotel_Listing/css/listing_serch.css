@@ -1,0 +1,73 @@
+/* 검색 박스 */
+.search_box {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    width: 100%;
+    max-width: 1300px;
+}
+
+.search_inputs {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* 공통 input 스타일 */
+.search_inputs input {
+    flex: 1;
+    min-width: 150px;
+    height: 45px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+}
+
+.search_inputs input:focus {
+    border-color: #46BD7B;
+    box-shadow: 0 0 5px rgba(70, 189, 123, 0.4);
+}
+
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 150px;
+}
+
+.input-group label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* 검색 버튼 */
+.search_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: #46BD7B;
+    color: white;
+    border-radius: 10px;
+    padding: 0 20px;
+    height: 45px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.search_icon:hover {
+    background-color: #38a368;
+}

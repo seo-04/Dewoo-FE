@@ -1,0 +1,72 @@
+/*혼트*/
+@font-face {
+    font-family: 'SacheonUniverse';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/SacheonUju-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+/* Filters 전체 */
+.filter_box {
+    position: sticky;
+    margin-left: 15px;
+}
+
+.filter_box .filter_text{
+    font-family: 'SacheonUniverse';
+    font-size: 20px;
+}
+
+.filter_section {
+    margin-bottom: 60px;
+}
+
+.filter_section p {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Price 슬라이더 */
+.slider {
+    width: 100%;
+}
+
+.price_labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: black;
+}
+
+/* Rating 버튼 */
+.rating_buttons {
+    display: flex;
+    gap: 10px;
+
+}
+
+.rating_buttons button {
+    border: 1px solid #46BD7B;
+    background: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.rating_buttons button:hover {
+    background: #46BD7B;
+    color: #fff;
+    border-color: #46BD7B;
+}
+
+.rating_buttons button.active {
+    background: #46BD7B;
+    color: #fff;
+    border-color: #46BD7B;
+}
+
+/* 체크박스 */
+.filter_section label {
+    font-size: 14px;
+    color: #333;
+}

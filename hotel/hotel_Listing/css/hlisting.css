@@ -1,12 +1,16 @@
-/* 폰트 */
-
 /*body*/
 body {
     margin: 0;
     background: #FAFBFC;
 }
 
-
+header{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
 
 .nav-container {
     display: flex;
@@ -47,12 +51,12 @@ body {
 .tab.active::after {
     content: "";
     position: absolute;
-    bottom: 0;
+    bottom: -30px;
     left: 0;
     width: 100%;
     height: 3px;
     background: #46BD7B;
-    border-radius: 3px;
+    border-radius: 0;
 }
 
 /* 오른쪽 */
@@ -79,85 +83,47 @@ body {
     background: #ff8682;
     border-radius: 50%;
 }
-/* 검색 박스 */
-.search_box {
-    position: absolute;
-    top: 15%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #fff;
-    padding: 15px 20px;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    width: 100%;
-    max-width: 50%;
-}
 
-.search_title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #2c3e50;
-    text-align: left;
-}
-
-.search_inputs {
+/*오른쪽 영역*/
+.content_box {
+    flex: 1;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-
-.search_inputs input {
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 14px;
-    outline: none;
-    transition: all 0.2s ease-in-out;
-}
-
-.search_inputs input:focus {
-    border-color: #46BD7B;
-    box-shadow: 0 0 5px rgba(70, 189, 123, 0.4);
-}
-
-.input-group {
-    display: flex;
-    margin-bottom: 17px;
     flex-direction: column;
+    gap: 20px;
 }
 
-.input-group label {
-    font-size: small;
-    font-weight: bold;
-    color: black;
-}
-
-/* 검색 버튼 아이콘 */
-.search_inputs .search_icon {
+/* 전체 레이아웃 */
+.listing_layout {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-color: #46BD7B;
-    background-color: #46BD7B;
+    align-items: flex-start;
+    gap: 30px;
+    max-width: 1300px;
+    margin: 180px auto;
+    padding: 0 20px;
+}
+
+.button_result{
+    display: none;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.button_result button {
+    width: 25%;
+    height: 35px;
+    font-size: 18px;
+    font-weight: bold;
+    background: #112211;
     color: white;
-    border-radius: 10px;
-    height: 60%;
-    padding: 12px 18px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
-
-.search_inputs .search_icon:hover {
-    background-color: #38a368;
+.tab_content {
+    display: none;
 }
 
-/*aside 영역*/
-aside{
-    margin-top: 12%;
-}
-
-.filter_box p{
-    font-weight: bold;
+.tab_content.active {
+    display: block;
 }
 
