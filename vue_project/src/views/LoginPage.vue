@@ -139,12 +139,27 @@ export default {
 <style scoped>
 @import "@/assets/css/Login.css";
 
-body {
-  height: 100vh;
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: gradientBG 15s ease infinite;
+  border-radius: 15px;
+  background: none;
+}
+
+
+/*로그인 화면 부분 backdrop-filter:투명도 체크*/
+.login-box {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  display: flex;
+  border-radius: 10px;
   overflow: hidden;
+  width: 800px;
+  max-width: 90%;
+
 }
 </style>

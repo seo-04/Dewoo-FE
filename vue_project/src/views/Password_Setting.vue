@@ -77,9 +77,9 @@ export default {
       showPassword: false,
       showConfirm: false,
       images: [
-        require("@/assets/img.jpg"),
-        require("@/assets/img2.jpg"),
-        require("@/assets/img3.jpg"),
+        require("@/assets/img/img.jpg"),
+        require("@/assets/img/img2.jpg"),
+        require("@/assets/img/img3.jpg"),
       ],
       currentIndex: 0,
       intervalId: null,

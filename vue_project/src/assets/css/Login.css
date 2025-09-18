@@ -5,6 +5,7 @@
     font-weight: normal;
     font-display: swap;
 }
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -15,10 +16,11 @@
 /*gradientBG:식별자, 키프레임 애니메이션 이름*/
 body {
     height: 100vh;
-    /*background: url("/src/assets/img/travel5.jpg");*/
+    background: url("/src/assets/img/travel5.jpg");
     display: flex;
     justify-content: center;
     align-items: center;
+
     animation: gradientBG 15s ease infinite;
     overflow: hidden;
 }
@@ -29,28 +31,6 @@ body {
     100% { background-position: 0% 50% }
 }
 
-/*로그인 화면 부분 backdrop-filter:투명도 체크*/
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(12px);
-
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
-}
-
-.login-box {
-    display: flex;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 800px;
-    max-width: 90%;
-}
 
 /* 왼쪽 로그인 부분 */
 .left {
@@ -91,8 +71,7 @@ p {
     color: black;
     position: absolute;
     right: 10px;
-    top: 50%;
-    transform: translateY(140%);
+    transform: translateY(-50%);
     cursor: pointer;
 }
 

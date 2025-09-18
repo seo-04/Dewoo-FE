@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import "@/assets/css/findp.css";
+import "@/assets/css/Find_Password.css";
 
 export default {
   name: "FindPasswordPage",
@@ -85,7 +85,7 @@ export default {
       }
     },
     goBack() {
-      this.$router.push("/login");
+      this.$router.push("/Login");
     },
     showSlide(n) {
       this.index = n;

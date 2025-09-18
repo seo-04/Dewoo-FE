@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import "@/assets/css/authenticate.css";
+import "@/assets/css/Authenticate.css";
 
 export default {
   name: "AuthenticatePage",
@@ -86,7 +86,7 @@ export default {
       );
     },
     goBack() {
-      this.$router.push("/login");
+      this.$router.push("/Login");
     },
     handleAuthenticate() {
       if (!this.code.trim()) {
@@ -95,7 +95,7 @@ export default {
       }
       alert("인증되었습니다.");
       //  인증 성공 시 password_setting 페이지로 이동
-      this.$router.push("/password_setting");
+      this.$router.push("/Password_Setting");
     },
     showSlide(n) {
       this.index = n;

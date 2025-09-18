@@ -118,9 +118,9 @@ export default {
       showConfirmPassword: false,
       currentSlide: 0,
       slides: [
-        require("@/assets/img.jpg"),
-        require("@/assets/img2.jpg"),
-        require("@/assets/img3.jpg"),
+        require("@/assets/img/img.jpg"),
+        require("@/assets/img/img2.jpg"),
+        require("@/assets/img/img3.jpg"),
       ],
     };
   },
