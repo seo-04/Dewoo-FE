@@ -1,0 +1,144 @@
+<template>
+  <div class="container">
+    <div class="login-box">
+      <!-- 왼쪽 결제수단 -->
+      <div class="left">
+        <h4>결제수단 추가</h4>
+        <p>결제수단을 추가해주세요</p>
+
+        <div class="log_input">
+          <!-- 카드번호 입력 -->
+          <div class="row-input cardbox">
+            <input
+                type="text"
+                v-model="cardNumber"
+                @input="formatCardNumber"
+                placeholder="Card Number"
+            />
+            <i class="fa-brands fa-cc-visa"></i>
+          </div>
+
+          <!-- 카드날짜 & cvc -->
+          <div class="row-input">
+            <input type="text" v-model="expDate" placeholder="Exp.Date" />
+            <input type="text" v-model="cvc" placeholder="cvc" />
+          </div>
+
+          <!-- 카드 이름 -->
+          <div class="namebox">
+            <input type="text" v-model="cardName" placeholder="Name on Card" />
+          </div>
+
+          <!-- 국적 -->
+          <div class="namebox">
+            <input type="text" v-model="country" placeholder="Country or Region" />
+          </div>
+        </div>
+
+        <div class="check">
+          <label>
+            <input type="checkbox" v-model="remember" /> 저장하고 One 터치로 결제하기
+          </label>
+        </div>
+
+        <button class="Pay_Add" @click="handleSubmit">결제수단 추가</button>
+
+        <p class="description">
+          By confirming your subscription, you allow The Outdoor Inn Crowd Limited to
+          charge your card for this payment and future payments in accordance with their
+          terms, You can always cancel your subscription.
+        </p>
+      </div>
+
+      <!-- 오른쪽 이미지 -->
+      <div class="right">
+        <img
+            v-for="(img, i) in images"
+            :key="i"
+            :src="img"
+            alt="hotel image"
+            class="slide"
+            :class="{ active: i === currentIndex }"
+        />
+        <div class="dots">
+          <span
+              v-for="(dot, i) in images"
+              :key="i"
+              class="dot"
+              :class="{ active: i === currentIndex }"
+              @click="showSlide(i)"
+          ></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "PaymentMethod",
+  data() {
+    return {
+      cardNumber: "",
+      expDate: "",
+      cvc: "",
+      cardName: "",
+      country: "",
+      remember: false,
+      images: [
+        require("@/assets/img.jpg"),
+        require("@/assets/img2.jpg"),
+        require("@/assets/img3.jpg"),
+      ],
+      currentIndex: 0,
+      intervalId: null,
+    };
+  },
+  methods: {
+    formatCardNumber() {
+      let value = this.cardNumber.replace(/\D/g, ""); // 숫자만
+      value = value.substring(0, 16); // 최대 16자리
+      this.cardNumber = value.replace(/(\d{4})(?=\d)/g, "$1 ");
+    },
+    handleSubmit() {
+      const cNumber = this.cardNumber.replace(/\s/g, "").trim();
+      const expDate = this.expDate.trim();
+      const cvc = this.cvc.trim();
+      const name = this.cardName.trim();
+      const country = this.country.trim();
+
+      if (!cNumber || !expDate || !cvc || !name || !country) {
+        alert("모든 항목을 입력해주세요.");
+        return;
+      }
+      if (!/^\d{16}$/.test(cNumber)) {
+        alert("카드번호는 숫자 16자리여야 합니다.");
+        return;
+      }
+      if (!/^\d{3}$/.test(cvc)) {
+        alert("CVC는 숫자 3자리여야 합니다.");
+        return;
+      }
+      if (!this.remember) {
+        alert("약관에 동의 해주세요.");
+        return;
+      }
+      alert("회원가입이 완료되었습니다.");
+    },
+    showSlide(n) {
+      this.currentIndex = n;
+    },
+    nextSlide() {
+      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    },
+  },
+  mounted() {
+    this.intervalId = setInterval(this.nextSlide, 3000);
+  },
+  beforeUnmount() {
+    clearInterval(this.intervalId);
+  },
+};
+</script>
+
+<style scoped src="@/assets/css/Payment_Method.css"></style>
