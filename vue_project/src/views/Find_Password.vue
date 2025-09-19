@@ -6,7 +6,7 @@
         <div class="back" @click="goBack">
           <i class="fa-solid fa-chevron-left"></i>
           <p class="font">
-            <a href="/LoginPage">Back to Login</a>
+            <a href="/">Back to Login</a>
           </p>
         </div>
 

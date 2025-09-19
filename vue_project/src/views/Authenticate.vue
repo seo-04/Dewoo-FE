@@ -5,7 +5,7 @@
       <div class="left">
         <div class="back" @click="goBack">
           <i class="fa-solid fa-chevron-left"></i>
-          <p class="font"><a href="#">Back to Login</a></p>
+          <p class="font"><a href="/">Back to Login</a></p>
         </div>
 
         <h4>인증하기</h4>
