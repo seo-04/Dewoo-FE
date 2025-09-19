@@ -13,11 +13,11 @@ const router = createRouter({
     history: createWebHistory(),
     routes : [
         { path: '/', component: LoginPage },
-        { path:'/',component:PasswordSetting},
-        { path: '/', component: PaymentMethod },
-        { path: '/', component: SignUp},
-        { path: '/', component: Find_Password},
-        { path: '/', component: Authenticate}
+        { path:'/PasswordSetting',component:PasswordSetting},
+        { path: '/PaymentMethod', component: PaymentMethod },
+        { path: '/SignUp', component: SignUp},
+        { path: '/Find_Password', component: Find_Password},
+        { path: '/Authenticate', component: Authenticate}
     ]
 
 })

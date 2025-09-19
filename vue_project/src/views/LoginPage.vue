@@ -7,20 +7,16 @@
         <p class="login_text">로그인 해주세요</p>
 
         <div class="log_input">
-          <form @submit.prevent="handleLogin">
-            <div class="passwordbox">
-              <input
-                  type="text"
-                  v-model="email"
-                  placeholder="Email"
-              />
+          <form id="loginForm" @submit.prevent="handleSubmit">
+            <div class="password">
+              <input type="text" v-model="email" placeholder="Email" />
               <input
                   :type="showPassword ? 'text' : 'password'"
                   v-model="password"
                   placeholder="Password"
               />
               <i
-                  :class="['fa-solid', showPassword ? 'fa-eye' : 'fa-eye-slash']"
+                  :class="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"
                   @click="togglePassword"
               ></i>
             </div>
@@ -29,17 +25,16 @@
 
         <div class="check">
           <label>
-            <input type="checkbox" v-model="remember" />
-            비밀번호 기억하기
+            <input type="checkbox" v-model="remember" /> 비밀번호 기억하기
           </label>
           <p class="text2">
-            <a href="#" @click.prevent="goForgot">Forgot Password</a>
+            <a href="/Find_Password">Forgot Password</a>
           </p>
         </div>
 
-        <button class="loginbox" @click="handleLogin">Login</button>
+        <button class="loginbox" @click="handleSubmit">Login</button>
         <p class="signup">
-          <a href="#" @click.prevent="goSignup">회원가입</a>
+          <a href="/signup">회원가입</a>
         </p>
 
         <!-- sns 로그인 경계선 -->
@@ -47,7 +42,7 @@
           <p>Or login with</p>
         </div>
 
-        <!-- sns 로그인 창 -->
+        <!-- sns 로그인 -->
         <div class="snsbox">
           <div class="facebook">
             <i class="fa-brands fa-facebook"></i>
@@ -68,18 +63,16 @@
 
       <!-- 오른쪽 이미지 -->
       <div class="right">
-        <img
-            v-for="(slide, i) in slides"
-            :key="i"
-            :src="slide"
-            :class="['slide', { active: currentSlide === i }]"
-            alt="hotel image"
-        />
+        <img src="@/assets/img/img.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 0 }" />
+        <img src="@/assets/img/img2.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 1 }" />
+        <img src="@/assets/img/img3.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 2 }" />
+
         <div class="dots">
           <span
-              v-for="(dot, i) in slides"
+              v-for="(dot, i) in 3"
               :key="i"
-              :class="['dot', { active: currentSlide === i }]"
+              class="dot"
+              :class="{ active: currentSlide === i }"
               @click="setSlide(i)"
           ></span>
         </div>
@@ -97,58 +90,40 @@ export default {
       password: "",
       remember: false,
       showPassword: false,
-      slides: [
-        require("@/assets/img/img.jpg"),
-        require("@/assets/img/img2.jpg"),
-        require("@/assets/img/img3.jpg"),
-      ],
       currentSlide: 0,
+      slideInterval: null,
     };
+  },
+  mounted() {
+    this.startSlideShow();
+  },
+  beforeUnmount() {
+    clearInterval(this.slideInterval);
   },
   methods: {
     togglePassword() {
       this.showPassword = !this.showPassword;
     },
-    handleLogin() {
+    handleSubmit() {
       if (!this.email || !this.password) {
         alert("이메일과 비밀번호를 모두 입력해주세요!");
         return;
       }
-      console.log("로그인 시도:", this.email, this.password, this.remember);
-      // 여기에 API 연동 코드 추가 가능
+      alert("로그인 시도!");
     },
-    goSignup() {
-      this.$router.push("/SignUp");
+    startSlideShow() {
+      this.slideInterval = setInterval(() => {
+        this.currentSlide = (this.currentSlide + 1) % 3;
+      }, 3000);
     },
-    goForgot() {
-      this.$router.push("/Find_Password");
+    setSlide(index) {
+      this.currentSlide = index;
     },
-    setSlide(i) {
-      this.currentSlide = i;
-    },
-    nextSlide() {
-      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
-    },
-  },
-  mounted() {
-    setInterval(this.nextSlide, 3000);
   },
 };
 </script>
 
 <style scoped>
-@import "@/assets/css/Login.css";
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 15px;
-  background: none;
-}
-
-
-/*로그인 화면 부분 backdrop-filter:투명도 체크*/
 .login-box {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
@@ -160,6 +135,54 @@ export default {
   overflow: hidden;
   width: 800px;
   max-width: 90%;
-
 }
+
+.right {
+  width: 400px;
+  height: 480px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  margin-top: 14px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+
+/* 이미지 슬라이드 */
+.right img {
+  width: 500px;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.dots {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.snsbox div {
+  display: flex;
+  border: 2px solid #8DD3BB;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 4px;
+  height: 40px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+
 </style>

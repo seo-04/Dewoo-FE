@@ -49,8 +49,7 @@
             <!-- 동의 체크박스 -->
             <div class="check">
               <label>
-                <input type="checkbox" v-model="agree" /> 동의하기
-              </label>
+                <input type="checkbox" v-model="agree" />동의하기</label>
             </div>
 
             <button type="submit" class="loginbox">계정 생성</button>
@@ -144,7 +143,7 @@ export default {
         alert("약관에 동의 해주세요.");
       } else {
         alert("회원가입이 완료되었습니다.");
-        this.$router.push("/Payment_Method"); // Vue Router 사용시 로그인 페이지로 이동
+        this.$router.push("/Payment_Method");
       }
     },
     startSlideShow() {
@@ -163,6 +162,29 @@ export default {
 </script>
 
 <style scoped>
-@import "@/assets/css/SignUp.css";
+/* 오른쪽 이미지 영역 */
+.right {
+  width: 400px;
+  height: 600px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  margin-top: 13px;
+  margin-right: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
 
 </style>
