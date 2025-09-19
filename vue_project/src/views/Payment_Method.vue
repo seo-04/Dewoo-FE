@@ -119,11 +119,21 @@ export default {
         alert("CVC는 숫자 3자리여야 합니다.");
         return;
       }
+      if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expDate)) {
+        alert("알 수 없는 날짜 형식입니다. MM/YY 형식으로 입력해주세요.");
+        return;
+      }
+      if (!/^[a-zA-Z\s]+$/.test(name)) {
+        alert("카드 이름은 영문으로 입력해주세요.");
+        return;
+      }
       if (!this.remember) {
         alert("약관에 동의 해주세요.");
         return;
       }
+
       alert("회원가입이 완료되었습니다.");
+      this.$router.push("/");
     },
     showSlide(n) {
       this.currentIndex = n;

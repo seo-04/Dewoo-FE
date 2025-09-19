@@ -102,7 +102,7 @@ export default {
         alert("비밀번호가 설정되었습니다.");
         // 페이지 이동
         setTimeout(() => {
-          this.$router.push("/login"); // Vue Router 사용
+          this.$router.push("/");
         }, 600);
       }
     },
