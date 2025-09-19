@@ -103,11 +103,44 @@ p {
     cursor: pointer;
 }
 
+.loginbox.disabled {
+    background-color: #8DD3BB;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .signup {
     margin-top: 15px;
     color: black;
     text-align: center;
 }
+
+/* 비밀번호 안내문구 */
+.password-hint {
+    font-size: 12px;
+    color: #888;
+    margin: 4px 0 12px;
+}
+
+.error-border {
+    border: 1px solid red !important;
+}
+
+/* 에러 메시지 박스 */
+.error-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: red;
+    margin-top: 4px;
+}
+
+.error-box i {
+    font-size: 13px;
+}
+
+
 
 /* SNS 박스 */
 .snsbox {
@@ -190,3 +223,11 @@ p {
     opacity: 1;
     background: #8DD3BB;
 }
+
+/* 비밀번호 안내문구 */
+.password-hint {
+    font-size: 12px;
+    color: #888;
+    margin: 4px 0 12px;
+}
+

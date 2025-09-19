@@ -25,7 +25,7 @@
               <input
                   :type="showPassword ? 'text' : 'password'"
                   v-model="password"
-                  placeholder="Password"
+                  placeholder="8자리 이상 영문, 숫자, 특수기호 포함"
               />
               <i
                   :class="['fa-solid', showPassword ? 'fa-eye' : 'fa-eye-slash']"
@@ -39,6 +39,7 @@
                   :type="showConfirmPassword ? 'text' : 'password'"
                   v-model="confirmPassword"
                   placeholder="Confirm Password"
+                  :class="{ 'error-border': confirmPassword && password !== confirmPassword }"
               />
               <i
                   :class="['fa-solid', showConfirmPassword ? 'fa-eye' : 'fa-eye-slash']"
@@ -46,13 +47,31 @@
               ></i>
             </div>
 
+            <!-- 비밀번호 에러 메시지 -->
+            <div
+                v-if="confirmPassword && password !== confirmPassword"
+                class="error-box"
+            >
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span>비밀번호가 일치하지 않습니다.</span>
+            </div>
+
             <!-- 동의 체크박스 -->
             <div class="check">
               <label>
-                <input type="checkbox" v-model="agree" />동의하기</label>
+                <input type="checkbox" v-model="agree" />동의하기
+              </label>
             </div>
 
-            <button type="submit" class="loginbox">계정 생성</button>
+            <!-- 버튼 -->
+            <button
+                type="submit"
+                class="loginbox"
+                :class="{ disabled: !isPasswordValid || !agree }"
+                :disabled="!isPasswordValid || !agree"
+            >
+              계정 생성
+            </button>
           </form>
         </div>
 
@@ -123,6 +142,14 @@ export default {
       ],
     };
   },
+  computed: {
+    isPasswordValid() {
+      // 최소 8자리, 영문/숫자/특수문자 포함
+      const regex =
+          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-={}[\]:;"'<>,.?/]).{8,}$/;
+      return regex.test(this.password) && this.password === this.confirmPassword;
+    },
+  },
   mounted() {
     this.startSlideShow();
   },
@@ -135,10 +162,19 @@ export default {
       }
     },
     handleSignup() {
-      if (!this.fname || !this.lname || !this.email || !this.phone || !this.password || !this.confirmPassword) {
+      if (
+          !this.fname ||
+          !this.lname ||
+          !this.email ||
+          !this.phone ||
+          !this.password ||
+          !this.confirmPassword
+      ) {
         alert("모든 항목을 입력해주세요.");
-      } else if (this.password !== this.confirmPassword) {
-        alert("비밀번호가 일치하지 않습니다.");
+      } else if (!this.isPasswordValid) {
+        alert(
+            "비밀번호는 8자리 이상, 영문/숫자/특수문자를 포함해야합니다."
+        );
       } else if (!this.agree) {
         alert("약관에 동의 해주세요.");
       } else {
@@ -160,6 +196,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 /* 오른쪽 이미지 영역 */
