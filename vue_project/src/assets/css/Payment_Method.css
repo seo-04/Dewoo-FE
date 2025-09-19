@@ -1,3 +1,4 @@
+/* 공통 초기화 */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -38,13 +39,13 @@ p {
     margin-bottom: 20px;
 }
 
-.description{
+.description {
     font-size: 8px;
     color: gray;
     text-align: center;
 }
 
-/*카드번호 입력 부분*/
+/* 카드번호 입력 부분 */
 .cardbox {
     position: relative;
 }
@@ -84,17 +85,20 @@ p {
     flex: 1;
 }
 
-/* 이름 박스 */
+/* 이름/국가 박스 */
 .namebox {
     position: relative;
 }
 
-.namebox input {
+.namebox input,
+.namebox select {
     width: 100%;
     padding: 12px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
+    appearance: none; /* 기본 select 화살표 제거 */
+    background-color: #fff;
 }
 
 .namebox i {
@@ -104,13 +108,20 @@ p {
     transform: translateY(-50%);
     cursor: pointer;
     color: gray;
+    pointer-events: none; /* 아이콘 눌러도 select 열림 */
 }
 
+.select-wrapper {
+    position: relative;
+}
+
+/* 체크박스 */
 .check {
     font-size: 12px;
     margin: 10px 0;
 }
 
+/* 버튼 */
 .Pay_Add {
     width: 100%;
     height: 40px;
@@ -122,7 +133,6 @@ p {
     cursor: pointer;
 }
 
-/* 이미지 슬라이드 */
 .right img {
     width: 100%;
     height: 100%;
@@ -135,12 +145,20 @@ p {
     border-radius: 15px;
 }
 
-
 .right img.active {
     opacity: 1;
 }
 
-
+/* 슬라이드 dot */
+.dots {
+    position: absolute;
+    bottom: 3%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
 
 .dot {
     width: 8px;
@@ -155,4 +173,3 @@ p {
     opacity: 1;
     background: #8DD3BB;
 }
-

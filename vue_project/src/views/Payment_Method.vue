@@ -20,7 +20,7 @@
 
           <!-- 카드날짜 & cvc -->
           <div class="row-input">
-            <input type="text" v-model="expDate" placeholder="Exp.Date" />
+            <input type="text" v-model="expDate" placeholder="Exp.Date (MM/YY)" />
             <input type="text" v-model="cvc" placeholder="cvc" />
           </div>
 
@@ -31,7 +31,15 @@
 
           <!-- 국적 -->
           <div class="namebox">
-            <input type="text" v-model="country" placeholder="Country or Region" />
+            <div class="select-wrapper">
+              <select v-model="country">
+                <option disabled value="">Country or Region</option>
+                <option v-for="(c, i) in countries" :key="i" :value="c">
+                  {{ c }}
+                </option>
+              </select>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
           </div>
         </div>
 
@@ -90,6 +98,15 @@ export default {
         require("@/assets/img/img2.jpg"),
         require("@/assets/img/img3.jpg"),
       ],
+      countries: [
+        "네덜란드", "노르웨이", "뉴질랜드", "대한민국", "덴마크",
+        "독일", "러시아", "멕시코", "말레이시아", "미국", "베트남",
+        "벨기에", "브라질", "스웨덴", "스위스", "스페인", "싱가포르",
+        "아르헨티나", "영국", "오스트리아", "이탈리아", "인도", "일본",
+        "캐나다", "콜롬비아", "칠레", "체코", "중국", "터키", "태국",
+        "페루", "폴란드", "프랑스", "필리핀", "헝가리", "호주", "그리스",
+        "남아프리카공화국", "포르투갈", "핀란드"
+      ],
       currentIndex: 0,
       intervalId: null,
     };
@@ -120,7 +137,7 @@ export default {
         return;
       }
       if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expDate)) {
-        alert("알 수 없는 날짜 형식입니다. MM/YY 형식으로 입력해주세요.");
+        alert("알 수 없는 날짜 형식입니다. MM/YY 형식으로 입력해주세요. (예: 03/25)");
         return;
       }
       if (!/^[a-zA-Z\s]+$/.test(name)) {
@@ -150,6 +167,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 /* 오른쪽 이미지 영역 */
