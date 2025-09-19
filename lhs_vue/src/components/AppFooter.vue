@@ -88,8 +88,8 @@
   background-color: #cdeae1;
   border-radius: 10px;
   padding: 30px;
-  width: 1232px;
-  height: 305px;
+  width: 80%;
+  height: 75%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -131,7 +131,7 @@ footer {
   display: flex;
   flex-direction: column;
   font-weight: bold;
-  font-size: 15pt;
+  font-size: clamp(1.125rem, 1vw + 0.5rem, 1.375rem);
 }
 
 .footer-span-details {
@@ -141,5 +141,6 @@ footer {
   position: relative;
   top: 13px;
   gap: 10px;
+  font-size:clamp(0.875rem, 0.5vw + 0.5rem, 1rem);
 }
 </style>

@@ -1,17 +1,19 @@
 <template>
-  <div id="wrapper">
     <header>
       <div class="container">
         <nav class="nav-container">
           <div class="item">
             <span>
-              <img src="@/assets/bed.png" height="17" width="22" alt=""/>
+                <a href="#" class="tab" :class="{active: activeTab == 'header'}"
+                   @click.prevent=" activeTab = 'header'">
+              <img src="@/assets/bed.png" height="17" width="22" alt="" style="position: relative; top: 3px"/>
               hotels
+                  </a>
             </span>
           </div>
           <div class="item">
             <div class="flex vertical-center">
-              <img src="@/assets/heart.png" height="19" width="20" alt=""/>
+              <img src="@/assets/heart.png" height="19" width="20" alt="" style="position: relative; top: 2px"/>
               <span>
                 찜하기
               </span>
@@ -33,12 +35,13 @@
     <main>
     </main>
 
-
-  </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 
+// activeTab의 초기값을 null로 설정하여 처음에는 아무 탭도 활성화되지 않도록 합니다.
+const activeTab = ref<string | null>('hotels');
 </script>
 
 <style scoped>
@@ -115,5 +118,26 @@ img {
   object-fit: contain;
 }
 
+.tab {
+  text-decoration: none;
+  color: #888;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.tab.active {
+  color: #333;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #333;
+  bottom: -31px;
+  border-radius: 10px;
+}
 
 </style>

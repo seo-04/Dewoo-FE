@@ -1,6 +1,5 @@
 <template>
   <div class= "app" id="app">
-    <!-- 1. 공통 헤더/푸터 컴포넌트를 먼저 배치합니다. -->
     <AppHeader />
 
     <!-- 2. 페이지의 실제 내용이 들어올 공간 -->
@@ -9,6 +8,7 @@
       <UserProfile />
       <router-view />
     </main>
+
     <AppFooter />
   </div>
 </template>
@@ -18,6 +18,7 @@
 import UserProfile from "@/components/UserProfile.vue";
 import AppHeader from "@/components/AppHeader.vue";
 import AppFooter from "@/components/AppFooter.vue";
+
 
 export default {
   name: 'App',

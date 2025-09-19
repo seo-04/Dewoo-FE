@@ -34,7 +34,7 @@
       </nav>
 
       <div v-if="activeTab === 'account'" class="tab-content active" id="account-tab">
-        <h2 class="content-title">Account</h2>
+        <h1 class="content-title">Account</h1>
         <div class="info-group">
           <label class="info-label">Name</label>
           <div class="info-value-wrapper">
@@ -478,7 +478,9 @@ onBeforeUnmount(() => {
       border-bottom: 1px solid #ddd;
     }
     .tab {
-      padding: 10px 163px;
+      padding: 10px 20px;
+      flex: 1;
+      text-align: center;
       text-decoration: none;
       color: #888;
       font-weight: bold;
@@ -552,6 +554,7 @@ onBeforeUnmount(() => {
       align-items: center;
       flex-grow: 1;
       justify-content: space-between;
+
     }
     .info-value {
       color: #333;
@@ -563,6 +566,7 @@ onBeforeUnmount(() => {
       cursor: pointer;
       font-weight: bold;
       transition: color 0.2s;
+      display: flex;
     }
     .change-btn:hover {
       color: #000;
