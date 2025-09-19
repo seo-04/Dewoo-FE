@@ -150,6 +150,7 @@ export default {
   border-radius: 15px;
 }
 
+
 /* 이미지 슬라이드 */
 .right img {
   width: 500px;
