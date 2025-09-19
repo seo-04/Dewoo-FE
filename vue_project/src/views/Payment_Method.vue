@@ -141,4 +141,31 @@ export default {
 };
 </script>
 
-<style scoped src="@/assets/css/Payment_Method.css"></style>
+<style scoped>
+/* 오른쪽 이미지 영역 */
+.right {
+  width: 400px;
+  height: 500px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  margin-top: 11px;
+  margin-right: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+
+</style>

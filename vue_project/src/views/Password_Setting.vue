@@ -123,6 +123,27 @@ export default {
 </script>
 
 <style scoped>
-@import "@/assets/css/Password_Setting.css";
+/* 오른쪽 이미지 영역 */
+.right {
+  width: 400px;
+  height: 290px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  margin-top: 18px;
+  margin-right: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.dots {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
 </style>
