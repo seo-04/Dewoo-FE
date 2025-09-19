@@ -4,11 +4,11 @@
         <nav class="nav-container">
           <div class="item">
             <span>
-                <a href="#" class="tab" :class="{active: activeTab == 'header'}"
+                <a href="#" class="tab" :class="{active: activeTab === 'header'}"
                    @click.prevent=" activeTab = 'header'">
-              <img src="@/assets/bed.png" height="17" width="22" alt="" style="position: relative; top: 3px"/>
-              hotels
-                  </a>
+                <img src="@/assets/bed.png" height="17" width="22" alt="" style="position: relative; top: 3px"/>
+                hotels
+                </a>
             </span>
           </div>
           <div class="item">
@@ -37,11 +37,10 @@
 
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
+<script setup lang="js">
+import {ref} from 'vue';
 
-// activeTab의 초기값을 null로 설정하여 처음에는 아무 탭도 활성화되지 않도록 합니다.
-const activeTab = ref<string | null>('hotels');
+const activeTab = ref('account');
 </script>
 
 <style scoped>
@@ -120,7 +119,7 @@ img {
 
 .tab {
   text-decoration: none;
-  color: #888;
+  color: #333;
   font-weight: bold;
   transition: all 0.3s ease;
   position: relative;

@@ -3,10 +3,10 @@
     <section class="subscription-box">
       <div class="subscription-content">
         <h1>구독서비스<br> 신청해보세요</h1>
-        <p>The Travel</p>
+        <p style="font-weight: bold; color: #374a3b; font-size: 17px">The Travel</p>
         <p>구독하고 무료, 최신 여행 정보를 받아보세요</p>
         <div class="subscription-form-container">
-          <input type="email" placeholder="Your email address">
+          <input type="email" placeholder="Your email address" style="width: 100%; padding: 10px">
           <button type="submit">Subscribe</button>
         </div>
       </div>
