@@ -6,7 +6,9 @@
         <div class="back" @click="goBack">
           <i class="fa-solid fa-chevron-left"></i>
           <p class="font">
+
             <a href="/">Back to Login</a>
+
           </p>
         </div>
 
@@ -26,7 +28,7 @@
           <p>Or login with</p>
         </div>
 
-        <!-- SNS 로그인 -->
+         <!-- SNS 로그인 -->
         <div class="snsbox">
           <div class="facebook">
             <i class="fa-brands fa-facebook"></i>
@@ -70,7 +72,9 @@
 </template>
 
 <script>
+
 import "@/assets/css/Find_Password.css";
+
 
 export default {
   name: "FindPasswordPage",
@@ -96,8 +100,9 @@ export default {
       }
     },
     goBack() {
+
       this.$router.push("/Login");
-    },
+
     showSlide(n) {
       this.index = n;
     },
@@ -113,6 +118,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 /* 오른쪽 이미지 영역 */

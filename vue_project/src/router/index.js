@@ -12,12 +12,13 @@ import Authenticate from '../views/Authenticate.vue'
 const router = createRouter({
     history: createWebHistory(),
     routes : [
-        { path: '/', component: LoginPage },
+        { path: '/', component: LoginPage, meta: { layout: 'login' } },
         { path:'/Password_Setting',component:Password_Setting},
         { path: '/Payment_Method', component: Payment_Method },
         { path: '/SignUp', component: SignUp},
         { path: '/Find_Password', component: Find_Password},
-        { path: '/Authenticate', component: Authenticate}
+        { path: '/Authenticate', component: Authenticate},
+
     ]
 
 })

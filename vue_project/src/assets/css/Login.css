@@ -1,7 +1,17 @@
+
 @font-face {
     font-family: "ELandNice";
     src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/ELAND_Nice_M.woff")
     format("woff");
+    font-weight: normal;
+    font-display: swap;
+}
+
+
+/*폰트*/
+@font-face {
+    font-family: 'ELandNice';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/ELAND_Nice_M.woff') format('woff');
     font-weight: normal;
     font-display: swap;
 }
@@ -11,16 +21,6 @@
     margin: 0;
     padding: 0;
 }
-
-/*body {*/
-/*    height: 100vh;*/
-/*    background: url("../img/travel5.jpg");*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*    animation: gradientBG 15s ease infinite;*/
-/*    overflow: hidden;*/
-/*}*/
 
 body {
     min-height: 100vh;
@@ -39,6 +39,8 @@ body.login_page{
     animation: gradientBG 15s ease infinite;
     overflow: hidden;
 }
+
+
 @keyframes gradientBG {
     0% {
         background-position: 0% 50%;
@@ -51,18 +53,41 @@ body.login_page{
     }
 }
 
-/* 투명 효과 */
+@keyframes gradientBG {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+}
+
+
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 15px;
-
     background: transparent !important;
 }
 
-
 /* 왼쪽 */
+
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+}
+
+.login-box {
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 800px;
+    max-width: 90%;
+}
+
+/* 왼쪽 로그인 부분 */
 .left {
     flex: 1;
     padding: 40px;
@@ -80,6 +105,7 @@ p {
     margin-bottom: 20px;
 }
 
+
 .login_text {
     font-weight: bold;
     color: #B9062F;
@@ -94,11 +120,12 @@ p {
     border-radius: 5px;
 }
 
+
 .password {
     position: relative;
 }
 
-.password i {
+.passwordbox i {
     color: black;
     position: absolute;
     right: 10px;
@@ -114,6 +141,7 @@ p {
     font-size: 12px;
     margin: 5px 0;
 }
+
 
 .check label{
     gap: 5px;
@@ -149,6 +177,7 @@ a {
     text-decoration-line: none;
     color: inherit;
 }
+
 
 /* sns */
 .snsbox {
@@ -190,9 +219,55 @@ a {
     margin: 25px 7px;
 }
 
+
+/*페이지 이동*/
+.fade-slide-out {
+    animation: fadeSlideOut 0.6s forwards;
+}
+
+@keyframes fadeSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+/* 오른쪽 이미지 영역 */
+.right {
+    width: 400px;
+    height: 500px;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+}
+
+/* 이미지 슬라이드 */
+.right img {
+    width: 500px;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+
 .right img.active {
     opacity: 1;
 }
+
+
 
 .dot {
     width: 8px;
