@@ -108,7 +108,7 @@ footer {
   justify-content: center;
   box-sizing: border-box;
   align-items: center;
-  margin: 0 auto;
+  margin: 0;
   position: relative;
   flex-direction: column;
 

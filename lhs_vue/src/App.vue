@@ -33,8 +33,17 @@ export default {
 
 <style>
 
+  html,
+  body,
   .app {
     background-color: #FAFBFC;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 
   main{
