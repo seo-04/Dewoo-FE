@@ -1,4 +1,5 @@
 <template>
+  <div class="login_page">
   <div class="container">
     <div class="login-box">
       <!-- 왼쪽 로그인 -->
@@ -79,6 +80,8 @@
       </div>
     </div>
   </div>
+<!-- 로그인 페이지 마지막 div   -->
+  </div>
 </template>
 
 <script>
@@ -124,6 +127,7 @@ export default {
 </script>
 
 <style scoped>
+/* 투명 로그인 박스 */
 .login-box {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
@@ -137,6 +141,7 @@ export default {
   max-width: 90%;
 }
 
+/* 오른쪽 이미지 영역 */
 .right {
   width: 400px;
   height: 480px;
@@ -150,8 +155,6 @@ export default {
   border-radius: 15px;
 }
 
-
-/* 이미지 슬라이드 */
 .right img {
   width: 500px;
   height: 100%;
@@ -163,6 +166,11 @@ export default {
   transition: opacity 1s ease-in-out;
 }
 
+.right img.active {
+  opacity: 1;
+}
+
+/* 이미지 하단 dot */
 .dots {
   position: absolute;
   bottom: 3%;
@@ -171,6 +179,28 @@ export default {
   display: flex;
   gap: 8px;
   z-index: 2;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.dot.active {
+  opacity: 1;
+  background: #8DD3BB;
+}
+
+/* SNS 로그인 버튼 */
+.snsbox {
+  display: flex;
+  margin-top: 15px;
+  justify-content: center;
+  gap: 10px;
 }
 
 .snsbox div {

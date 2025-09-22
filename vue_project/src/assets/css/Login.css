@@ -12,8 +12,26 @@
     padding: 0;
 }
 
+/*body {*/
+/*    height: 100vh;*/
+/*    background: url("../img/travel5.jpg");*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    animation: gradientBG 15s ease infinite;*/
+/*    overflow: hidden;*/
+/*}*/
+
 body {
-    height: 100vh;
+    min-height: 100vh;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+body.login_page{
     background: url("../img/travel5.jpg");
     display: flex;
     justify-content: center;
@@ -21,7 +39,6 @@ body {
     animation: gradientBG 15s ease infinite;
     overflow: hidden;
 }
-
 @keyframes gradientBG {
     0% {
         background-position: 0% 50%;
