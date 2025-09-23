@@ -81,7 +81,7 @@ p {
 }
 
 /* 동의 체크박스 */
-.check {
+.check_box {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -89,7 +89,7 @@ p {
     margin: 5px 0;
 }
 
-.check label{
+.check_box label{
     gap: 5px;
 }
 

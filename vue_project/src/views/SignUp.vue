@@ -81,7 +81,7 @@
               <span>비밀번호가 일치하지 않습니다.</span>
             </div>
 
-            <div class="check">
+            <div class="check_box">
               <label>
                 <input type="checkbox" v-model="agree" />동의하기
               </label>
@@ -98,7 +98,6 @@
           </form>
         </div>
 
-        <p class="signup">회원가입</p>
 
         <div class="boundary_line">
           <p>Or Sign up with</p>
