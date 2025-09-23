@@ -105,7 +105,7 @@
             </div>
           </div>
 
-          <div class="warning" v-if="guests < 1">
+          <div class="warning" v-if="guests < 2">
             <i class="fa-solid fa-circle-exclamation"></i>
             <p>최소 1명이상 선택해주세요.</p>
           </div>
@@ -255,7 +255,7 @@ export default {
   data() {
     return {
       rooms: 1,
-      guests: 1,
+      guests: 2,
       showPeopleModal: false,
       travelItems: [
         { city: "멜버른", desc: "Amazing journey", price: "₩150,000", image: "melbourne.jpg" },
@@ -278,7 +278,7 @@ export default {
     },
     decrease(type) {
       if (type === "room" && this.rooms > 1) this.rooms--;
-      if (type === "guest" && this.guests > 1) this.guests--;
+      if (type === "guest" && this.guests > 0) this.guests--;
     },
     applyPeople() {
       this.closePeopleModal();

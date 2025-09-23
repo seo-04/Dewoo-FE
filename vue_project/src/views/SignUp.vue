@@ -57,7 +57,7 @@
             </div>
 
             <!-- 동의 체크박스 -->
-            <div class="check">
+            <div class="check_box">
               <label>
                 <input type="checkbox" v-model="agree" />동의하기
               </label>

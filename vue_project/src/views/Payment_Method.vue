@@ -43,7 +43,7 @@
           </div>
         </div>
 
-        <div class="check">
+        <div class="check_box">
           <label>
             <input type="checkbox" v-model="remember" /> 저장하고 One 터치로 결제하기
           </label>
