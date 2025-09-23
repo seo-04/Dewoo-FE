@@ -12,16 +12,6 @@
     padding: 0;
 }
 
-/*body {*/
-/*    height: 100vh;*/
-/*    background: url("../img/travel5.jpg");*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*    animation: gradientBG 15s ease infinite;*/
-/*    overflow: hidden;*/
-/*}*/
-
 body {
     min-height: 100vh;
     background: #fff;
@@ -57,7 +47,6 @@ body.login_page{
     justify-content: center;
     align-items: center;
     border-radius: 15px;
-
     background: transparent !important;
 }
 
@@ -118,6 +107,7 @@ p {
 .check label{
     gap: 5px;
 }
+
 
 .text2 {
     color: red;

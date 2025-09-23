@@ -48,7 +48,7 @@ head{
     top: 33px;
     right: 1px;
 }
-.check {
+.check_box {
     width: 6px;
     height: 3px;
     border-left: 2px solid black;
@@ -403,15 +403,16 @@ header {
 }
 
 .warning {
-    font-size: 11px;
+    font-size: 13px;
     display: flex;
     align-items: center;
     background: #dddddd;
     border-radius: 10px;
-    padding: 5px;
+    padding: 1px;
     gap: 5px;
     margin-top: 10px;
 }
+
 
 .modal-actions {
     display: flex;

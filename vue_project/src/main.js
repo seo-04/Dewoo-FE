@@ -4,6 +4,8 @@ import './assets/css/Find_Password.css'
 import './assets/css/Payment_Method.css'
 import './assets/css/SignUp.css'
 import './assets/css/Authenticate.css'
+import './assets/css/HotelSearch.css'
+import './assets/css/HotelListing.css'
 
 
 
