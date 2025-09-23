@@ -40,7 +40,13 @@
             </div>
 
             <div class="row-input">
-              <input v-model="address" type="text" placeholder="Address" />
+
+              <input v-model="address" type="text" placeholder="Address" readonly />
+              <button type="button" class="search-address-btn" @click="searchAddress">주소찾기</button>
+            </div>
+
+            <div class="row-input">
+
               <input v-model="phone" type="text" placeholder="Phone Number" />
             </div>
 
@@ -237,7 +243,9 @@ export default {
         });
         if (response.data.code === 'SUCCESS') {
           alert(response.data.message);
-          this.$router.push(''); // 회원가입 완료 후 로그인 페이지로 이동
+          // 회원가입 완료 후 로그인 페이지로 이동
+          this.$router.push('/');
+
         } else {
           alert(response.data.message);
         }
@@ -264,12 +272,38 @@ export default {
     showSlide(i) {
       this.currentSlide = i;
     },
+    searchAddress() {
+      new window.daum.Postcode({
+        oncomplete: (data) => {
+          let fullAddress = '';
+          let extraAddress = '';
+
+          if (data.userSelectedType === 'R') {
+            fullAddress = data.roadAddress;
+          } else {
+            fullAddress = data.jibunAddress;
+          }
+
+          if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+            extraAddress += data.bname;
+          }
+          if (data.buildingName !== '' && data.apartment === 'Y') {
+            extraAddress += (extraAddress !== '' ? ', ' + data.buildingName : data.buildingName);
+          }
+          if (extraAddress !== '') {
+            fullAddress += ' (' + extraAddress + ')';
+          }
+
+          this.address = fullAddress;
+        }
+      }).open();
+    },
   },
 };
 </script>
 
 <style scoped>
-/* 오른쪽 이미지 영역 */
+/* 기존 CSS 스타일 */
 .right {
   width: 400px;
   height: 600px;
@@ -294,7 +328,6 @@ export default {
   z-index: 2;
 }
 
-/* 새로운 스타일 추가 */
 .email-verify-row {
   display: flex;
   align-items: center;
@@ -320,5 +353,29 @@ export default {
   background-color: #ccc;
   cursor: not-allowed;
 }
+.search-address-btn {
+  background-color: #8DD3BB;
+  border: none;
+  border-radius: 5px;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 15px;
+  height: 44px;
+  white-space: nowrap;
+}
 
+.row-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.row-input input {
+  flex-grow: 1;
+}
+
+.log_input .row-input input {
+  height: 44px;
+}
 </style>
