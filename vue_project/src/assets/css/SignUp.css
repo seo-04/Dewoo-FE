@@ -81,13 +81,16 @@ p {
 }
 
 /* 동의 체크박스 */
+
 .check_box {
+
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
     margin: 5px 0;
 }
+
 
 .check_box label{
     gap: 5px;

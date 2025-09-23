@@ -40,11 +40,15 @@
             </div>
 
             <div class="row-input">
+
+
+
               <input v-model="address" type="text" placeholder="Address" readonly />
               <button type="button" class="search-address-btn" @click="searchAddress">주소찾기</button>
             </div>
 
             <div class="row-input">
+
               <input v-model="phone" type="text" placeholder="Phone Number" />
             </div>
 
@@ -82,6 +86,7 @@
             </div>
 
             <div class="check_box">
+
               <label>
                 <input type="checkbox" v-model="agree" />동의하기
               </label>
@@ -241,7 +246,9 @@ export default {
         if (response.data.code === 'SUCCESS') {
           alert(response.data.message);
           // 회원가입 완료 후 로그인 페이지로 이동
-          this.$router.push('/login');
+
+          this.$router.push('/');
+
         } else {
           alert(response.data.message);
         }
