@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <div class="login-box">
-      <!-- 왼쪽 -->
       <div class="left">
         <div class="back" @click="goBack">
           <i class="fa-solid fa-chevron-left"></i>
@@ -21,12 +20,10 @@
 
         <button class="loginbox" @click="handleSubmit">제출</button>
 
-        <!-- SNS 로그인 경계선 -->
         <div class="boundary_line">
           <p>Or login with</p>
         </div>
 
-        <!-- SNS 로그인 -->
         <div class="snsbox">
           <div class="facebook">
             <i class="fa-brands fa-facebook"></i>
@@ -45,7 +42,6 @@
         </div>
       </div>
 
-      <!-- 오른쪽 이미지 -->
       <div class="right">
         <img
             v-for="(slide, i) in slides"
@@ -70,6 +66,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import "@/assets/css/Find_Password.css";
 
 export default {
@@ -87,16 +84,33 @@ export default {
     };
   },
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
       if (!this.email) {
         alert("이메일을 입력해주세요.");
-      } else {
-        alert("입력하신 이메일로 임시 비밀번호를 보냈습니다.");
-        this.$router.push("/Authenticate");
+        return;
+      }
+      try {
+        const response = await axios.post('/api/user/send-reset-code', {
+          userEmail: this.email,
+        });
+
+        if (response.data.code === 'SUCCESS') {
+          alert(response.data.message);
+          this.$router.push({ name: 'Authenticate', params: { userEmail: this.email } });
+        } else {
+          alert(response.data.message);
+        }
+      } catch (error) {
+        console.error("비밀번호 찾기 실패:", error);
+        if (error.response && error.response.data && error.response.data.message) {
+          alert(error.response.data.message);
+        } else {
+          alert("비밀번호 찾기 중 오류가 발생했습니다.");
+        }
       }
     },
     goBack() {
-      this.$router.push("/Login");
+      this.$router.push("");
     },
     showSlide(n) {
       this.index = n;
@@ -150,5 +164,4 @@ export default {
   font-size: 15px;
   cursor: pointer;
 }
-
 </style>
