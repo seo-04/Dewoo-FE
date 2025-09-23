@@ -41,6 +41,8 @@
 
             <div class="row-input">
 
+
+
               <input v-model="address" type="text" placeholder="Address" readonly />
               <button type="button" class="search-address-btn" @click="searchAddress">주소찾기</button>
             </div>
@@ -83,7 +85,8 @@
               <span>비밀번호가 일치하지 않습니다.</span>
             </div>
 
-            <div class="check">
+            <div class="check_box">
+
               <label>
                 <input type="checkbox" v-model="agree" />동의하기
               </label>
@@ -100,7 +103,6 @@
           </form>
         </div>
 
-        <p class="signup">회원가입</p>
 
         <div class="boundary_line">
           <p>Or Sign up with</p>
@@ -244,6 +246,7 @@ export default {
         if (response.data.code === 'SUCCESS') {
           alert(response.data.message);
           // 회원가입 완료 후 로그인 페이지로 이동
+
           this.$router.push('/');
 
         } else {
@@ -353,6 +356,7 @@ export default {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
 .search-address-btn {
   background-color: #8DD3BB;
   border: none;
