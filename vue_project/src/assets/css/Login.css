@@ -14,26 +14,7 @@
     padding: 0;
 }
 
-/*body {*/
-/*    height: 100vh;*/
-/*    background: url("../img/travel5.jpg");*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*    animation: gradientBG 15s ease infinite;*/
-/*    overflow: hidden;*/
-/*}*/
-
-body {
-    min-height: 100vh;
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-body.login_page{
+body.LoginPage{
     background: url("../img/travel5.jpg");
     display: flex;
     justify-content: center;
@@ -41,6 +22,7 @@ body.login_page{
     animation: gradientBG 15s ease infinite;
     overflow: hidden;
 }
+
 @keyframes gradientBG {
     0% {
         background-position: 0% 50%;
@@ -109,7 +91,7 @@ p {
     cursor: pointer;
 }
 
-.check {
+.check_box {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -117,7 +99,7 @@ p {
     margin: 5px 0;
 }
 
-.check label{
+.check_box label{
     gap: 5px;
 }
 

@@ -1,20 +1,16 @@
 <template>
   <div class="container">
     <div class="login-box">
-      <!-- 왼쪽 -->
       <div class="left">
         <div class="back" @click="goBack">
           <i class="fa-solid fa-chevron-left"></i>
-          
           <p class="font"><a href="/">Back to Login</a></p>
-
         </div>
 
         <h4>인증하기</h4>
         <p>이메일로 받은 인증번호를 입력해주세요</p>
 
         <div class="log_input">
-          <!-- 인증 코드 입력 -->
           <div class="codebox">
             <input
                 :type="showPassword ? 'text' : 'password'"
@@ -36,7 +32,6 @@
         <button class="certified" @click="handleAuthenticate">인증하기</button>
       </div>
 
-      <!-- 오른쪽 이미지 -->
       <div class="right">
         <img
             v-for="(slide, i) in slides"
@@ -61,9 +56,8 @@
 </template>
 
 <script>
-
+import axios from 'axios';
 import "@/assets/css/Authenticate.css";
-
 
 export default {
   name: "AuthenticatePage",
@@ -78,32 +72,67 @@ export default {
         require("@/assets/img/img3.jpg"),
       ],
       timer: null,
+      userEmail: this.$route.params.userEmail
     };
   },
   methods: {
     togglePassword() {
       this.showPassword = !this.showPassword;
     },
-    resendCode() {
-      alert(
-          "인증 된 이메일로 재전송되었습니다. 메일을 확인하시길 바랍니다.\n------공사중------"
-      );
+    async resendCode() {
+      try {
+        const response = await axios.post('/api/user/send-reset-code', {
+          userEmail: this.userEmail
+        });
+
+        if (response.data.code === 'SUCCESS') {
+          alert("인증 코드가 이메일로 재전송되었습니다. 메일을 확인해주세요.");
+        } else {
+          alert(response.data.message);
+        }
+      } catch (error) {
+        console.error("인증 코드 재전송 실패:", error);
+        alert("인증 코드 재전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      }
     },
     goBack() {
-
-      this.$router.push("/Login");
-
+      this.$router.push("");
     },
-    handleAuthenticate() {
+    async handleAuthenticate() {
       if (!this.code.trim()) {
         alert("인증번호를 입력해주세요.");
         return;
       }
-      alert("인증되었습니다.");
-      //  인증 성공 시 password_setting 페이지로 이동
 
-      this.$router.push("/Password_Setting");
+      try {
+        // 새로 추가된 비밀번호 재설정 전용 API를 호출합니다.
+        const response = await axios.post('/api/user/verify-reset-code', {
+          userEmail: this.userEmail,
+          verificationCode: this.code,
+        });
 
+        if (response.data.code === 'SUCCESS') {
+          alert("이메일 인증이 완료되었습니다. 새로운 비밀번호를 설정해주세요.");
+
+          // 인증 성공 시에만 Password_Setting 페이지로 이동
+          this.$router.push({
+            name: 'Password_Setting',
+            params: {
+              userEmail: this.userEmail,
+              verificationCode: this.code
+            }
+          });
+        } else {
+          alert(response.data.message);
+        }
+      } catch (error) {
+        console.error("인증번호 확인 실패:", error);
+        if (error.response && error.response.data && error.response.data.message) {
+          alert(error.response.data.message);
+        } else {
+          alert("인증 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        }
+      }
     },
     showSlide(n) {
       this.index = n;
