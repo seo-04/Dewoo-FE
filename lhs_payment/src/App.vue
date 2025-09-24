@@ -41,7 +41,7 @@ body,
 
 main{
   flex-grow: 1;
-
-  margin-bottom: 100px;
+  margin-top: -200px;
+  margin-bottom: 250px;
 }
 </style>
