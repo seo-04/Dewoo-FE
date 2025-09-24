@@ -20,7 +20,7 @@
               <input v-model="phone" type="text" placeholder="Phone Number" />
             </div>
 
-            <!-- 비밀번호 -->
+         <!-- 비밀번호 -->
             <div class="passwordbox">
               <input
                   :type="showPassword ? 'text' : 'password'"
@@ -33,7 +33,7 @@
               ></i>
             </div>
 
-            <!-- 비밀번호 확인 -->
+              <!-- 비밀번호 확인 -->
             <div class="passwordbox">
               <input
                   :type="showConfirmPassword ? 'text' : 'password'"
@@ -45,9 +45,8 @@
                   :class="['fa-solid', showConfirmPassword ? 'fa-eye' : 'fa-eye-slash']"
                   @click="togglePassword('confirm')"
               ></i>
-            </div>
 
-            <!-- 비밀번호 에러 메시지 -->
+          <!-- 비밀번호 에러 메시지 -->
             <div
                 v-if="confirmPassword && password !== confirmPassword"
                 class="error-box"
@@ -62,8 +61,8 @@
                 <input type="checkbox" v-model="agree" />동의하기
               </label>
             </div>
-
-            <!-- 버튼 -->
+              
+           <!-- 버튼 -->
             <button
                 type="submit"
                 class="loginbox"
@@ -74,7 +73,7 @@
             </button>
           </form>
         </div>
-
+          
         <p class="signup">회원가입</p>
 
         <!-- sns 로그인 경계선 -->
@@ -223,5 +222,4 @@ export default {
   gap: 8px;
   z-index: 2;
 }
-
 </style>

@@ -29,8 +29,15 @@ const routes = [
 
 const router = createRouter({
     history: createWebHistory(),
-    routes
-})
+    routes : [
+        { path: '/', component: LoginPage, meta: { layout: 'login' } },
+        { path:'/Password_Setting',component:Password_Setting},
+        { path: '/Payment_Method', component: Payment_Method },
+        { path: '/SignUp', component: SignUp},
+        { path: '/Find_Password', component: Find_Password},
+        { path: '/Authenticate', component: Authenticate},
+
+    ]
 
 router.beforeEach((to, from, next) => {
     // body class 초기화

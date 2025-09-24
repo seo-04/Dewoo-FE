@@ -2,7 +2,7 @@
   <div class="login_page">
   <div class="container">
     <div class="login-box">
-      <!-- 왼쪽 로그인 -->
+  <!-- 왼쪽 로그인 -->
       <div class="left">
         <h4>Login</h4>
         <p class="login_text">로그인 해주세요</p>
@@ -24,7 +24,7 @@
           </form>
         </div>
 
-        <div class="check_box">
+     <div class="check">
           <label>
             <input type="checkbox" v-model="remember" /> 비밀번호 기억하기
           </label>
@@ -37,6 +37,7 @@
         <p class="signup">
           <a href="/signup">회원가입</a>
         </p>
+
 
         <!-- sns 로그인 경계선 -->
         <div class="boundary_line">
@@ -214,6 +215,4 @@ export default {
   font-size: 15px;
   cursor: pointer;
 }
-
-
 </style>

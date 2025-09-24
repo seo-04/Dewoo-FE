@@ -5,7 +5,9 @@
       <div class="left">
         <div class="back" @click="goBack">
           <i class="fa-solid fa-chevron-left"></i>
+          
           <p class="font"><a href="/">Back to Login</a></p>
+
         </div>
 
         <h4>인증하기</h4>
@@ -59,7 +61,9 @@
 </template>
 
 <script>
+
 import "@/assets/css/Authenticate.css";
+
 
 export default {
   name: "AuthenticatePage",
@@ -86,7 +90,9 @@ export default {
       );
     },
     goBack() {
+
       this.$router.push("/Login");
+
     },
     handleAuthenticate() {
       if (!this.code.trim()) {
@@ -95,7 +101,9 @@ export default {
       }
       alert("인증되었습니다.");
       //  인증 성공 시 password_setting 페이지로 이동
+
       this.$router.push("/Password_Setting");
+
     },
     showSlide(n) {
       this.index = n;
