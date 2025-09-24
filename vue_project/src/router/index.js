@@ -6,6 +6,7 @@ import Payment_Method from '../views/Payment_Method.vue'
 import SignUp from '../views/SignUp.vue'
 import Find_Password from '../views/Find_Password.vue'
 import Authenticate from '../views/Authenticate.vue'
+import HotelAccommodation from '../views/HotelAccommodation.vue'
 // import HotelSearch from '../views/HotelSearch.vue'
 // import HotelListing from '../views/HotelListing.vue'
 
@@ -21,6 +22,7 @@ const router = createRouter({
         { path: '/Payment_Method', component: Payment_Method },
         { path: '/SignUp', component: SignUp},
         { path: '/Find_Password', component: Find_Password},
+        { path: '/accommodation', component: HotelAccommodation },
         {
             path: '/authenticate/:userEmail',
             name: 'Authenticate',
