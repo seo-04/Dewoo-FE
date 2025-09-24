@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="login-box">
+      <!-- 왼쪽 -->
       <div class="left">
         <div class="back" @click="goBack">
           <i class="fa-solid fa-chevron-left"></i>
@@ -20,10 +21,12 @@
 
         <button class="loginbox" @click="handleSubmit">제출</button>
 
+        <!-- SNS 로그인 경계선 -->
         <div class="boundary_line">
           <p>Or login with</p>
         </div>
 
+        <!-- SNS 로그인 -->
         <div class="snsbox">
           <div class="facebook">
             <i class="fa-brands fa-facebook"></i>
@@ -42,6 +45,7 @@
         </div>
       </div>
 
+      <!-- 오른쪽 이미지 -->
       <div class="right">
         <img
             v-for="(slide, i) in slides"

@@ -10,6 +10,8 @@ import HotelAccommodation from '../views/HotelAccommodation.vue'
 // import HotelSearch from '../views/HotelSearch.vue'
 // import HotelListing from '../views/HotelListing.vue'
 
+
+
 const router = createRouter({
     history: createWebHistory(),
     routes : [
