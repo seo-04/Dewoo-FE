@@ -59,8 +59,6 @@
 </template>
 
 <script>
-import "@/assets/css/authenticate.css";
-
 export default {
   name: "AuthenticatePage",
   data() {

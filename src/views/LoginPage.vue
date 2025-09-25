@@ -121,7 +121,7 @@ export default {
       this.$router.push("/SignUp");
     },
     goForgot() {
-      this.$router.push("/Find_Password");
+      this.$router.push("/FindPassword");
     },
     setSlide(i) {
       this.currentSlide = i;

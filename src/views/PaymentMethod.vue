@@ -86,9 +86,9 @@ export default {
       country: "",
       remember: false,
       images: [
-        require("@/assets/img.jpg"),
-        require("@/assets/img2.jpg"),
-        require("@/assets/img3.jpg"),
+        '@/assets/img.jpg',
+        '@/assets/img2.jpg',
+        '@/assets/img3.jpg',
       ],
       currentIndex: 0,
       intervalId: null,
@@ -141,4 +141,7 @@ export default {
 };
 </script>
 
-<style scoped src="@/assets/css/Payment_Method.css"></style>
+<style scoped>
+@import "@/assets/css/PaymentMethod.css";
+
+</style>

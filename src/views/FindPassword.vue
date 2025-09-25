@@ -59,8 +59,6 @@
 </template>
 
 <script>
-import "@/assets/css/findp.css";
-
 export default {
   name: "FindPasswordPage",
   data() {
@@ -68,9 +66,9 @@ export default {
       email: "",
       index: 0,
       slides: [
-        require("@/assets/img/img.jpg"),
-        require("@/assets/img/img2.jpg"),
-        require("@/assets/img/img3.jpg"),
+        '@/assets/img.jpg',
+        '@/assets/img2.jpg',
+        '@/assets/img3.jpg',
       ],
       timer: null,
     };
@@ -103,5 +101,5 @@ export default {
 };
 </script>
 <style scoped>
-@import "@/assets/css/Find_Password.css";
+@import "@/assets/css/FindPassword.css";
 </style>

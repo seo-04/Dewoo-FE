@@ -118,9 +118,9 @@ export default {
       showConfirmPassword: false,
       currentSlide: 0,
       slides: [
-        require("@/assets/img.jpg"),
-        require("@/assets/img2.jpg"),
-        require("@/assets/img3.jpg"),
+        '@/assets/img.jpg',
+        '@/assets/img2.jpg',
+        '@/assets/img3.jpg',
       ],
     };
   },
@@ -144,7 +144,7 @@ export default {
         alert("약관에 동의 해주세요.");
       } else {
         alert("회원가입이 완료되었습니다.");
-        this.$router.push("/Payment_Method"); // Vue Router 사용시 로그인 페이지로 이동
+        this.$router.push("/PaymentMethod"); // Vue Router 사용시 로그인 페이지로 이동
       }
     },
     startSlideShow() {

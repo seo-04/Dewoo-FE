@@ -77,9 +77,9 @@ export default {
       showPassword: false,
       showConfirm: false,
       images: [
-        require("@/assets/img.jpg"),
-        require("@/assets/img2.jpg"),
-        require("@/assets/img3.jpg"),
+        '@/assets/img.jpg',
+        '@/assets/img2.jpg',
+        '@/assets/img3.jpg',
       ],
       currentIndex: 0,
       intervalId: null,
@@ -123,6 +123,139 @@ export default {
 </script>
 
 <style scoped>
-@import "@/assets/css/Password_Setting.css";
+
+/* 전체 컨테이너 */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+}
+
+/* 메인 박스 */
+.login_box {
+    display: flex;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 800px;
+    max-width: 90%;
+}
+
+/* 왼쪽 영역 */
+.left {
+    flex: 1;
+    padding: 40px;
+}
+
+h4 {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+p {
+    color: gray;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+/* 입력 폼 */
+.form-area input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 비밀번호 박스 */
+.passwordbox {
+    position: relative;
+}
+
+.passwordbox input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.passwordbox i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: gray;
+}
+
+/* 비밀번호설정 버튼 */
+.submit {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    background-color: #8DD3BB;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 오른쪽 이미지 영역 */
+.right {
+    width: 400px;
+    height: 290px;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    margin-top: 17px;
+    margin-right: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 이미지 슬라이드 */
+.right img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    border-radius: 15px;
+}
+
+.right img.active {
+    opacity: 1;
+}
+
+.dots {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.dot.active {
+    opacity: 1;
+    background: #8DD3BB;
+}
+
 
 </style>
