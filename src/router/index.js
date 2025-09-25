@@ -21,9 +21,9 @@ const router = createRouter({
             name: 'Password_Setting',
             component: PasswordSetting
         },
-        { path: '/Payment_Method', component: PaymentMethod },
-        { path: '/SignUp', component: SignUp},
-        { path: '/Find_Password', component: FindPassword},
+        { path: '/paymentMethod', component: PaymentMethod },
+        { path: '/signUp', component: SignUp},
+        { path: '/findPassword', component: FindPassword},
         { path: '/accommodation', component: HotelAccommodation },
         {
             path: '/authenticate/:userEmail',
