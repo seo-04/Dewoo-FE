@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import LoginPage from '../views/LoginPage.vue'
 import PasswordSetting from '../views/PasswordSetting.vue'
-import Payment_Method from '../views/PaymentMethod.vue'
+import PaymentMethod from '../views/PaymentMethod.vue'
 import SignUp from '../views/SignUp.vue'
 import FindPassword from '../views/FindPassword.vue'
 import Authenticate from '../views/Authenticate.vue'
@@ -19,11 +19,11 @@ const router = createRouter({
         {
             path: '/password-setting/:userEmail/:verificationCode',
             name: 'Password_Setting',
-            component: Password_Setting
+            component: PasswordSetting
         },
-        { path: '/Payment_Method', component: Payment_Method },
+        { path: '/Payment_Method', component: PaymentMethod },
         { path: '/SignUp', component: SignUp},
-        { path: '/Find_Password', component: Find_Password},
+        { path: '/Find_Password', component: FindPassword},
         { path: '/accommodation', component: HotelAccommodation },
         {
             path: '/authenticate/:userEmail',
