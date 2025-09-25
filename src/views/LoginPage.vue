@@ -118,8 +118,7 @@ export default {
 
         if (response.data.code === 'SUCCESS') {
           alert("로그인 성공!");
-          // 로그인 성공 후 리다이렉트 (예: 메인 페이지)
-          // this.$router.push('/main');
+          this.$router.push('/accommodation');
         } else {
           alert(response.data.message);
         }
