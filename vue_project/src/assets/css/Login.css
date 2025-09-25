@@ -13,7 +13,6 @@
     padding: 0;
 }
 
-/* body의 기본 스타일은 그대로 둡니다. */
 body {
     min-height: 100vh;
     background: #fff;
@@ -54,6 +53,7 @@ body {
     background: transparent !important;
 }
 
+
 /* 왼쪽 */
 .left {
     flex: 1;
@@ -78,7 +78,9 @@ p {
 .login_text {
     font-weight: bold;
     color: #B9062F;
+
     margin-right: 15px;
+
 }
 
 /* 입력창 */
@@ -186,6 +188,7 @@ a {
     line-height: 0px;
     margin: 25px 7px;
 }
+
 
 /* 오른쪽 이미지 영역 */
 .right {

@@ -2,6 +2,7 @@
   <div class="login_page">
     <div class="container">
       <div class="login-area">
+
         <div class="left">
           <h4>Login</h4>
           <p class="login_text">로그인 해주세요</p>
@@ -59,7 +60,9 @@
           </div>
         </div>
 
+
         <div class="Img_right">
+
           <img src="@/assets/img/img.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 0 }" />
           <img src="@/assets/img/img2.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 1 }" />
           <img src="@/assets/img/img3.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 2 }" />
@@ -145,5 +148,7 @@ export default {
 </script>
 
 <style scoped>
+
 @import '~@/assets/css/Login.css';
+
 </style>

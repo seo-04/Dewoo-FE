@@ -33,6 +33,6 @@ const router = createRouter({
         // { path: '/HotelSearch', component: HotelSearch},
         // { path: '/HotelListing', component: HotelListing}
     ]
-})
+
 
 export default router
