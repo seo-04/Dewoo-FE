@@ -1,10 +1,9 @@
 <template>
   <div class="container">
     <div class="login-box">
-      <div class="left">
-        <h4>Sign up</h4>
-        <p>회원가입</p>
-
+      <div class="lefts">
+        <h4 class="centered-text">Sign up</h4>
+        <p class="centered-text">회원가입</p>
         <div class="log_input">
           <form @submit.prevent="handleFormSubmit">
             <div class="row-input">
@@ -40,15 +39,11 @@
             </div>
 
             <div class="row-input">
-
-
-
               <input v-model="address" type="text" placeholder="Address" readonly />
               <button type="button" class="search-address-btn" @click="searchAddress">주소찾기</button>
             </div>
 
             <div class="row-input">
-
               <input v-model="phone" type="text" placeholder="Phone Number" />
             </div>
 
@@ -85,8 +80,7 @@
               <span>비밀번호가 일치하지 않습니다.</span>
             </div>
 
-            <div class="check_box">
-
+            <div class="checkbox">
               <label>
                 <input type="checkbox" v-model="agree" />동의하기
               </label>
@@ -102,7 +96,6 @@
             </button>
           </form>
         </div>
-
 
         <div class="boundary_line">
           <p>Or Sign up with</p>
@@ -122,20 +115,17 @@
         </div>
       </div>
 
-      <div class="right">
-        <img
-            v-for="(slide, i) in slides"
-            :key="i"
-            :src="slide"
-            class="slide"
-            :class="{ active: i === currentSlide }"
-        />
+      <div class="righting">
+        <img src="@/assets/img/img.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 0 }" />
+        <img src="@/assets/img/img2.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 1 }" />
+        <img src="@/assets/img/img3.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 2 }" />
+
         <div class="dots">
           <span
-              v-for="(dot, i) in slides"
+              v-for="(dot, i) in 3"
               :key="i"
               class="dot"
-              :class="{ active: i === currentSlide }"
+              :class="{ active: currentSlide === i }"
               @click="showSlide(i)"
           ></span>
         </div>
@@ -245,10 +235,7 @@ export default {
         });
         if (response.data.code === 'SUCCESS') {
           alert(response.data.message);
-          // 회원가입 완료 후 로그인 페이지로 이동
-
           this.$router.push('/');
-
         } else {
           alert(response.data.message);
         }
@@ -306,80 +293,5 @@ export default {
 </script>
 
 <style scoped>
-/* 기존 CSS 스타일 */
-.right {
-  width: 400px;
-  height: 600px;
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  margin-top: 13px;
-  margin-right: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dots {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  bottom: 3%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 2;
-}
-
-.email-verify-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.email-verify-row input {
-  flex: 1;
-}
-
-.send-code-btn {
-  background-color: #8DD3BB;
-  border: none;
-  border-radius: 5px;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 12px 15px;
-  white-space: nowrap;
-}
-
-.send-code-btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.search-address-btn {
-  background-color: #8DD3BB;
-  border: none;
-  border-radius: 5px;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0 15px;
-  height: 44px;
-  white-space: nowrap;
-}
-
-.row-input {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.row-input input {
-  flex-grow: 1;
-}
-
-.log_input .row-input input {
-  height: 44px;
-}
+@import '~@/assets/css/SignUp.css';
 </style>
