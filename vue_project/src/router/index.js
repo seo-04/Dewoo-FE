@@ -10,8 +10,6 @@ import HotelAccommodation from '../views/HotelAccommodation.vue'
 // import HotelSearch from '../views/HotelSearch.vue'
 // import HotelListing from '../views/HotelListing.vue'
 
-
-
 const router = createRouter({
     history: createWebHistory(),
     routes : [
@@ -32,7 +30,7 @@ const router = createRouter({
         },
         // { path: '/HotelSearch', component: HotelSearch},
         // { path: '/HotelListing', component: HotelListing}
-    ]
-
+    ],
+}) // <-- You were missing this closing parenthesis and semicolon
 
 export default router
