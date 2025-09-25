@@ -18,4 +18,10 @@ export default {
   margin-top: 60px;
 }
 
+html, body, #app {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
 </style>
