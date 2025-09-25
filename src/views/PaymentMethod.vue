@@ -75,6 +75,10 @@
 </template>
 
 <script>
+import img1 from '@/assets/img/img.jpg';
+import img2 from '@/assets/img/img2.jpg';
+import img3 from '@/assets/img/img3.jpg'; 
+
 export default {
   name: "PaymentMethod",
   data() {
@@ -86,9 +90,9 @@ export default {
       country: "",
       remember: false,
       images: [
-        '@/assets/img.jpg',
-        '@/assets/img2.jpg',
-        '@/assets/img3.jpg',
+        img1,
+        img2,
+        img3
       ],
       currentIndex: 0,
       intervalId: null,

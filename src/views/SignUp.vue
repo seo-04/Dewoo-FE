@@ -103,6 +103,10 @@
 </template>
 
 <script>
+import img1 from '@/assets/img/img.jpg';
+import img2 from '@/assets/img/img2.jpg';
+import img3 from '@/assets/img/img3.jpg'; 
+
 export default {
   name: "SignUpPage",
   data() {
@@ -118,9 +122,9 @@ export default {
       showConfirmPassword: false,
       currentSlide: 0,
       slides: [
-        '@/assets/img.jpg',
-        '@/assets/img2.jpg',
-        '@/assets/img3.jpg',
+        img1,
+        img2,
+        img3  
       ],
     };
   },
