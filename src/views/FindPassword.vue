@@ -71,7 +71,7 @@
 
 <script>
 import axios from 'axios';
-import "@/assets/css/Find_Password.css";
+import "@/assets/css/FindPassword.css";
 
 export default {
   name: "FindPasswordPage",
