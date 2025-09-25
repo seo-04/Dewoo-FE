@@ -67,7 +67,6 @@ p {
 .passwordbox input {
     width: 100%;
     padding: 12px;
-    margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
@@ -81,11 +80,24 @@ p {
     color: gray;
 }
 
-.check {
+/* 동의 체크박스 */
+
+.check_box {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 12px;
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
+
+.check_box label{
+    gap: 5px;
+}
+
+
+/* 버튼 */
 .loginbox {
     width: 100%;
     height: 40px;
@@ -95,13 +107,41 @@ p {
     color: black;
     font-weight: bold;
     cursor: pointer;
+    margin-top: 10px;
+}
+
+.loginbox.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .signup {
+    font-family: "ELandNice";
     margin-top: 15px;
     color: black;
     text-align: center;
+    cursor: pointer;
 }
+
+.error-border {
+    border: 1px solid red !important;
+}
+
+/* 에러 메시지 박스 */
+.error-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: red;
+    margin-top: 4px;
+}
+
+.error-box i {
+    font-size: 13px;
+}
+
+
 
 /* SNS 박스 */
 .snsbox {
@@ -160,12 +200,11 @@ p {
     flex: 1;
     position: relative;
     overflow: hidden;
-    margin-top: 16px;
+    margin-top: 13px;
     margin-right: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
-
 }
 
 /* 이미지 슬라이드 */
@@ -178,14 +217,10 @@ p {
     left: 0;
     opacity: 0;
     transition: opacity 1s ease-in-out;
-    border-radius: 15px;
 }
-
-
 .right img.active {
     opacity: 1;
 }
-
 
 .dots {
     position: absolute;
@@ -197,17 +232,42 @@ p {
     gap: 8px;
     z-index: 2;
 }
-
 .dot {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     background: white;
     border-radius: 50%;
     cursor: pointer;
-    opacity: 0.5;
+    transition: background 0.3s ease;
 }
 
 .dot.active {
-    opacity: 1;
     background: #8DD3BB;
+}
+
+/* 새로운 스타일 추가 */
+.email-verify-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.email-verify-row input {
+    flex: 1;
+}
+
+.send-code-btn {
+    background-color: #8DD3BB;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 12px 15px;
+    white-space: nowrap;
+}
+
+.send-code-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
