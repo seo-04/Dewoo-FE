@@ -1,7 +1,7 @@
 <template>
   <div class="login_page">
     <div class="container">
-      <div class="login-box">
+      <div class="login-area">
         <div class="left">
           <h4>Login</h4>
           <p class="login_text">로그인 해주세요</p>
@@ -59,7 +59,7 @@
           </div>
         </div>
 
-        <div class="right">
+        <div class="Img_right">
           <img src="@/assets/img/img.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 0 }" />
           <img src="@/assets/img/img2.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 1 }" />
           <img src="@/assets/img/img3.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 2 }" />
@@ -145,91 +145,5 @@ export default {
 </script>
 
 <style scoped>
-/* 투명 로그인 박스 */
-.login-box {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
-  display: flex;
-  border-radius: 10px;
-  overflow: hidden;
-  width: 800px;
-  max-width: 90%;
-}
-
-/* 오른쪽 이미지 영역 */
-.right {
-  width: 400px;
-  height: 480px;
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  margin-top: 14px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 15px;
-}
-
-.right img {
-  width: 500px;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-}
-
-.right img.active {
-  opacity: 1;
-}
-
-/* 이미지 하단 dot */
-.dots {
-  position: absolute;
-  bottom: 3%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 2;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  background: white;
-  border-radius: 50%;
-  cursor: pointer;
-  opacity: 0.5;
-}
-
-.dot.active {
-  opacity: 1;
-  background: #8DD3BB;
-}
-
-/* SNS 로그인 버튼 */
-.snsbox {
-  display: flex;
-  margin-top: 15px;
-  justify-content: center;
-  gap: 10px;
-}
-
-.snsbox div {
-  display: flex;
-  border: 2px solid #8DD3BB;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border-radius: 4px;
-  height: 40px;
-  font-size: 15px;
-  cursor: pointer;
-}
+@import '~@/assets/css/Login.css';
 </style>
