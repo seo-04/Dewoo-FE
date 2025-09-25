@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import LoginPage from '../views/LoginPage.vue'
-import Password_Setting from '../views/Password_Setting.vue'
-import Payment_Method from '../views/Payment_Method.vue'
+import PasswordSetting from '../views/PasswordSetting.vue'
+import Payment_Method from '../views/PaymentMethod.vue'
 import SignUp from '../views/SignUp.vue'
-import Find_Password from '../views/Find_Password.vue'
+import FindPassword from '../views/FindPassword.vue'
 import Authenticate from '../views/Authenticate.vue'
 import HotelAccommodation from '../views/HotelAccommodation.vue'
 // import HotelSearch from '../views/HotelSearch.vue'
