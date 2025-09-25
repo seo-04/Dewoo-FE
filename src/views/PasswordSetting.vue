@@ -132,13 +132,13 @@ export default {
 
         if (response.data.code === 'SUCCESS') {
           alert(response.data.message);
-          this.$router.push("");
+          this.$router.push("/");
         } else {
           alert(response.data.message);
         }
       } catch (error) {
         console.error("비밀번호 재설정 실패:", error);
-        alert("비밀번호 재설정 중 오류가 발생했습니다.");
+        alert("전에 입력한 비밀번호와 같습니다.");
       }
     },
     showSlide(n) {

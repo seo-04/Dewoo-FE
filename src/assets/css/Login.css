@@ -13,7 +13,57 @@
     padding: 0;
 }
 
-/* body의 기본 스타일은 그대로 둡니다. */
+/* Email과 Password 입력란을 감싸는 컨테이너 스타일 */
+.log_input .input-container {
+    position: relative;
+    margin: 10px 0;
+}
+
+/* Email 입력란 스타일 */
+.log_input .input-container input[type="text"] {
+    width: 100%;
+    padding: 12px 12px 12px 35px; /* 왼쪽 패딩 추가 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Email 아이콘 위치 */
+.log_input .input-container i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.password {
+    position: relative;
+    margin: 10px 0;
+}
+
+.log_input .password input {
+    padding: 12px 40px 12px 35px;
+}
+
+.password .left-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.password .right-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+}
+
 body {
     min-height: 100vh;
     background: #fff;
@@ -23,7 +73,6 @@ body {
 }
 
 
-/* login_page 클래스에 대한 스타일 */
 .login_page {
     width: 100%;
     height: 100vh;
@@ -54,7 +103,6 @@ body {
     background: transparent !important;
 }
 
-/* 왼쪽 */
 .left {
     flex: 1;
     padding: 40px;
@@ -205,9 +253,7 @@ a {
 
 }
 
-/* 투명 로그인 박스 */
 .login-area {
-    /* 기존 스타일 유지 */
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -220,9 +266,7 @@ a {
     height: 600px;
 }
 
-/* 오른쪽 이미지 영역 */
 .Img_right {
-    /* 기존 스타일 */
     width: 400px;
     height: 380px;
     flex: 1;
