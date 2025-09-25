@@ -35,12 +35,4 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach((to, from, next) => {
-    document.body.classList.remove('login_page')
-    if (to.meta.layout === 'login') {
-        document.body.classList.add('login_page')
-    }
-    next()
-})
-
 export default router

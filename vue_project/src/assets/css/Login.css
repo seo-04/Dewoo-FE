@@ -13,6 +13,7 @@
     padding: 0;
 }
 
+/* body의 기본 스타일은 그대로 둡니다. */
 body {
     min-height: 100vh;
     background: #fff;
@@ -22,11 +23,14 @@ body {
 }
 
 
-body.login_page{
-    background: url("../img/travel5.jpg");
+/* login_page 클래스에 대한 스타일 */
+.login_page {
+    width: 100%;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: url("../img/travel5.jpg");
     animation: gradientBG 15s ease infinite;
     overflow: hidden;
 }
@@ -41,7 +45,6 @@ body.login_page{
         background-position: 0% 50%;
     }
 }
-
 /* 투명 효과 */
 .container {
     display: flex;
@@ -49,14 +52,6 @@ body.login_page{
     align-items: center;
     border-radius: 15px;
     background: transparent !important;
-}
-
-.login-box {
-    display: flex;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 800px;
-    max-width: 90%;
 }
 
 /* 왼쪽 */
@@ -69,17 +64,21 @@ h4 {
     color: black;
     font-size: 25px;
     margin-bottom: 10px;
+    text-align: right;
+    margin-right: 20px;
 }
 
 p {
     color: black;
     font-size: 12px;
     margin-bottom: 20px;
+    text-align: right;
 }
 
 .login_text {
     font-weight: bold;
     color: #B9062F;
+    margin-right: 15px;
 }
 
 /* 입력창 */
@@ -188,8 +187,77 @@ a {
     margin: 25px 7px;
 }
 
-.right img.active {
+/* 오른쪽 이미지 영역 */
+.right {
+    width: 400px;
+    height: 100%; /* 부모(login-box)의 높이를 100%로 채웁니다. */
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    background-color: transparent;
+}
+
+/* 투명 로그인 박스 */
+.login-area {
+    /* 기존 스타일 유지 */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 800px;
+    max-width: 90%;
+    height: 600px;
+}
+
+/* 오른쪽 이미지 영역 */
+.Img_right {
+    /* 기존 스타일 */
+    width: 400px;
+    height: 380px;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    background-color: transparent;
+    margin-right: 25px;
+    margin-top: 120px;
+}
+
+/* 이미지 */
+.Img_right img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    overflow: hidden;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    border-radius: 30px;
+}
+
+.Img_right img.active {
     opacity: 1;
+}
+
+/* 이미지 하단 dot */
+.dots {
+    position: absolute;
+    bottom: 3%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
 }
 
 .dot {
@@ -204,4 +272,24 @@ a {
 .dot.active {
     opacity: 1;
     background: #8DD3BB;
+}
+
+/* SNS 로그인 버튼 */
+.snsbox {
+    display: flex;
+    margin-top: 15px;
+    justify-content: center;
+    gap: 10px;
+}
+
+.snsbox div {
+    display: flex;
+    border: 2px solid #8DD3BB;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 4px;
+    height: 40px;
+    font-size: 15px;
+    cursor: pointer;
 }
