@@ -62,9 +62,9 @@
 
         <div class="Reservation_sign">
           <span style="font-size: 20px; font-weight: bold; display: block; padding: 15px 0">Login or Sign up to book</span>
-          <input class="Reservation_phoneNumber" placeholder="Phone Number">
+          <input class="Reservation_phoneNumber" placeholder="Phone Number" v-model="phoneNumber">
           <span style="font-size: 14px; display: block; padding: 15px 0">예약확인 문자/전화를 위해 전화번호를 남겨주세요</span>
-          <button class="continue">continue</button>
+          <button class="continue" :disabled="!isContinueButtonEnabled">continue</button>
           <div class="boundary_line_1">
             <p>Or</p>
           </div>
@@ -143,7 +143,7 @@
 
 <script setup lang="js">
 
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 // 결제 옵션 데이터
 const paymentOptions = ref([
@@ -165,6 +165,35 @@ const selectedPayment = ref(null); // <--- <string | null> 제거
 const selectPayment = (key) => { // <--- : string 제거
   selectedPayment.value = key;
 };
+
+const phoneNumber = ref('');
+const isContinueButtonEnabled = ref(false);
+
+watch(phoneNumber, (newValue) => {
+  // 1. 숫자만 남기기
+  const digitsOnly = newValue.replace(/\D/g, '');
+
+  // 2. 전화번호 형식에 맞게 하이픈(-) 추가
+  let formattedNumber = '';
+  if (digitsOnly.length > 0) {
+    formattedNumber = digitsOnly.substring(0, 3);
+  }
+  if (digitsOnly.length >= 4) {
+    formattedNumber += '-' + digitsOnly.substring(3, 7);
+  }
+  if (digitsOnly.length >= 8) {
+    formattedNumber += '-' + digitsOnly.substring(7, 11);
+  }
+
+  // 3. phoneNumber 값 업데이트 (이렇게 해야 화면에도 적용됨)
+  if (formattedNumber !== newValue) {
+    phoneNumber.value = formattedNumber;
+  }
+
+  // 4. 유효성 검사 및 버튼 활성화 상태 업데이트
+  const isValid = /^\d{3}-\d{4}-\d{4}$/.test(formattedNumber);
+  isContinueButtonEnabled.value = isValid;
+});
 
 </script>
 
@@ -429,6 +458,17 @@ const selectPayment = (key) => { // <--- : string 제거
     height: 48px;
     border-radius: 10px;
     border: 1px none black;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  }
+
+  .continue:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .continue:active{
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .boundary_line{
