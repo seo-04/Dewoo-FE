@@ -8,15 +8,19 @@
 
           <div class="log_input">
             <form id="loginForm" @submit.prevent="handleSubmit">
-              <div class="password">
+              <div class="input-container">
                 <input type="text" v-model="email" placeholder="Email" />
+                <i class="fa-solid fa-envelope"></i> </div>
+
+              <div class="password">
                 <input
                     :type="showPassword ? 'text' : 'password'"
                     v-model="password"
                     placeholder="Password"
                 />
+                <i class="fa-solid fa-lock left-icon"></i>
                 <i
-                    :class="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"
+                    :class="[showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash', 'right-icon']"
                     @click="togglePassword"
                 ></i>
               </div>
@@ -28,7 +32,7 @@
               <input type="checkbox" v-model="remember" /> 비밀번호 기억하기
             </label>
             <p class="text2">
-              <a href="/Find_Password">Forgot Password</a>
+              <a href="/findPassword">Forgot Password</a>
             </p>
           </div>
 

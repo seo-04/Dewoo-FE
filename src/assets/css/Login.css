@@ -13,6 +13,61 @@
     padding: 0;
 }
 
+/* Email과 Password 입력란을 감싸는 컨테이너 스타일 */
+.log_input .input-container {
+    position: relative;
+    margin: 10px 0;
+}
+
+/* Email 입력란 스타일 */
+.log_input .input-container input[type="text"] {
+    width: 100%;
+    padding: 12px 12px 12px 35px; /* 왼쪽 패딩 추가 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Email 아이콘 위치 */
+.log_input .input-container i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+/* Password 입력란 스타일 */
+.password {
+    position: relative; /* 자식 요소인 아이콘의 위치를 기준으로 삼기 위해 필요 */
+    margin: 10px 0;
+}
+
+/* Password 입력란에 양쪽 패딩 추가 */
+.log_input .password input {
+    padding: 12px 40px 12px 35px;
+}
+
+/* 왼쪽 아이콘(자물쇠) 스타일 */
+.password .left-icon {
+    position: absolute;
+    left: 10px; /* 왼쪽에서 10px 떨어진 위치 */
+    top: 50%;
+    transform: translateY(-50%); /* 정확한 세로 중앙 정렬 */
+    color: #888;
+    pointer-events: none; /* 아이콘 클릭 방지 */
+}
+
+/* 오른쪽 아이콘(눈) 스타일 */
+.password .right-icon {
+    position: absolute;
+    right: 15px; /* 오른쪽에서 15px 떨어진 위치 */
+    top: 50%;
+    transform: translateY(-50%); /* 정확한 세로 중앙 정렬 */
+    cursor: pointer;
+    color: #888;
+}
+
 /* body의 기본 스타일은 그대로 둡니다. */
 body {
     min-height: 100vh;
