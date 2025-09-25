@@ -243,5 +243,5 @@ export default {
 </script>
 
 <style scoped>
-@import '/Users/jwo/IdeaProjects/Dewoo-FE/vue_project/src/assets/css/HotelAccommodation.css';
+@import '@/assets/css/HotelAccommodation.css';
 </style>
