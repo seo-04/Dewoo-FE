@@ -89,7 +89,8 @@
   border-radius: 10px;
   padding: 30px;
   width: 80%;
-  height: 75%;
+  max-width: 1232px;
+  height: 305px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -120,7 +121,8 @@ footer {
   display: flex;
   justify-content: space-evenly;
   width: 100%;
-  padding: 0 105px;
+  max-width: 1232px;
+  gap: 50px;
 }
 
 .footer-letter {

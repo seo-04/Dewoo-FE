@@ -54,6 +54,9 @@ header {
 .container {
   width: 100%;
   margin: 0 auto;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .nav-container {
@@ -61,12 +64,10 @@ header {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  max-width: 1440px;
   margin: 0 auto;
-  background-color: #FFFFFF;
-  padding: 0 105px;
+  padding: 0;
   height: 87px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .item span {
@@ -100,8 +101,8 @@ header {
   border-bottom: 2px solid black;
   transform: rotate(-45deg);
   position: absolute;
-  top: 2px;
-  left: 2px;
+  top: 4px;
+  left: 3px;
 }
 
 .flex {
