@@ -172,9 +172,11 @@ const selectPayment = (key) => { // <--- : string 제거
   .payment-body{
     display: flex;
     width: 95%;
+    max-width: 1232px;
     justify-content: space-evenly;
     margin: 0 auto;
     gap: 2%;
+    height: 100%;
   }
 
   .payment-big{
