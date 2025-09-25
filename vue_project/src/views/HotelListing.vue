@@ -249,8 +249,11 @@
             v-if="showPeopleModal"
             class="people_modal4"
             @click.self="closePeopleModal"
+            role="dialog"
+            aria-modal="true"
         >
-          <div class="people_content">
+
+          <div class="people_content2" @click.stop>
             <h3>방 개수와 인원수 선택</h3>
 
             <div class="counter">
@@ -273,7 +276,7 @@
 
             <div v-if="guestsCount === 1" class="warning">
               <i class="fa-solid fa-circle-exclamation"></i>
-              <p>최소 1명이상 선택해주세요.</p>
+              <p>최소 2명이상 선택해주세요.</p>
             </div>
 
             <div class="modal-actions">

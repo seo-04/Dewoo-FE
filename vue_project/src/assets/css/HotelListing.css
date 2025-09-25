@@ -142,34 +142,50 @@
     cursor: pointer;
 }
 
-/* 모달 본체 */
-.people_modal {
+.people_modal4{
     position: fixed;
-    width: 100%;
-    height: 120%;
-    background: rgba(255, 255, 255, 0.7);
-    z-index: 1000;
+    inset: 0; /* top:0; right:0; bottom:0; left:0; */
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: flex-end; /* 하단에 붙여서 올라오게 */
+    background: rgba(0, 0, 0, 0.35); /* 배경은 약간 어둡게 */
+    z-index: 9999; /* 다른 요소보다 위로 */
+    padding: 16px; /* 좌우 여백 */
 }
 
-
-.people_content {
-    background: #fff;
+.people_content2{
     width: 100%;
-    max-width: 800px;
-    height: 90%;
-    max-height: 900px;
+    max-width: 980px;
+    background: #fff;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.12);
     padding: 20px;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-.people_content h3 {
+
+.people_content2 h3 {
     text-align: center;
     margin-bottom: 20px;
+}
+
+.sort_content {
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* 슬라이드 애니메이션 */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .counter {
@@ -248,12 +264,17 @@
 /* 슬라이드 애니메이션 */
 .slide-up-enter-active,
 .slide-up-leave-active {
-    transition: all 0.3s ease;
+    transition: transform 0.32s cubic-bezier(.22,.9,.34,1), opacity 0.32s;
 }
 .slide-up-enter-from,
 .slide-up-leave-to {
     transform: translateY(100%);
     opacity: 0;
+}
+.slide-up-enter-to,
+.slide-up-leave-from {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 /* Filters 전체 */
@@ -641,7 +662,6 @@
 
 /* 박스 배경 */
 .sort_modal {
-    /*display: none;*/
     position: fixed;
     top: 0;
     left: 0;
@@ -686,7 +706,7 @@
     position: relative;
     top: 170px;
     left: 8%;
-    z-index:5;
+    /*z-index:5;*/
 }
 
 .tab_item {
