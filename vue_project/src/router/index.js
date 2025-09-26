@@ -27,7 +27,7 @@ const routes = createRouter({
             component: Authenticate
         },
         { path: '/HotelSearch', component: HotelSearch},
-        { path: '/HotelListing', component: HotelListing}
+        { path: '/HotelListing', component: HotelListing, name:'HotelListing'}
     ]
 })
 routes.beforeEach((to, from, next) => {

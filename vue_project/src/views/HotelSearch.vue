@@ -53,18 +53,24 @@
         <div class="search_inputs">
           <div class="input-group">
             <label for="destination">Enter Destination</label>
-            <input type="text" id="destination" placeholder="Enter Destination" />
+            <input
+                type="text"
+                id="destination"
+                v-model="destination"
+                placeholder="Enter Destination"
+            />
           </div>
 
           <div class="input-group">
             <label for="checkin">Check-in</label>
-            <input type="date" id="checkin" />
+            <input type="date" id="checkin" v-model="checkin" />
           </div>
 
           <div class="input-group">
             <label for="checkout">Check-out</label>
-            <input type="date" id="checkout" />
+            <input type="date" id="checkout" v-model="checkout" />
           </div>
+
 
           <!-- Rooms & Guests -->
           <div class="input-group dropdown-container">
@@ -74,9 +80,10 @@
             </button>
           </div>
 
-          <button class="search_icon">
+          <button class="search_icon" @click="handleSearch">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
+
         </div>
       </div>
     </section>
@@ -254,14 +261,22 @@ export default {
   name: "HotelSearch",
   data() {
     return {
+      destination: "",
+      checkin: "",
+      checkout: "",
       rooms: 1,
       guests: 2,
       showPeopleModal: false,
       travelItems: [
-        { city: "멜버른", desc: "Amazing journey", price: "₩150,000", image: "melbourne.jpg" },
-        { city: "런던", desc: "A Paris Adventure", price: "₩130,000", image: "paris.jpg" },
-        { city: "로마", desc: "London eye adventure", price: "₩150,000", image: "london.jpg" },
-        { city: "베네치아", desc: "Amazing streets", price: "₩130,000", image: "colombia.jpg" },
+        { city: "멜버른", desc: "Amazing journey", price: "₩130,000", image: "melbourne.jpg" },
+        { city: "파리", desc: "A Paris Adventure", price: "₩150,000", image: "paris.jpg" },
+        { city: "런던", desc: "London eye adventure", price: "₩130,000", image: "london.jpg" },
+        { city: "콜롬비아", desc: "Amazing streets", price: "₩130,000", image: "colombia.jpg" },
+        { city: "도쿄", desc: "Amazing Country", price: "₩200,000", image: "Tokyo.jpg" },
+        { city: "뉴욕", desc: "Amazing Country", price: "₩400,000", image: "New_York.jpg" },
+        { city: "시드니", desc: "Amazing Country", price: "₩300,000", image: "Sydney.jpg" },
+        { city: "두바이", desc: "Amazing Country", price: "₩220,000", image: "Dubai.jpg" },
+        { city: "타이베이", desc: "Amazing Country", price: "₩140,000", image: "Taipei.jpg" },
       ],
     };
   },
@@ -283,6 +298,38 @@ export default {
     applyPeople() {
       this.closePeopleModal();
     },
+    handleSearch() {
+      if (!this.destination) {
+        alert("목적지를 입력해주세요.");
+        return;
+      }
+      if (!this.checkin) {
+        alert("체크인 날짜를 선택해주세요.");
+        return;
+      }
+      if (!this.checkout) {
+        alert("체크아웃 날짜를 선택해주세요.");
+        return;
+      }
+      if (this.guests < 1) {
+        alert("최소 1명 이상 선택해주세요.");
+        return;
+      }
+
+      // 모든 값이 정상적으로 입력되면 HotelListing.vue로 이동
+      this.$router.push({
+        name: "HotelListing",
+        query: {
+          destination: this.destination,
+          checkin: this.checkin,
+          checkout: this.checkout,
+          rooms: this.rooms,
+          guests: this.guests,
+        },
+      });
+    },
+
+
   },
 };
 </script>

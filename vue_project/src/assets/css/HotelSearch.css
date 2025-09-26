@@ -375,7 +375,6 @@ header {
     justify-content: center;
     align-items: flex-end;
 }
-
 /* 모달 본체 */
 .people_modal {
     position: fixed;
@@ -491,6 +490,7 @@ header {
     opacity: 0;
 }
 
+
 /*  여행에 빠지다  */
 .travel_container {
     padding: 60px 105px;
@@ -580,7 +580,7 @@ header {
     position: relative;
     scroll-snap-type: x mandatory;
     border: none;
-    gap: 30px;
+    gap: 25px;
 }
 
 .slider::-webkit-scrollbar {
@@ -596,26 +596,7 @@ header {
 
 @keyframes bannermove {
     0% { transform: translate(0); }
-    100% { transform: translate(-100%); }
-}
-
-/* 좌우 슬라이드 버튼 */
-.slide_btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1000;
-    font-size: 18px;
-    color: #333;
+    100% { transform: translate(-105%); }
 }
 
 /*  여행 더보기  */
