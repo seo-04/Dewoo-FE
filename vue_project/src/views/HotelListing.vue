@@ -381,8 +381,8 @@ export default {
       },
 
       showSortModal: false,
-      sortOptions: ["가격 낮은순", "가격 높은순", "평점 높은순"],
-      currentSort: "추천순",
+      sortOptions: ["평점 낮은순","평점 높은순","리뷰 낮은 순", "리뷰 높은 순", ""],
+      currentSort: "선택",
 
 
       showPeopleModal: false,
