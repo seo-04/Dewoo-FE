@@ -144,24 +144,22 @@
 
 .people_modal4{
     position: fixed;
-    inset: 0; /* top:0; right:0; bottom:0; left:0; */
+    inset: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-end; /* 하단에 붙여서 올라오게 */
-    background: rgba(0, 0, 0, 0.35); /* 배경은 약간 어둡게 */
-    z-index: 9999; /* 다른 요소보다 위로 */
-    padding: 16px; /* 좌우 여백 */
+    align-items: center;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 16px;
 }
 
 .people_content2{
     width: 100%;
-    max-width: 980px;
+    max-width: 990px;
     background: #fff;
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -8px 24px rgba(0,0,0,0.12);
     padding: 20px;
-    max-height: 80vh;
-    overflow-y: auto;
+    max-height: 90vh;
 }
 
 
