@@ -7,9 +7,9 @@ import SignUp from '../views/SignUp.vue'
 import FindPassword from '../views/FindPassword.vue'
 import Authenticate from '../views/Authenticate.vue'
 import HotelAccommodation from '../views/HotelAccommodation.vue'
+import SocialSignUp from '../views/SocialSignUp.vue'
 // import HotelSearch from '../views/HotelSearch.vue'
 // import HotelListing from '../views/HotelListing.vue'
-
 
 
 const router = createRouter({
@@ -29,6 +29,11 @@ const router = createRouter({
             path: '/authenticate/:userEmail',
             name: 'Authenticate',
             component: Authenticate
+        },
+        {
+            path: '/signup/additional-info',
+            name: 'SocialSignUp',
+            component: SocialSignUp
         },
         // { path: '/HotelSearch', component: HotelSearch},
         // { path: '/HotelListing', component: HotelListing}

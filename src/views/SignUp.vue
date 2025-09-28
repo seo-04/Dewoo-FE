@@ -101,17 +101,34 @@
           <p>Or Sign up with</p>
         </div>
 
+
         <div class="snsbox">
-          <div class="facebook"><i class="fa-brands fa-facebook"></i></div>
-          <div class="google">
+          <a href="/oauth2/authorization/google" class="google sns-button">
             <img
                 width="20"
                 height="20"
                 src="https://img.icons8.com/color/48/google-logo.png"
                 alt="google-logo"
             />
-          </div>
-          <div class="apple"><i class="fa-brands fa-apple"></i></div>
+          </a>
+
+          <a href="/oauth2/authorization/kakao" class="kakao sns-button">
+            <img
+                width="20"
+                height="20"
+                src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                alt="kakao-logo"
+            />
+          </a>
+
+          <a href="/oauth2/authorization/naver" class="naver sns-button">
+            <img
+                width="20"
+                height="20"
+                src="@/assets/img/naver_icon.png"
+                alt="naver-logo"
+            />
+          </a>
         </div>
       </div>
 

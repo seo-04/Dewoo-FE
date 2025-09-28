@@ -98,18 +98,23 @@ export default {
           userEmail: this.email,
         });
 
-        if (response.data.code === 'SUCCESS') {
-          alert(response.data.message);
-          this.$router.push({ name: 'Authenticate', params: { userEmail: this.email } });
+        // 🚨 [수정된 부분] 🚨
+        const responseData = response.data;
+        const alertMessage = responseData.message || "비밀번호 재설정 코드가 발송되었습니다."; // message가 없으면 기본 메시지 사용
+
+        if (responseData.code === 'SUCCESS') {
+          alert(alertMessage);
+          this.$router.push(`/authenticate/${this.email}`);
         } else {
-          alert(response.data.message);
+          // ERROR 코드가 왔을 때도 message 필드가 없으면 기본 메시지 사용
+          alert(alertMessage);
         }
       } catch (error) {
         console.error("비밀번호 찾기 실패:", error);
         if (error.response && error.response.data && error.response.data.message) {
-          alert(error.response.data.message);
+          alert(error.response.data.message); // 🚨 HTTP 오류 시에만 작동
         } else {
-          alert("비밀번호 찾기 중 오류가 발생했습니다.");
+          alert("비밀번호 찾기 중 오류가 발생했습니다. 서버 또는 네트워크 상태를 확인해주세요."); // 🚨 불충분
         }
       }
     },

@@ -203,16 +203,33 @@ a {
     gap: 10px;
 }
 
-.facebook {
-    color: blue;
+.snsbox a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     width: 120px;
+    height: 40px;
+
+    border: 2px solid #8DD3BB; /* 모든 버튼에 동일한 테두리 적용 */
+    border-radius: 4px; /* 사각형 모서리 유지 */
+
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
 }
-.google {
-    width: 120px;
+
+.snsbox a:hover {
+    opacity: 0.9;
 }
-.apple {
-    width: 120px;
+
+/* 이미지 로고 크기 설정 */
+.snsbox a img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
+
 
 /* 경계선 */
 .boundary_line {
