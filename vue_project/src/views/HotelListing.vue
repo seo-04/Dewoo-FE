@@ -137,7 +137,7 @@
         >
           <div
               class="room_box"
-              v-for="(room, index) in rooms.filter(r => r.category === tab.value)"
+              v-for="(room, index) in getVisibleRooms(tab.value)"
               :key="index"
           >
             <!-- 이미지 -->
@@ -187,27 +187,31 @@
                 <small>excl. tax</small>
               </div>
 
-                    <!-- 버튼 -->
-                    <div class="two">
-                      <button class="heart" @click="toggleHeart(index)">
-                        <i
-                            :class="[
-              rooms[index].isFavorite ? 'fa-solid active-heart' : 'fa-regular',
-              'fa-heart'
-              ]"
-                        ></i>
-                      </button>
-                      <button class="view">View Place</button>
-                    </div>
+              <!-- 버튼 -->
+              <div class="two">
+                <button class="heart" @click="toggleHeart(index)">
+                  <i
+                      :class="[
+                    rooms[index].isFavorite ? 'fa-solid active-heart' : 'fa-regular',
+                    'fa-heart'
+                  ]"
+                  ></i>
+                </button>
+                <button class="view">View Place</button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- 더보기 버튼 -->
-        <div class="button_result">
-          <button @click="showMoreResults">Show more results</button>
+          <!-- 더보기 버튼-->
+          <div class="button_result" v-if="hasMoreRooms(tab.value)">
+            <button @click="showMoreResults(tab.value)">Show more results</button>
+          </div>
+
+          <!-- room list 마지막 /div  -->
         </div>
+    <!-- content_box 마지막 /div -->
       </div>
+
     </div>
 
     <!-- 검색 박스 -->
@@ -243,16 +247,20 @@
         </button>
       </div>
 
-      <!-- Rooms & Guests 모달 -->
-      <transition name="slide-up">
-        <div
-            v-if="showPeopleModal"
-            class="people_modal4"
-            @click.self="closePeopleModal"
-            role="dialog"
-            aria-modal="true"
-        >
+      <!-- 서치 박스 마지막 div  -->
+      </div>
 
+    <!-- Rooms & Guests 모달 -->
+    <transition name="slide-up">
+      <div
+          v-if="showPeopleModal"
+          class="people_modal4"
+          @click.self="closePeopleModal"
+          role="dialog"
+          aria-modal="true"
+      >
+
+        <transition name="slide-up">
           <div class="people_content2" @click.stop>
             <h3>방 개수와 인원수 선택</h3>
 
@@ -284,13 +292,11 @@
               <button @click="applyPeople" class="apply_btn">Check</button>
             </div>
           </div>
-        </div>
-      </transition>
-
-  <!-- 서치 박스 마지막 div  -->
+        </transition>
       </div>
+    </transition>
 
-        <!-- footer -->
+    <!-- footer -->
     <footer>
       <section class="subscription-box">
         <div class="subscription-content">
@@ -359,9 +365,9 @@
         </div>
       </div>
     </footer>
+
 <!--  텝플릿 아래 마지막 div 마침  -->
   </div>
-
 </template>
 <script>
 export default {
@@ -374,20 +380,30 @@ export default {
         { value: "리조트", label: "Resorts" },
       ],
       activeTab: "호텔",
+
+      // Showing 문구
       showingData: {
         호텔: "Showing 4 of 257 places",
         모텔: "Showing 4 of 51 places",
         리조트: "Showing 4 of 72 places",
       },
 
+      // 정렬
       showSortModal: false,
-      sortOptions: ["평점 낮은순","평점 높은순","리뷰 낮은 순", "리뷰 높은 순", ""],
+      sortOptions: ["저가순", "고가순", "리뷰 많은순"],
       currentSort: "선택",
 
-
+      // 인원수 모달
       showPeopleModal: false,
       roomsCount: 1,
       guestsCount: 2,
+
+      // 더보기: 카테고리별 표시 개수
+      visibleCount: {
+        호텔: 4,
+        모텔: 4,
+        리조트: 4,
+      },
 
       // 숙소 리스트
       rooms: [
@@ -402,7 +418,6 @@ export default {
           reviewCount: 371,
           isFavorite: false,
           price: "₩240,000",
-
         },
         {
           category: "호텔",
@@ -417,6 +432,79 @@ export default {
           price: "₩120,000",
         },
         {
+          category: "호텔",
+          name: "카나델 리오 호텔",
+          image: require("@/assets/img/Canardel.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩130,000",
+        },
+        {
+          category: "호텔",
+          name: "베이뷰 호텔",
+          image: require("@/assets/img/Bayview.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩104,000",
+        },
+        {
+          category: "호텔",
+          name: "베이뷰 호텔2",
+          image: require("@/assets/img/Bayview.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩104,000",
+        },
+        {
+          category: "호텔",
+          name: "카나델 리오 호텔2",
+          image: require("@/assets/img/Canardel.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩130,000",
+        },
+        {
+          category: "호텔",
+          name: "마제스틱 말라카 호텔2",
+          image: require("@/assets/img/Malacca.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩120,000",
+        },
+        {
+          category: "호텔",
+          name: "해튼호텔2",
+          image: require("@/assets/img/Hatton_Hotel.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 371,
+          isFavorite: false,
+          price: "₩240,000",
+        },
+
+        {
           category: "모텔",
           name: "해튼모텔",
           image: require("@/assets/img/Hatton_Hotel.jpg"),
@@ -429,6 +517,91 @@ export default {
           price: "₩240,000",
         },
         {
+          category: "모텔",
+          name: "마제스틱 말라카 모텔",
+          image: require("@/assets/img/Malacca.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Motel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩120,000",
+        },
+        {
+          category: "모텔",
+          name: "카나델 리오 모텔",
+          image: require("@/assets/img/Canardel.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Motel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩130,000",
+        },
+        {
+          category: "모텔",
+          name: "베이뷰 모텔",
+          image: require("@/assets/img/Bayview.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Motel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩104,000",
+        },
+        {
+          category: "모텔",
+          name: "베이뷰 모텔2",
+          image: require("@/assets/img/Bayview.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩104,000",
+        },
+        {
+          category: "모텔",
+          name: "카나델 리오 모텔2",
+          image: require("@/assets/img/Canardel.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩130,000",
+        },
+        {
+          category: "모텔",
+          name: "마제스틱 말라카 모텔2",
+          image: require("@/assets/img/Malacca.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩120,000",
+        },
+        {
+          category: "모텔",
+          name: "해튼모텔2",
+          image: require("@/assets/img/Hatton_Hotel.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 371,
+          isFavorite: false,
+          price: "₩240,000",
+        },
+
+        {
           category: "리조트",
           name: "해튼리조트",
           image: require("@/assets/img/Hatton_Hotel.jpg"),
@@ -440,26 +613,129 @@ export default {
           isFavorite: false,
           price: "₩240,000",
         },
+        {
+          category: "리조트",
+          name: "마제스틱 말라카 리조트",
+          image: require("@/assets/img/Malacca.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Resort",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩120,000",
+        },
+        {
+          category: "리조트",
+          name: "카나델 리오 리조트",
+          image: require("@/assets/img/Canardel.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Resort",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩130,000",
+        },
+        {
+          category: "리조트",
+          name: "베이뷰 리조트",
+          image: require("@/assets/img/Bayview.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Resort",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩104,000",
+        },
+        {
+          category: "리조트",
+          name: "베이뷰 리조트2",
+          image: require("@/assets/img/Bayview.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩104,000",
+        },
+        {
+          category: "리조트",
+          name: "카나델 리오 리조트2",
+          image: require("@/assets/img/Canardel.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩130,000",
+        },
+        {
+          category: "리조트",
+          name: "마제스틱 말라카 리조트2",
+          image: require("@/assets/img/Malacca.jpg"),
+          location: "Kucukayasofya No. 40 Sultanahmet, Istanbul 34022",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 54,
+          isFavorite: false,
+          price: "₩120,000",
+        },
+        {
+          category: "리조트",
+          name: "해튼리조트2",
+          image: require("@/assets/img/Hatton_Hotel.jpg"),
+          location: "Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437",
+          starText: "5 Star Hotel",
+          score: "4.2",
+          reviewTitle: "Very Good",
+          reviewCount: 371,
+          isFavorite: false,
+          price: "₩240,000",
+        },
+
       ],
     };
   },
   methods: {
+    // 탭 변경
     setActiveTab(tab) {
       this.activeTab = tab;
     },
+
+    // 정렬 모달
     toggleSortModal() {
       this.showSortModal = !this.showSortModal;
     },
-    closeSortModal() {           // 👈 추가 (배경 클릭 시 닫기용)
+    closeSortModal() {
       this.showSortModal = false;
     },
     applySort(option) {
       this.currentSort = option;
       this.showSortModal = false;
     },
-    showMoreResults() {
-      alert("더 많은 결과 불러오기");
+
+    // 더보기 관련
+    getVisibleRooms(category) {
+      return this.rooms
+          .filter((r) => r.category === category)
+          .slice(0, this.visibleCount[category]);
     },
+    hasMoreRooms(category) {
+      return (
+          this.rooms.filter((r) => r.category === category).length >
+          this.visibleCount[category]
+      );
+    },
+    showMoreResults(category) {
+      this.visibleCount[category] += 4;
+    },
+
+    // 인원 선택 모달
     openPeopleModal() {
       this.showPeopleModal = true;
     },
@@ -477,17 +753,17 @@ export default {
     applyPeople() {
       this.closePeopleModal();
     },
+
     setRating(n) {
       console.log("Rating filter:", n);
     },
+
+    // 찜하기
     toggleHeart(index) {
       this.rooms[index].isFavorite = !this.rooms[index].isFavorite;
     },
   },
-
-
 };
-
 </script>
 <style>
 @import "@/assets/css/HotelListing.css";

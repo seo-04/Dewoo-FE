@@ -114,7 +114,7 @@
 
           <div class="warning" v-if="guests < 2">
             <i class="fa-solid fa-circle-exclamation"></i>
-            <p>최소 1명이상 선택해주세요.</p>
+            <p>최소 2명이상 선택해주세요.</p>
           </div>
 
           <div class="modal-actions">
@@ -316,7 +316,7 @@ export default {
         return;
       }
 
-      // 모든 값이 정상적으로 입력되면 HotelListing.vue로 이동
+      // 모든 값이 입력되면 HotelListing.vue로 이동
       this.$router.push({
         name: "HotelListing",
         query: {

@@ -9,9 +9,9 @@ import Authenticate from '../views/Authenticate.vue'
 import HotelSearch from '../views/HotelSearch.vue'
 import HotelListing from '../views/HotelListing.vue'
 
-const routes = createRouter({
+const router = createRouter({
     history: createWebHistory(),
-    routes : [
+    routes: [
         { path: '/', component: LoginPage, meta: { bodyClass: 'LoginPage' } },
         {
             path: '/password-setting/:userEmail/:verificationCode',
@@ -19,18 +19,19 @@ const routes = createRouter({
             component: Password_Setting
         },
         { path: '/Payment_Method', component: Payment_Method },
-        { path: '/SignUp', component: SignUp},
-        { path: '/Find_Password', component: Find_Password},
+        { path: '/SignUp', component: SignUp },
+        { path: '/Find_Password', component: Find_Password },
         {
             path: '/Authenticate/:userEmail',
             name: 'Authenticate',
             component: Authenticate
         },
-        { path: '/HotelSearch', component: HotelSearch},
-        { path: '/HotelListing', component: HotelListing, name:'HotelListing'}
+        { path: '/HotelSearch', component: HotelSearch },
+        { path: '/HotelListing', component: HotelListing, name: 'HotelListing' }
     ]
 })
-routes.beforeEach((to, from, next) => {
+
+router.beforeEach((to, from, next) => {
     // body class 초기화
     document.body.className = ''
     if (to.meta.bodyClass) {
@@ -39,4 +40,4 @@ routes.beforeEach((to, from, next) => {
     next()
 })
 
-export default routes
+export default router
