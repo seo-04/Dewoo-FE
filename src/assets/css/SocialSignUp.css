@@ -16,10 +16,10 @@ p.centered-text  {
     margin-right : 40px;
 }
 /* 오른쪽 이미지 영역 */
-.righting {
+.righter {
     /* 기존 스타일 */
     width: 300px;
-    height: 540px;
+    height: 480px;
     flex: 1;
     position: relative;
     overflow: hidden;
@@ -33,7 +33,7 @@ p.centered-text  {
 }
 
 /* 이미지 */
-.righting img {
+.righter img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -44,7 +44,7 @@ p.centered-text  {
     border-radius: 30px;
 }
 
-.righting img.active {
+.righter img.active {
     opacity: 1;
 }
 

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="login-box">
       <div class="lefts">
-        <h4 class="centered-text">Sign up (소셜 회원가입)</h4>
+        <h4 class="centered-text">SocialSignUp</h4>
         <p class="centered-text">추가 정보를 입력해 주세요</p>
         <div class="log_input">
           <form @submit.prevent="handleFormSubmit">
@@ -54,6 +54,24 @@
             </button>
           </form>
         </div>
+
+
+      </div>
+
+      <div class="righter">
+        <img src="@/assets/img/img.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 0 }" />
+        <img src="@/assets/img/img2.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 1 }" />
+        <img src="@/assets/img/img3.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 2 }" />
+
+        <div class="dots">
+          <span
+              v-for="(dot, i) in 3"
+              :key="i"
+              class="dot"
+              :class="{ active: currentSlide === i }"
+              @click="showSlide(i)"
+          ></span>
+        </div>
       </div>
     </div>
   </div>
@@ -78,6 +96,14 @@ export default {
       address: '',
       phone: '',
       agree: false,
+
+      // 슬라이드 관련 데이터 추가
+      currentSlide: 0,
+      slides: [
+        require("@/assets/img/img.jpg"),
+        require("@/assets/img/img2.jpg"),
+        require("@/assets/img/img3.jpg"),
+      ],
     };
   },
   computed: {
@@ -108,6 +134,8 @@ export default {
   },
   mounted() {
     this.loadSocialData();
+    // 슬라이드 쇼 시작 함수 호출 추가
+    this.startSlideShow();
   },
   methods: {
     loadSocialData() {
@@ -205,10 +233,22 @@ export default {
         }
       }
     },
+    // 슬라이드 쇼 관련 메서드 추가
+    startSlideShow() {
+      setInterval(() => {
+        this.nextSlide();
+      }, 3000);
+    },
+    nextSlide() {
+      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    },
+    showSlide(i) {
+      this.currentSlide = i;
+    },
   },
 };
 </script>
 
 <style scoped>
-@import '~@/assets/css/SignUp.css';
+@import '~@/assets/css/SocialSignUp.css';
 </style>
