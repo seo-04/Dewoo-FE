@@ -96,23 +96,6 @@
             </button>
           </form>
         </div>
-
-        <div class="boundary_line">
-          <p>Or Sign up with</p>
-        </div>
-
-        <div class="snsbox">
-          <div class="facebook"><i class="fa-brands fa-facebook"></i></div>
-          <div class="google">
-            <img
-                width="20"
-                height="20"
-                src="https://img.icons8.com/color/48/google-logo.png"
-                alt="google-logo"
-            />
-          </div>
-          <div class="apple"><i class="fa-brands fa-apple"></i></div>
-        </div>
       </div>
 
       <div class="righting">

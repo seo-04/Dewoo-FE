@@ -46,20 +46,32 @@
           </div>
 
           <div class="snsbox">
-            <div class="facebook">
-              <i class="fa-brands fa-facebook"></i>
-            </div>
-            <div class="google">
+            <a href="http://localhost:8085/oauth2/authorization/google" class="google sns-button">
               <img
                   width="20"
                   height="20"
                   src="https://img.icons8.com/color/48/google-logo.png"
                   alt="google-logo"
               />
-            </div>
-            <div class="apple">
-              <i class="fa-brands fa-apple"></i>
-            </div>
+            </a>
+
+            <a href="http://localhost:8085/oauth2/authorization/kakao" class="kakao sns-button">
+              <img
+                  width="20"
+                  height="20"
+                  src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                  alt="kakao-logo"
+              />
+            </a>
+
+            <a href="http://localhost:8085/oauth2/authorization/naver" class="naver sns-button">
+              <img
+                  width="20"
+                  height="20"
+                  src="@/assets/img/naver_icon.png"
+                  alt="naver-logo"
+              />
+            </a>
           </div>
         </div>
 
@@ -121,6 +133,8 @@ export default {
         });
 
         if (response.data.code === 'SUCCESS') {
+          // 💡 일반 로그인 성공 시, JWT 토큰을 localStorage에 저장하는 로직이 추가되어야 합니다.
+          // 현재는 Alert 후 바로 리다이렉션하지만, 실제 JWT를 받으면 저장 로직이 필요합니다.
           alert("로그인 성공!");
           this.$router.push('/accommodation');
         } else {

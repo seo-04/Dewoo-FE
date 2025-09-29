@@ -82,7 +82,7 @@ export default {
     },
     async resendCode() {
       try {
-        const response = await axios.post('/api/user/send-reset-code', {
+        const response = await axios.post('/api/user/verify-reset-code', {
           userEmail: this.userEmail
         });
 
@@ -97,7 +97,7 @@ export default {
       }
     },
     goBack() {
-      this.$router.push("");
+      this.$router.push("/findPassword");
     },
     async handleAuthenticate() {
       if (!this.code.trim()) {
