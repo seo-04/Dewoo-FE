@@ -8,6 +8,7 @@ import FindPassword from '../views/FindPassword.vue'
 import Authenticate from '../views/Authenticate.vue'
 import HotelAccommodation from '../views/HotelAccommodation.vue'
 import SocialSignUp from '../views/SocialSignUp.vue'
+import FavoritePage from '../views/pages/FavoritePage.vue'
 // import HotelSearch from '../views/HotelSearch.vue'
 // import HotelListing from '../views/HotelListing.vue'
 
@@ -35,6 +36,12 @@ const router = createRouter({
             name: 'SocialSignUp',
             component: SocialSignUp
         },
+        {
+            path: '/favorite',
+            name: 'FavoritePage',
+            component: FavoritePage
+        },
+        
         // { path: '/HotelSearch', component: HotelSearch},
         // { path: '/HotelListing', component: HotelListing}
     ]
