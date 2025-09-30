@@ -7,7 +7,7 @@
     <div class="card-right">
       <div class="card-right-upper">
         <section class="desc-area">
-          <h2 class="title">{{ info.title }}</h2>
+          <h2 class="title">{{ info.name }}</h2>
           <p class="location">
             <img src="../../assets/img/icon/location.png" alt="" />
             {{ info.location }}
@@ -37,8 +37,8 @@
             </li>
           </ul>
           <div class="review-summary">
-            <span class="review-score">{{ info.reviewScore }}</span>
-            <strong class="average-review">{{ info.averageReview }}</strong>
+            <span class="review-score">{{ info.reviewAvg }}</span>
+            <strong class="average-review">Very Good</strong>
             <span class="reviews">{{ info.reviews }} reviews</span>
           </div>
         </section>
@@ -168,6 +168,7 @@ export default {
 
         & .price {
           color: rgba(255, 134, 130, 1);
+          font-size: 14px;
           & strong {
             font-size: 24px;
             font-weight: 700;
