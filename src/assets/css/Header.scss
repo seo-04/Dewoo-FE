@@ -27,6 +27,7 @@ header {
 }
 
 .nav-container {
+  min-width: 640px;
   display: flex;
   justify-content: space-between;
   align-items: center;
