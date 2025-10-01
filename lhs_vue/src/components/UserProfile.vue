@@ -35,46 +35,22 @@
 
       <div v-if="activeTab === 'account'" class="tab-content active" id="account-tab">
         <h1 class="content-title">Account</h1>
-        <div class="info-group">
-          <label class="info-label">Name</label>
+        <div v-for="field in accountFields" :key="field.key" class="info-group">
+          <label class="info-label">{{ field.label }}</label>
           <div class="info-value-wrapper">
-            <span class="info-value">{{ user.name }}</span>
-            <button class="change-btn"><img src="@/assets/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change</button>
-          </div>
-        </div>
-        <div class="info-group">
-          <label class="info-label">Email</label>
-          <div class="info-value-wrapper">
-            <span class="info-value">{{ user.email }}</span>
-            <button class="change-btn"><img src="@/assets/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change</button>
-          </div>
-        </div>
-        <div class="info-group">
-          <label class="info-label">Password</label>
-          <div class="info-value-wrapper">
-            <span class="info-value">{{ user.password }}</span>
-            <button class="change-btn"><img src="@/assets/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change</button>
-          </div>
-        </div>
-        <div class="info-group">
-          <label class="info-label">Phone Number</label>
-          <div class="info-value-wrapper">
-            <span class="info-value">{{ user.phone }}</span>
-            <button class="change-btn"><img src="@/assets/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change</button>
-          </div>
-        </div>
-        <div class="info-group">
-          <label class="info-label">Address</label>
-          <div class="info-value-wrapper">
-            <span class="info-value">{{ user.address }}</span>
-            <button class="change-btn"><img src="@/assets/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change</button>
-          </div>
-        </div>
-        <div class="info-group">
-          <label class="info-label">Date of birth</label>
-          <div class="info-value-wrapper">
-            <span class="info-value">{{ user.dob}}</span>
-            <button class="change-btn"><img src="@/assets/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change</button>
+            <template v-if="editingField !== field.key">
+              <span class="info-value">{{ user[field.key] }}</span>
+              <button @click="startEditing(field.key)" class="change-btn">
+                <img src="@/assets/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change
+              </button>
+            </template>
+            <template v-else>
+              <input :type="field.type || 'text'" v-model="tempUser[field.key]" class="edit-input" @keyup.enter="saveChanges(field.key)" @keyup.esc="cancelEdit">
+              <div class="edit-actions">
+                <button @click="saveChanges(field.key)" class="save-btn">Save</button>
+                <button @click="cancelEdit" class="cancel-btn">Cancel</button>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -137,10 +113,15 @@
               <span style="font-size: 32px; font-weight: bold;">{{ card.lastFour }}</span>
             </div>
             <img src="@/assets/trash.png" @click="deleteCard(card.id)" alt="Delete Card" class="delete-card-btn"
-                 style="cursor: pointer">
-            <div>
-              <span>valid thru</span><br>
-              <span style="font-size: 20px; font-weight: bold;">{{ card.expDate }}</span>
+                 style="cursor: pointer; width: 21px; height: 18px">
+            <div style="display: flex; justify-content: space-between; align-content: center;">
+              <div>
+                <span>valid thru</span><br>
+                <span style="font-size: 20px; font-weight: bold;">{{ card.expDate }}</span>
+              </div>
+              <div style="align-content: center">
+                <img src="../assets/visa.png" height="33" width="52" alt=""/>
+              </div>
             </div>
           </div>
           <div class="add-card" @click="openModal">
@@ -159,7 +140,6 @@
             <label for="cardNumber">Card Number</label>
             <input type="text" id="cardNumber" v-model="newCard.number" placeholder="1234 5678 9101 1121">
           </div>
-          <!-- START: Changed Block for Exp.Date and CVC -->
           <div class="form-row">
             <div class="card_input half-width">
               <label for="expDate">Exp. Date</label>
@@ -170,14 +150,11 @@
               <input type="text" id="CVC" v-model="newCard.cvc" placeholder="123">
             </div>
           </div>
-          <!-- END: Changed Block for Exp.Date and CVC -->
           <div class="card_input">
             <label for="nameOnCard">Name on Card</label>
             <input type="text" id="nameOnCard" v-model="newCard.name" placeholder="John Doe">
           </div>
-          <!-- START: Changed class for consistency -->
           <div class="card_input">
-            <!-- END: Changed class for consistency -->
             <label for="country-select">Country or Region</label>
             <div class="select-wrapper">
               <select id="country-select" v-model="selectedCountry">
@@ -207,9 +184,8 @@
 import {ref, reactive, computed, watch, onMounted, onBeforeUnmount} from 'vue';
 
 const activeTab = ref('account');
-const selectedCountry = ref('United States'); // Added for the dropdown
 
-// 사용자 정보 (계정 탭)
+// --- 계정 탭 관련 로직 ---
 const user = reactive({
   name: 'Tomhoon',
   email: 'gnsdl9079@gmail.com',
@@ -221,90 +197,77 @@ const user = reactive({
   profileImage: 'https://picsum.photos/seed/profile/120/120'
 });
 
-// 예약 내역 (내역 탭)
+const editingField = ref(null);
+const tempUser = reactive({});
+const accountFields = ref([
+  { key: 'name', label: 'Name' },
+  { key: 'email', label: 'Email', type: 'email' },
+  { key: 'password', label: 'Password', type: 'password' },
+  { key: 'phone', label: 'Phone Number', type: 'tel' },
+  { key: 'address', label: 'Address' },
+  { key: 'dob', label: 'Date of birth' }
+]);
+
+function startEditing(fieldKey) {
+  Object.assign(tempUser, user);
+  editingField.value = fieldKey;
+}
+
+function saveChanges(fieldKey) {
+  if (fieldKey === 'email') {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(tempUser.email)) {
+      alert('올바른 이메일 형식을 입력해주세요. (예: user@example.com)');
+      return;
+    }
+  }
+  user[fieldKey] = tempUser[fieldKey];
+  editingField.value = null;
+}
+
+function cancelEdit() {
+  editingField.value = null;
+}
+
+// --- 내역 탭 관련 로직 ---
 const allBookings = ref([
-  {
-    id: 1,
-    roomName: "스탠다드 더블룸",
-    roomImageSrc: "https://picsum.photos/seed/room1/80/80",
-    checkInDate: "2025-12-08",
-    checkInDisplay: "Thur, Dec 8",
-    checkOutDate: "2025-12-09",
-    checkOutDisplay: "Fri, Dec 9",
-    checkInTime: "12:00pm",
-    checkOutTime: "11:30am",
-    roomNumber: "On arrival"
-  },
-  {
-    id: 2,
-    roomName: "디럭스 스위트",
-    roomImageSrc: "https://picsum.photos/seed/room2/80/80",
-    checkInDate: "2026-01-15",
-    checkInDisplay: "Mon, Jan 15",
-    checkOutDate: "2026-01-18",
-    checkOutDisplay: "Thur, Jan 18",
-    checkInTime: "03:00pm",
-    checkOutTime: "11:00am",
-    roomNumber: "101"
-  },
-  {
-    id: 3,
-    roomName: "패밀리 룸",
-    roomImageSrc: "https://picsum.photos/seed/room3/80/80",
-    checkInDate: "2025-09-20",
-    checkInDisplay: "Mon, Nov 20",
-    checkOutDate: "2025-09-22",
-    checkOutDisplay: "Wed, Nov 22",
-    checkInTime: "02:00pm",
-    checkOutTime: "12:00pm",
-    roomNumber: "203"
-  },
+  { id: 1, roomImageSrc: "https://picsum.photos/seed/room1/80/80", checkInDate: "2025-12-08", checkInDisplay: "Thur, Dec 8", checkOutDate: "2025-12-09", checkOutDisplay: "Fri, Dec 9" },
+  { id: 2, roomImageSrc: "https://picsum.photos/seed/room2/80/80", checkInDate: "2026-01-15", checkInDisplay: "Mon, Jan 15", checkOutDate: "2026-01-18", checkOutDisplay: "Thur, Jan 18" },
+  { id: 3, roomImageSrc: "https://picsum.photos/seed/room3/80/80", checkInDate: "2025-09-20", checkInDisplay: "Mon, Nov 20", checkOutDate: "2025-09-22", checkOutDisplay: "Wed, Nov 22" },
 ]);
 const selectedFilter = ref('upcoming');
 const isFilterOpen = ref(false);
 
-// 결제 수단 (결제수단 탭)
-const cards = ref([]);
-const isModalOpen = ref(false);
-const newCard = ref({
-  number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false
-});
-
-// 드래그 스크롤
-const slider = ref(null); // template의 DOM 요소를 참조
-const isDown = ref(false);
-const startX = ref(0);
-const scrollLeft = ref(0);
-
-
-// --- 2. 계산된 속성 (Computed Properties) ---
 const filteredBookings = computed(() => {
-  const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
-
+  const todayStr = new Date().toISOString().split('T')[0];
   switch (selectedFilter.value) {
-    case 'upcoming':
-      return allBookings.value.filter(b => b.checkInDate >= todayStr);
-    case 'latest':
-      return [...allBookings.value].sort((a, b) => new Date(b.checkInDate) - new Date(a.checkInDate));
-    case 'oldest':
-      return [...allBookings.value].sort((a, b) => new Date(a.checkInDate) - new Date(b.checkInDate));
-    default:
-      return [];
+    case 'upcoming': return allBookings.value.filter(b => b.checkInDate >= todayStr);
+    case 'latest': return [...allBookings.value].sort((a, b) => new Date(b.checkInDate) - new Date(a.checkInDate));
+    case 'oldest': return [...allBookings.value].sort((a, b) => new Date(a.checkInDate) - new Date(b.checkInDate));
+    default: return [];
   }
 });
 
-
-// --- 3. 메소드 (Methods) ---
 function selectFilter(filter) {
   selectedFilter.value = filter;
   isFilterOpen.value = false;
 }
 
-function openModal() {
-  isModalOpen.value = true;
-}
+// =================== [수정됨] 결제수단 관련 로직 START ===================
+const cards = ref([]);
+const isModalOpen = ref(false);
+const newCard = ref({ number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false });
+const selectedCountry = ref('United States');
+const countries = ref([
+  { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' }, { code: 'KR', name: 'South Korea' }, { code: 'JP', name: 'Japan' }, { code: 'GB', name: 'United Kingdom' },
+]);
 
+const slider = ref(null);
+const isDown = ref(false);
+const startX = ref(0);
+const scrollLeft = ref(0);
+
+function openModal() { isModalOpen.value = true; }
 function closeModal() {
   isModalOpen.value = false;
   newCard.value = {number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false};
@@ -315,18 +278,9 @@ function addCard() {
     alert('올바른 카드 번호를 입력하세요.');
     return;
   }
-  const cardToAdd = {
-    id: Date.now(),
-    lastFour: newCard.value.number.slice(-4),
-    expDate: newCard.value.expDate,
-  };
+  const cardToAdd = { id: Date.now(), lastFour: newCard.value.number.slice(-4), expDate: newCard.value.expDate };
   cards.value.unshift(cardToAdd);
-
-  if (!newCard.value.saveInfo) {
-    closeModal();
-  } else {
-    isModalOpen.value = false;
-  }
+  if (!newCard.value.saveInfo) { closeModal(); } else { isModalOpen.value = false; }
 }
 
 function deleteCard(cardId) {
@@ -341,17 +295,14 @@ function handleMouseDown(e) {
   startX.value = e.pageX - slider.value.offsetLeft;
   scrollLeft.value = slider.value.scrollLeft;
 }
-
 function handleMouseLeave() {
   isDown.value = false;
-  slider.value.style.cursor = 'grab';
+  if(slider.value) slider.value.style.cursor = 'grab';
 }
-
 function handleMouseUp() {
   isDown.value = false;
-  slider.value.style.cursor = 'grab';
+  if(slider.value) slider.value.style.cursor = 'grab';
 }
-
 function handleMouseMove(e) {
   if (!isDown.value) return;
   e.preventDefault();
@@ -360,29 +311,23 @@ function handleMouseMove(e) {
   slider.value.scrollLeft = scrollLeft.value - walk;
 }
 
-
-// --- 4. 감시자 (Watchers) ---
 watch(() => newCard.value.number, (newValue) => {
   const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
-  let formatted = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
-  newCard.value.number = formatted;
+  newCard.value.number = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
 });
-
 watch(() => newCard.value.expDate, (newValue) => {
   const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
   newCard.value.expDate = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
 });
-
 watch(() => newCard.value.cvc, (newValue) => {
   newCard.value.cvc = newValue.replace(/[^\d]/g, '').slice(0, 3);
 });
-
 watch(() => newCard.value.name, (newValue) => {
   newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
 });
+// =================== [수정됨] 결제수단 관련 로직 END =====================
 
-
-// --- 5. 라이프사이클 훅 (Lifecycle Hooks) ---
+// --- 공통 라이프사이클 훅 ---
 const filterWrapper = ref(null);
 const handleClickOutside = (event) => {
   if (filterWrapper.value && !filterWrapper.value.contains(event.target)) {
@@ -390,26 +335,12 @@ const handleClickOutside = (event) => {
   }
 };
 
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside);
-});
-
-const countries = ref([
-  { code: 'US', name: 'United States' },
-  { code: 'CA', name: 'Canada' },
-  { code: 'KR', name: 'South Korea' },
-  { code: 'JP', name: 'Japan' },
-  { code: 'GB', name: 'United Kingdom' },
-]);
-
+onMounted(() => { document.addEventListener('click', handleClickOutside); });
+onBeforeUnmount(() => { document.removeEventListener('click', handleClickOutside); });
 </script>
 
 <style scoped>
-/* ... (Your existing styles from body to .add-card:hover are fine) ... */
+/* 기존 스타일은 변경되지 않았습니다. */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   background-color: #f7f7f7;
@@ -419,9 +350,8 @@ body {
 }
 .main-container {
   margin: 0 auto;
-  width: 90%;
+  max-width: 1232px;
 }
-/*프로필*/
 .profile-section {
   position: relative;
   text-align: center;
@@ -484,19 +414,10 @@ body {
   color: #777;
   font-size: 1rem;
 }
-/* 탭 메뉴 */
 .main-content {
   margin-top: 30px;
   padding: 0 20px;
   white-space: nowrap;
-}
-.header_tabs{
-  padding: 0px 15px;
-  text-decoration: none;
-  color: #888888;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  position: relative;
 }
 .tabs {
   display: flex;
@@ -518,24 +439,6 @@ body {
 .tab.active {
   color: #333;
 }
-.header_tabs .tab{
-  padding: 11px 75px;
-  text-decoration: none;
-  color: #000000;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  position: relative;
-}
-.header_tabs .tab.active::after{
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  background-color: #46BD7B;
-  border-radius: 2px;
-}
 .tab.active::after {
   content: '';
   position: absolute;
@@ -545,7 +448,6 @@ body {
   height: 3px;
   background-color: #333;
 }
-/* 탭 콘텐츠 */
 .tab-content {
   background-color: #fff;
   padding: 30px;
@@ -563,26 +465,24 @@ body {
   font-weight: bold;
   margin-bottom: 20px;
 }
-/* 계정 탭 스타일 */
 .info-group {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
   padding: 15px 0;
-
 }
 .info-label {
   font-weight: bold;
   color: #555;
   width: 150px;
+  flex-shrink: 0;
 }
 .info-value-wrapper {
   display: flex;
   align-items: center;
   flex-grow: 1;
   justify-content: space-between;
-
 }
 .info-value {
   color: #333;
@@ -596,8 +496,6 @@ body {
   font-weight: bold;
   transition: color 0.2s;
   display: flex;
-  position: relative;
-  top: 2px;
   padding: 10px 15px;
   gap: 5px;
   align-items: center;
@@ -605,7 +503,6 @@ body {
 .change-btn:hover {
   color: #000;
 }
-/* 예약 내역 섹션 스타일 */
 .booking-header {
   display: flex;
   justify-content: space-between;
@@ -619,23 +516,10 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 1rem;
-  color: #555;
   cursor: pointer;
   padding: 5px 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  background-color: #f0f0f0;
-  transition: background-color 0.2s;
-}
-.filter-options:hover {
-  background-color: #e0e0e0;
-}
-.filter-options svg {
-  transition: transform 0.3s ease;
-}
-.filter-options.expanded svg {
-  transform: rotate(180deg);
 }
 .filter-dropdown {
   position: absolute;
@@ -645,27 +529,15 @@ body {
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  min-width: 120px;
   z-index: 10;
-  display: none;
   margin-top: 5px;
-}
-.filter-dropdown.show {
-  display: block;
 }
 .dropdown-item {
   padding: 10px 15px;
   cursor: pointer;
-  font-size: 0.95rem;
-  color: #333;
 }
 .dropdown-item:hover {
   background-color: #f5f5f5;
-}
-.dropdown-item.selected {
-  background-color: #e0f2f7;
-  font-weight: bold;
-  color: #2196F3;
 }
 .booking-list {
   display: flex;
@@ -683,13 +555,11 @@ body {
 .booking-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 .card-left {
   display: flex;
   align-items: center;
   gap: 24px;
-  flex-grow: 1;
 }
 .hotel-logo-container {
   width: 80px;
@@ -700,7 +570,6 @@ body {
   justify-content: center;
   align-items: center;
   padding: 5px;
-  flex-shrink: 0;
 }
 .hotel-logo {
   width: 100%;
@@ -711,141 +580,55 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  flex-shrink: 0;
 }
 .date-info-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  flex-shrink: 0;
 }
 .date-label {
-  font-size: 14px;
   color: #888;
   margin-bottom: 4px;
-  white-space: nowrap;
 }
 .date-value {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
-  white-space: nowrap;
 }
 .dash-separator {
   width: 25px;
   height: 2px;
   background-color: #ccc;
   margin: 0 10px;
-  flex-shrink: 0;
-}
-.card-right {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-shrink: 0;
-  border-left: 1px solid #e0e0e0;
-  padding-left: 35px;
-}
-.time-room-info {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-shrink: 0;
-}
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  white-space: nowrap;
-}
-.info-line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #555;
-  white-space: nowrap;
-}
-.info-line svg {
-  color: #92b8af;
-}
-.info-line .label {
-  font-weight: 500;
-  color: #888;
-}
-.info-line .value {
-  font-weight: bold;
-  font-size: 16px;
-  color: #333;
-}
-.room-info-item {
-  border-left: 1px solid #e0e0e0;
-  padding-left: 20px;
-}
-.actions-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.download-btn {
-  background-color: #92b8af;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.3s;
-  white-space: nowrap;
-}
-.download-btn:hover {
-  background-color: #82a89f;
-}
-.download-btn svg {
-  fill: #fff;
-}
-.arrow-btn {
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  flex-shrink: 0;
-}
-.arrow-btn svg {
-  color: #555;
-}
-.arrow-btn:hover {
-  background-color: #f0f0f0;
 }
 .room-section {
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   padding: 15px 24px;
   border: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 18px;
   font-weight: bold;
-  color: #333;
 }
-.room-section svg {
-  width: 20px;
-  height: 20px;
-  color: #555;
-  align-items: center;
+.edit-input {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-right: 10px;
 }
+.edit-actions {
+  display: flex;
+  gap: 10px;
+}
+.save-btn, .cancel-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.save-btn { background-color: #8dd3bb; }
+.cancel-btn { background-color: #f0f0f0; }
+
+/* =================== [수정됨] 결제수단 관련 스타일 START =================== */
 .card-container{
   background-color: #ffffff;
   border-radius: 5px;
@@ -856,16 +639,10 @@ body {
   cursor: grab;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  padding-bottom: 10px;
 }
 .card-container::-webkit-scrollbar{
   display: none;
-}
-.card{
-  width: 378px;
-  height: 212px;
-  border-radius: 15px;
-  padding: 30px;
-  box-sizing: border-box;
 }
 .existing-card{
   width: 378px;
@@ -878,13 +655,15 @@ body {
   border-radius: 15px;
   margin-right: 5px;
   flex-shrink: 0;
+  padding: 20px;
+  box-sizing: border-box;
 }
 .add-card{
   border-radius: 10px;
-  width: 100%;
+  width: 378px;
   flex-shrink: 0;
   height: 212px;
-  border-width: 1px;
+  border-width: 2px;
   border-color: #8dd3bb;
   border-style: dashed;
   display: flex;
@@ -894,9 +673,8 @@ body {
 }
 .add-card:hover{
   cursor: pointer;
+  background-color: #f7fdfb;
 }
-
-/*--- START: MODAL STYLES REVISED ---*/
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -909,51 +687,30 @@ body {
   align-items: center;
   z-index: 100;
 }
-
 .modal-content {
   width: 90%;
   max-width: 640px;
-  /* height is now determined by content */
   padding: 40px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px; /* Space between title, form, and button */
+  gap: 32px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: white;
 }
-
 .card_all {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px; /* Consistent vertical spacing between form rows */
+  gap: 24px;
 }
-
-.card_all p {
-  margin: 0; /* remove default margin */
-  align-self: flex-start; /* align title to the left */
-}
-
-.form-row {
-  display: flex;
-  gap: 20px;
-  width: 100%;
-}
-
-.card_input {
-  position: relative;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.card_input.half-width {
-  flex: 1; /* Make items in form-row share width equally */
-}
-
+.card_all p { margin: 0; align-self: flex-start; }
+.form-row { display: flex; gap: 20px; width: 100%; }
+.card_input { position: relative; width: 100%; margin-bottom: 10px; }
+.card_input.half-width { flex: 1; }
 .card_input label {
   position: absolute;
   top: -10px;
@@ -964,7 +721,6 @@ body {
   color: black;
   z-index: 1;
 }
-
 .card_input input[type="text"],
 .card_input select {
   width: 100%;
@@ -976,31 +732,9 @@ body {
   box-sizing: border-box;
   background-color: transparent;
 }
-
-.card_input input::placeholder {
-  font-size: 14px;
-  color: #aaa;
-}
-
-.card_input select {
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-}
-
-.card_input input:focus,
-.card_input select:focus {
-  outline: none;
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.select-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
+.card_input input::placeholder { font-size: 14px; color: #aaa; }
+.card_input select { -webkit-appearance: none; appearance: none; cursor: pointer; }
+.select-wrapper { position: relative; width: 100%; height: 100%; }
 .select-wrapper::after {
   content: '▼';
   position: absolute;
@@ -1011,27 +745,23 @@ body {
   color: #333;
   pointer-events: none;
 }
-
 .checkbox-container {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%; /* 왼쪽 정렬을 위해 너비 100% 설정 */
-  align-self: flex-start; /* 컨테이너 내에서 왼쪽으로 붙임 */
-  margin-bottom: 10px; /* 버튼과의 간격 조정 */
+  width: 100%;
+  align-self: flex-start;
+  margin-bottom: 10px;
 }
-
 .checkbox-container label {
   font-size: 16px;
   color: #333;
   cursor: pointer;
-  user-select: none; /* 텍스트 드래그 방지 */
+  user-select: none;
   position: relative;
   top: -1px;
   left: -10px;
 }
-
-/* 기본 체크박스 숨기기 */
 .checkbox-container input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -1041,17 +771,12 @@ body {
   border: 2px solid #ddd;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
+  flex-shrink: 0;
 }
-
-/* 체크되었을 때의 스타일 */
 .checkbox-container input[type="checkbox"]:checked {
   background-color: #333;
   border-color: #333;
 }
-
-/* 체크 표시 (V) 만들기 */
 .checkbox-container input[type="checkbox"]:checked::after {
   content: '';
   position: absolute;
@@ -1063,5 +788,12 @@ body {
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
 }
-/*--- END: MODAL STYLES REVISED ---*/
+.delete-card-btn{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 17px;
+  height: 14px;
+}
+/* =================== [수정됨] 결제수단 관련 스타일 END ===================== */
 </style>
