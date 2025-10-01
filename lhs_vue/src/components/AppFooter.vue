@@ -1,18 +1,22 @@
 <template>
   <footer>
     <section class="subscription-box">
+
       <div class="subscription-content">
-        <h1>구독서비스<br> 신청해보세요</h1>
-        <p style="font-weight: bold; color: #374a3b; font-size: 17px">The Travel</p>
-        <p>구독하고 무료, 최신 여행 정보를 받아보세요</p>
+        <div style="display: grid; gap: 20px">
+        <span style="font-size: 44px; font-weight: bold; display: block">구독서비스<br> 신청해보세요</span>
+        <span style="font-weight: bold; color: #374a3b; font-size: 20px; display: block">The Travel</span>
+        <span>구독하고 무료, 최신 여행 정보를 받아보세요</span>
         <div class="subscription-form-container">
-          <input type="email" placeholder="Your email address" style="width: 100%; padding: 10px">
-          <button type="submit">Subscribe</button>
+          <input class="subscription-email" type="email" placeholder="Your email address" style="width: 500px; padding: 10px">
+          <button class="subscription-button" type="submit">Subscribe</button>
+        </div>
         </div>
       </div>
       <div class="subscription-image">
-        <img src="@/assets/letter-box.png" height="390" width="400" alt="" />
+        <img src="@/assets/letter-box.png" height="325" width="335" style="position: relative; top: 4px" alt="" />
       </div>
+
     </section>
 
     <div class="footer-bottom">
@@ -89,7 +93,8 @@
   border-radius: 10px;
   padding: 30px;
   width: 80%;
-  height: 75%;
+  max-width: 1232px;
+  height: 305px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -120,7 +125,8 @@ footer {
   display: flex;
   justify-content: space-evenly;
   width: 100%;
-  padding: 0 105px;
+  max-width: 1232px;
+  gap: 50px;
 }
 
 .footer-letter {
@@ -131,7 +137,7 @@ footer {
   display: flex;
   flex-direction: column;
   font-weight: bold;
-  font-size: clamp(1.125rem, 1vw + 0.5rem, 1.375rem);
+  font-size: 16px;
 }
 
 .footer-span-details {
@@ -141,6 +147,30 @@ footer {
   position: relative;
   top: 13px;
   gap: 10px;
-  font-size:clamp(0.875rem, 0.5vw + 0.5rem, 1rem);
+  font-size:  14px;
+}
+
+.subscription-form-container{
+  display: flex;
+  gap: 20px;
+}
+
+.subscription-email{
+  border-radius: 5px;
+  height: 40px;
+  border : none;
+}
+
+.subscription-button{
+  border-radius: 5px;
+  padding: 10px;
+  border: none;
+  background-color: #112211;
+  color: white;
+  font-size: 14px;
+}
+
+.subscription-content{
+  display: flex;
 }
 </style>
