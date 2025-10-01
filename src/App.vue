@@ -10,7 +10,7 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Noto Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -23,5 +23,19 @@ html, body, #app {
   margin: 0;
   width: 100%;
 }
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+button {
+  border: none;
+  background-color: transparent;
 
+}
+ul, li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 </style>

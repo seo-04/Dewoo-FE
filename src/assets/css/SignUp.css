@@ -183,7 +183,7 @@ h4 {
 p {
     color: gray;
     font-size: 12px;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 /* 입력 박스 */
