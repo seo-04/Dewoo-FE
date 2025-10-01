@@ -127,6 +127,7 @@ p {
     font-weight: bold;
     color: #B9062F;
     margin-right: 15px;
+    margin-bottom: 25px;
 }
 
 /* 입력창 */
@@ -285,7 +286,7 @@ a {
 
 .Img_right {
     width: 400px;
-    height: 380px;
+    height: 350px;
     flex: 1;
     position: relative;
     overflow: hidden;
@@ -295,7 +296,7 @@ a {
     border-radius: 30px;
     background-color: transparent;
     margin-right: 25px;
-    margin-top: 120px;
+    margin-top: 125px;
 }
 
 /* 이미지 */
