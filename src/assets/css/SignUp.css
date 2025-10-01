@@ -341,13 +341,13 @@ p {
 }
 
 /* 오른쪽 이미지 영역 */
-.right {
+.righting {
     width: 200px;
-    height: 600px;
+    height: 530px;
     flex: 1;
     position: relative;
     overflow: hidden;
-    margin-top: 13px;
+    margin-top: 105px;
     margin-right: 35px;
     display: flex;
     align-items: center;
@@ -355,7 +355,7 @@ p {
 }
 
 /* 이미지 슬라이드 */
-.right img {
+.righting img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -365,7 +365,7 @@ p {
     opacity: 0;
     transition: opacity 1s ease-in-out;
 }
-.right img.active {
+.righting img.active {
     opacity: 1;
 }
 
