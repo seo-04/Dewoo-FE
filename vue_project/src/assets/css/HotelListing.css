@@ -766,13 +766,15 @@
     margin-left: 20%;
     font-size: 18px;
     font-weight: bold;
-    background: #112211;
+    background: #464646;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.30);
+    border: none;
     color: white;
     border-radius: 8px;
     cursor: pointer;
 }
 
-.button_result button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
+.button_result button:hover{
+    background: #282828;
+    cursor: pointer;
 }

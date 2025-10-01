@@ -18,15 +18,15 @@ const router = createRouter({
             name: 'Password_Setting',
             component: Password_Setting
         },
-        { path: '/Payment_Method', component: Payment_Method },
-        { path: '/SignUp', component: SignUp },
-        { path: '/Find_Password', component: Find_Password },
+        { path: '/Payment_Method', component: Payment_Method, name: Payment_Method },
+        { path: '/SignUp', component: SignUp, name:SignUp  },
+        { path: '/Find_Password', component: Find_Password, name:Find_Password },
         {
             path: '/Authenticate/:userEmail',
             name: 'Authenticate',
             component: Authenticate
         },
-        { path: '/HotelSearch', component: HotelSearch },
+        { path: '/HotelSearch', component: HotelSearch, name:HotelSearch },
         { path: '/HotelListing', component: HotelListing, name: 'HotelListing' }
     ]
 })

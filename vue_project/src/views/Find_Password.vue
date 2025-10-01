@@ -110,7 +110,7 @@ export default {
       }
     },
     goBack() {
-      this.$router.push("");
+      this.$router.push("/");
     },
     showSlide(n) {
       this.index = n;

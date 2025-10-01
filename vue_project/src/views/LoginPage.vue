@@ -28,15 +28,11 @@
           <label>
             <input type="checkbox" v-model="remember" /> 비밀번호 기억하기
           </label>
-          <p class="text2">
-            <a href="/Find_Password">Forgot Password</a>
-          </p>
+          <p class="text2" @click ="$router.push('/Find_Password');"> Forgot Password </p>
         </div>
 
         <button class="loginbox" @click="handleSubmit">Login</button>
-        <p class="signup">
-          <a href="/signup">회원가입</a>
-        </p>
+        <p class="signup" @click ="$router.push('/SignUp');">회원가입</p>
 
 
         <!-- sns 로그인 경계선 -->
