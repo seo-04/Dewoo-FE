@@ -709,6 +709,7 @@ export default {
   },
   async mounted() {
     const result = await bTeamApi.get('/api/accommodation');
+    console.log("result = " + result);
     const resultData = result.result.accommodations.content;
     console.log(resultData);
     this.rooms = resultData || [];

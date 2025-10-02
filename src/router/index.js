@@ -8,29 +8,29 @@ import FindPassword from '../views/FindPassword.vue'
 import Authenticate from '../views/Authenticate.vue'
 import HotelAccommodation from '../views/HotelAccommodation.vue'
 // import HotelSearch from '../views/HotelSearch.vue'
-// import HotelListing from '../views/HotelListing.vue'
+import HotelListing from '../views/HotelListing.vue'
 
 
 const router = createRouter({
     history: createWebHistory(),
     routes : [
-        { path: '/', component: LoginPage, meta: { layout: 'login' } },
+        { path: '/', name: 'LoginPage', component: LoginPage, meta: { layout: 'login' } },
         {
             path: '/password-setting/:userEmail/:verificationCode',
             name: 'Password_Setting',
             component: PasswordSetting
         },
-        { path: '/paymentMethod', component: PaymentMethod },
-        { path: '/signUp', component: SignUp},
-        { path: '/findPassword', component: FindPassword},
-        { path: '/accommodation', component: HotelAccommodation },
+        { path: '/paymentMethod', name:"PaymentMethod", component: PaymentMethod },
+        { path: '/signUp', name:"SignUp", component: SignUp},
+        { path: '/findPassword', name:"FindPassword", component: FindPassword},
+        { path: '/accommodation', name:"HotelAccommodation", component: HotelAccommodation },
         {
             path: '/authenticate/:userEmail',
             name: 'Authenticate',
             component: Authenticate
         },
         // { path: '/HotelSearch', component: HotelSearch},
-        // { path: '/HotelListing', component: HotelListing}
+        { path: '/hotellisting', name:"HotelListing", component: HotelListing}
     ]
 })
 
