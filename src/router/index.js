@@ -16,8 +16,8 @@ const router = createRouter({
     routes : [
         { path: '/', name: 'LoginPage', component: LoginPage, meta: { layout: 'login' } },
         {
-            path: '/passwordsetting/:userEmail/:verificationCode',
-            name: 'PasswordSetting',
+            path: '/password-setting/:userEmail/:verificationCode',
+            name: 'Password_Setting',
             component: PasswordSetting
         },
         { path: '/paymentMethod', name:"PaymentMethod", component: PaymentMethod },
