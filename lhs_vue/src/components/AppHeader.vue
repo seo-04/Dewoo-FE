@@ -31,10 +31,6 @@
         </nav>
       </div>
     </header>
-
-    <main>
-    </main>
-
 </template>
 
 <script setup lang="js">
@@ -49,6 +45,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
 }
 
 .container {

@@ -3,7 +3,7 @@
     <AppHeader />
 
     <main>
-      <PaymentBody />
+      <router-view />
 
     </main>
     <AppFooter />

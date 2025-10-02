@@ -23,7 +23,7 @@
       </div>
     </section>
 
-    <main class="main-content">
+    <div class="main-content">
       <nav class="tabs">
         <a href="#" class="tab" :class="{ active: activeTab === 'account' }"
            @click.prevent="activeTab = 'account'">계정</a>
@@ -130,7 +130,7 @@
           </div>
         </div>
       </div>
-    </main>
+    </div>
 
     <div v-if="isModalOpen" class="modal-overlay show" @click.self="closeModal">
       <div class="modal-content">
