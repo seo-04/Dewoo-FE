@@ -7,7 +7,7 @@ import SignUp from '../views/SignUp.vue'
 import FindPassword from '../views/FindPassword.vue'
 import Authenticate from '../views/Authenticate.vue'
 import HotelAccommodation from '../views/HotelAccommodation.vue'
-// import HotelSearch from '../views/HotelSearch.vue'
+import HotelSearch from '../views/HotelSearch.vue'
 import HotelListing from '../views/HotelListing.vue'
 
 
@@ -16,8 +16,8 @@ const router = createRouter({
     routes : [
         { path: '/', name: 'LoginPage', component: LoginPage, meta: { layout: 'login' } },
         {
-            path: '/password-setting/:userEmail/:verificationCode',
-            name: 'Password_Setting',
+            path: '/passwordsetting/:userEmail/:verificationCode',
+            name: 'PasswordSetting',
             component: PasswordSetting
         },
         { path: '/paymentMethod', name:"PaymentMethod", component: PaymentMethod },
@@ -29,7 +29,7 @@ const router = createRouter({
             name: 'Authenticate',
             component: Authenticate
         },
-        // { path: '/HotelSearch', component: HotelSearch},
+        { path: '/hotelsearch', name:"HotelSearch", component: HotelSearch},
         { path: '/hotellisting', name:"HotelListing", component: HotelListing}
     ]
 })
