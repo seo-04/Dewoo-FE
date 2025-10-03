@@ -1,3 +1,4 @@
+/*  폰트 */
 /* ------------------ 폰트 ------------------ */
 @font-face {
     font-family: 'Isamanru';
@@ -13,24 +14,36 @@
     font-display: swap;
 }
 
-head{
-    margin: 0;
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
 }
 
+.container {
+    width: 100%;
+    margin: 0 auto;
+
+
 .nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      background-color: #FFFFFF;
-      padding: 0 20px;
-      height: 87px;
-      box-sizing: border-box;
-  }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    padding: 0 105px;
+    height: 87px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .item span {
     display: flex;
     gap: 4px;
 }
+
 .circle {
     width: 45px;
     height: 45px;
@@ -39,7 +52,8 @@ head{
     border-radius: 50%;
     position: relative;
 }
-.mini-circle{
+
+.mini-circle {
     position: absolute;
     background-color: #FF8682;
     width: 11px;
@@ -48,26 +62,49 @@ head{
     top: 33px;
     right: 1px;
 }
-.check_box {
+
+.check {
     width: 6px;
     height: 3px;
     border-left: 2px solid black;
     border-bottom: 2px solid black;
     transform: rotate(-45deg);
     position: absolute;
-    top: 2px;
-    left: 2px;
+    top: -5px;
+    left: 3px;
 }
+
 .flex {
     display: flex;
     gap: 10px;
 }
+
 .vertical-center {
     align-items: center;
 }
 
-img {
-    object-fit: contain;
+.tab {
+    text-decoration: none;
+    color: #333;
+    bottom: -4px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab.active {
+    color: #333;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+
+    background-color: #333;
+    border-radius: 10px;
 }
 
 /*footer*/
@@ -193,7 +230,6 @@ header {
 
 /*  Hero  */
 .hero {
-    margin-top: 30px;
     position: relative;
     width: 100%;
     height: 500px;
@@ -236,7 +272,7 @@ header {
 /*  서치 박스 */
 .search_box {
     position: absolute;
-    top: 55%;
+    top: 63%;
     left: 50%;
     transform: translateX(-50%);
     background: #fff;
@@ -329,20 +365,6 @@ header {
 
 /*  Rooms & Guests 모달  */
 .people_modal {
-    display: none; /* Vue에서는 v-if로 제어 */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,0.7);
-    z-index: 1000;
-    justify-content: center;
-    align-items: flex-end;
-}
-
-/* 모달 본체 */
-.people_modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -403,12 +425,12 @@ header {
 }
 
 .warning {
-    font-size: 13px;
+    font-size: 11px;
     display: flex;
     align-items: center;
     background: #dddddd;
     border-radius: 10px;
-    padding: 1px;
+    padding: 5px;
     gap: 5px;
     margin-top: 10px;
 }
@@ -456,6 +478,7 @@ header {
     transform: translateY(100%);
     opacity: 0;
 }
+
 
 /*  여행에 빠지다  */
 .travel_container {
@@ -546,7 +569,7 @@ header {
     position: relative;
     scroll-snap-type: x mandatory;
     border: none;
-    gap: 30px;
+    gap: 25px;
 }
 
 .slider::-webkit-scrollbar {
@@ -562,26 +585,7 @@ header {
 
 @keyframes bannermove {
     0% { transform: translate(0); }
-    100% { transform: translate(-100%); }
-}
-
-/* 좌우 슬라이드 버튼 */
-.slide_btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1000;
-    font-size: 18px;
-    color: #333;
+    100% { transform: translate(-105%); }
 }
 
 /*  여행 더보기  */

@@ -18,7 +18,7 @@
             <i class="fa-brands fa-cc-visa"></i>
           </div>
 
-          <!-- 카드날짜 & cvc -->
+         <!-- 카드날짜 & cvc -->
           <div class="row-input">
             <input type="text" v-model="expDate" placeholder="Exp.Date (MM/YY)" />
             <input type="text" v-model="cvc" placeholder="cvc" />
@@ -43,7 +43,7 @@
           </div>
         </div>
 
-        <div class="check">
+        <div class="check_box">
           <label>
             <input type="checkbox" v-model="remember" /> 저장하고 One 터치로 결제하기
           </label>
@@ -168,7 +168,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 /* 오른쪽 이미지 영역 */
 .right {
@@ -195,5 +194,6 @@ export default {
   z-index: 2;
 }
 
-
 </style>
+
+
