@@ -27,18 +27,17 @@
             </form>
           </div>
 
-          <div class="check">
+          <div class="check2">
             <label>
               <input type="checkbox" v-model="remember" /> 비밀번호 기억하기
             </label>
-            <p class="text2">
-              <a href="/findPassword">Forgot Password</a>
-            </p>
+            <p class="text2" @click ="$router.push('/findPassword');">
+              Forgot Password </p>
           </div>
 
           <button class="loginbox" @click="handleSubmit">Login</button>
-          <p class="signup">
-            <a href="/SignUp">회원가입</a>
+          <p class="signup" @click ="$router.push('/SignUp');">
+           회원가입
           </p>
 
           <div class="boundary_line">

@@ -152,7 +152,7 @@ p {
     cursor: pointer;
 }
 
-.check {
+.check2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -160,7 +160,7 @@ p {
     margin: 5px 0;
 }
 
-.check label{
+.check2 label{
     gap: 5px;
 }
 

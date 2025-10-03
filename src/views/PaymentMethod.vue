@@ -18,7 +18,7 @@
             <i class="fa-brands fa-cc-visa"></i>
           </div>
 
-          <!-- 카드날짜 & cvc -->
+         <!-- 카드날짜 & cvc -->
           <div class="row-input">
             <input type="text" v-model="expDate" placeholder="Exp.Date (MM/YY)" />
             <input type="text" v-model="cvc" placeholder="cvc" />
@@ -30,7 +30,7 @@
           </div>
 
           <!-- 국적 -->
-          <div class="namebox">
+          <div class="county">
             <div class="select-wrapper">
               <select v-model="country">
                 <option disabled value="">Country or Region</option>
@@ -38,12 +38,12 @@
                   {{ c }}
                 </option>
               </select>
-              <i class="fa-solid fa-chevron-down"></i>
+<!--              <i class="fa-solid fa-chevron-down"></i>-->
             </div>
           </div>
         </div>
 
-        <div class="check">
+        <div class="check_box2">
           <label>
             <input type="checkbox" v-model="remember" /> 저장하고 One 터치로 결제하기
           </label>
@@ -168,8 +168,8 @@ export default {
 };
 </script>
 
-
 <style scoped>
+@import "@/assets/css/PaymentMethod.css";
 /* 오른쪽 이미지 영역 */
 .right {
   width: 400px;
@@ -195,5 +195,6 @@ export default {
   z-index: 2;
 }
 
-
 </style>
+
+

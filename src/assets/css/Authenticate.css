@@ -20,7 +20,7 @@
 }
 
 .login-box {
-    display: flex;
+  display: flex;
     background: #f9f9f9;
     border-radius: 10px;
     overflow: hidden;

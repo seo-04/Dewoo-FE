@@ -4,14 +4,13 @@
       <div class="left">
         <div class="back" @click="goBack">
           <i class="fa-solid fa-chevron-left"></i>
-          <p class="font"><a href="/">Back to Login</a></p>
+          <p class="font" @click="$router.push('/')">Back to Login</p>
         </div>
 
         <h4>인증하기</h4>
         <p>이메일로 받은 인증번호를 입력해주세요</p>
 
         <div class="log_input">
-          <!-- 인증 코드 입력 -->
           <div class="codebox">
             <input
                 :type="showPassword ? 'text' : 'password'"
