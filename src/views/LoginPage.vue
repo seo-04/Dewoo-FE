@@ -27,7 +27,7 @@
             </form>
           </div>
 
-          <div class="check">
+          <div class="check2">
             <label>
               <input type="checkbox" v-model="remember" /> 비밀번호 기억하기
             </label>
