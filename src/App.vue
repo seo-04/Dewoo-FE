@@ -3,8 +3,33 @@
 </template>
 
 <script>
+import bTeamApi from './util/axios';
+
 export default {
-  name: "App"
+  name: "App",
+  mounted() {
+    const param = {
+        userEmail: "gnsdl9079@gmail.com",
+        password: "qweasd1313!",
+        username: "tomhoon",
+        userAddress: "경기 성남시 분당구 대왕판교로606번길 45 (삼평동)",
+        userPhone: "123",
+        userBirth: "2025-10-22"
+    }
+    fetch('/api/user/all');
+    fetch('/api/test2', {
+      method: 'POST'
+    });
+    fetch('/api/user', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(param)
+    });
+    
+
+  }
 }
 </script>
 
