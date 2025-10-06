@@ -17,9 +17,11 @@ export default {
         userBirth: "2025-10-22"
     }
     fetch('/api/user/all');
+
     fetch('/api/test2', {
       method: 'POST'
     });
+    
     fetch('/api/user', {
       method: "POST",
       headers: {
