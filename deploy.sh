@@ -7,7 +7,7 @@ IMAGE_NAME="front-image"
 NETWORK_NAME="daewoo_a_network"
 
 # Ports (host:container)
-HOST_PORT="9080"
+HOST_PORT="780"
 CONTAINER_PORT="80"
 
 # ===== Script =====
