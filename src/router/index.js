@@ -9,6 +9,7 @@ import Authenticate from '../views/Authenticate.vue'
 import HotelAccommodation from '../views/HotelAccommodation.vue'
 import HotelSearch from '../views/HotelSearch.vue'
 import HotelListing from '../views/HotelListing.vue'
+import PaymentBody from '../views/PaymentBody.vue'
 
 
 const router = createRouter({
@@ -30,7 +31,8 @@ const router = createRouter({
             component: Authenticate
         },
         { path: '/hotelsearch', name:"HotelSearch", component: HotelSearch},
-        { path: '/hotellisting', name:"HotelListing", component: HotelListing}
+        { path: '/hotellisting', name:"HotelListing", component: HotelListing},
+        { path: '/payment', name: "PaymentBody", component: PaymentBody}
     ]
 })
 
