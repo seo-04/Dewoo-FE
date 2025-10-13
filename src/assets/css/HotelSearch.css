@@ -24,21 +24,18 @@ header {
 .container {
     width: 100%;
     margin: 0 auto;
-
-
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin: 0 auto;
-    background-color: #FFFFFF;
-    padding: 0 105px;
-    height: 87px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      background-color: #FFFFFF;
+      padding: 0 20px;
+      height: 87px;
+      box-sizing: border-box;
+  }
 .item span {
     display: flex;
     gap: 4px;
@@ -364,6 +361,20 @@ header {
 }
 
 /*  Rooms & Guests 모달  */
+.people_modal {
+    display: none; /* Vue에서는 v-if로 제어 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+/* 모달 본체 */
 .people_modal {
     position: fixed;
     top: 0;

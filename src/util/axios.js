@@ -6,7 +6,7 @@ export const bTeamApi = axios.create({
     baseURL: process.env.VUE_APP_API_URL
 });
 
-await bTeamApi.interceptors.request.use(
+bTeamApi.interceptors.request.use(
     config => {
         const token = localStorage.getItem("token")
         if (token) {
