@@ -135,7 +135,7 @@ export default {
           // 💡 일반 로그인 성공 시, JWT 토큰을 localStorage에 저장하는 로직이 추가되어야 합니다.
           // 현재는 Alert 후 바로 리다이렉션하지만, 실제 JWT를 받으면 저장 로직이 필요합니다.
           alert("로그인 성공!");
-          this.$router.push('/accommodation');
+          this.$router.push('/hotelsearch');
         } else {
           alert(response.data.message);
         }
