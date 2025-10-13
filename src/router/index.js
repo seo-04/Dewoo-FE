@@ -10,6 +10,7 @@ import HotelAccommodation from '../views/HotelAccommodation.vue'
 import HotelSearch from '../views/HotelSearch.vue'
 import HotelListing from '../views/HotelListing.vue'
 import PaymentBody from '../views/PaymentBody.vue'
+import UserProfile from '../views/UserProfile.vue'
 
 
 const router = createRouter({
@@ -32,7 +33,8 @@ const router = createRouter({
         },
         { path: '/hotelsearch', name:"HotelSearch", component: HotelSearch},
         { path: '/hotellisting', name:"HotelListing", component: HotelListing},
-        { path: '/payment', name: "PaymentBody", component: PaymentBody}
+        { path: '/payment', name: "PaymentBody", component: PaymentBody},
+        { path: '/profile', name: "UserProfile", component: UserProfile}
     ]
 })
 
