@@ -133,20 +133,7 @@
               </div>
             </div>
           </div>
-          <div class="Reservation_sign" v-if="selectedPayment === 'simple'">
-
-            <div class="social-login-buttons">
-              <div class="social-button-box">
-                <img src="../assets/img/login_facebook.png" alt="">
-              </div>
-              <div class="social-button-box">
-                <img src="../assets/img/login_google.png" alt="">
-              </div>
-              <div class="social-button-box">
-                <img src="../assets/img/login_apple.png" alt="">
-              </div>
-            </div>
-          </div>
+          <div id="payment-widget" v-show="selectedPayment === 'simple'"></div>
 
         </div>
       </div>
@@ -205,13 +192,49 @@
 </template>
 
 <script setup lang="js">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import CommonLayout from '../components/common/CommonLayout.vue';
 
-// 새로 추가된 카드를 저장할 배열
-const cards = ref([]);
+// [!code ++]
+// ------------------- 토스페이먼츠 연동 시작 -------------------
+const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm'; // 테스트 클라이언트 키
+const tossPayments = ref(null);
 
-// 결제 옵션 데이터
+onMounted(async () => {
+  // TossPayments 객체 초기화
+  tossPayments.value = await window.TossPayments(clientKey);
+});
+
+
+const requestTossPayment = async () => {
+  if (!tossPayments.value) {
+    alert('Toss Payments가 로드되지 않았습니다.');
+    return;
+  }
+
+  try {
+    await tossPayments.value.requestPayment('카드', {
+      amount: 265000, // 총 결제 금액
+      orderId: 'order-' + new Date().getTime(), // 주문 ID (고유해야 함)
+      orderName: '해튼호텔 Superior room', // 주문명
+      customerName: '박토스', // 고객 이름
+      successUrl: window.location.origin + '/payment/success', // 성공 시 리다이렉트 될 URL
+      failUrl: window.location.origin + '/payment/fail', // 실패 시 리다이렉트 될 URL
+    });
+  } catch (error) {
+    console.error('Toss Payments 에러:', error);
+    if (error.code === 'USER_CANCEL') {
+      alert('결제를 취소했습니다.');
+      selectedPayment.value = null; // 선택 취소
+    } else {
+      alert('결제 중 오류가 발생했습니다: ' + error.message);
+    }
+  }
+};
+// ------------------- 토스페이먼츠 연동 끝 -------------------
+// [!code --]
+
+const cards = ref([]);
 const paymentOptions = ref([
   {
     key: 'card',
@@ -221,17 +244,19 @@ const paymentOptions = ref([
   {
     key: 'simple',
     title: '간편결제',
-    subtitle: '카드 등록 없이 간편인증으로 결제가 진행됩니다.',
+    subtitle: '토스페이먼츠로 결제가 진행됩니다.',
   },
 ]);
 
 const selectedPayment = ref(null);
 
-const selectPayment = (key) => {
+const selectPayment = async (key) => {
   selectedPayment.value = key;
+  if (key === 'simple') {
+    await requestTossPayment();
+  }
 };
 
-// --- 카드 추가 관련 로직 ---
 const isModalOpen = ref(false);
 const newCard = ref({
   number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false
@@ -245,13 +270,10 @@ const countries = ref([
   { code: 'GB', name: 'United Kingdom' },
 ]);
 
-// ======================= 스크립트 수정 부분 START =======================
-// 드래그 스크롤 기능을 위한 변수 추가
 const slider = ref(null);
 const isDown = ref(false);
 const startX = ref(0);
 const scrollLeft = ref(0);
-// ======================= 스크립트 수정 부분 END =========================
 
 function openModal() {
   isModalOpen.value = true;
@@ -281,8 +303,6 @@ function addCard() {
   }
 }
 
-// ======================= 스크립트 수정 부분 START =======================
-// 카드 삭제 함수 및 드래그 스크롤 함수 추가
 function deleteCard(cardId) {
   if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
     cards.value = cards.value.filter(card => card.id !== cardId);
@@ -313,10 +333,7 @@ function handleMouseMove(e) {
   const walk = (x - startX.value) * 2;
   slider.value.scrollLeft = scrollLeft.value - walk;
 }
-// ======================= 스크립트 수정 부분 END =========================
 
-
-// 입력값 자동 서식 기능 (변경 없음)
 watch(() => newCard.value.number, (newValue) => {
   const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
   let formatted = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
@@ -339,5 +356,4 @@ watch(() => newCard.value.name, (newValue) => {
 
 <style scoped>
 @import '../assets/css/PaymentBody.css';
-
 </style>
