@@ -11,6 +11,10 @@ HOST_PORT="780"
 CONTAINER_PORT="80"
 
 # ===== Script =====
+echo "✅ 최신화"
+git pull | true
+
+
 echo "✅ 기존 컨테이너 중지"
 docker stop "$CONTAINER_NAME" || true
 
