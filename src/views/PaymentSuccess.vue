@@ -23,7 +23,7 @@ onMounted(async () => {
       amount,
     });
 
-    // 성공 시 로직 (예: 주문 완료 페이지로 이동)
+    // 성공 시 로직
     console.log('결제 승인 성공:', response.data);
     alert('결제가 성공적으로 완료되었습니다.');
     // router.push('/order/complete'); // 실제 주문 완료 페이지로 이동
@@ -31,8 +31,8 @@ onMounted(async () => {
   } catch (error) {
     // 실패 시 로직
     console.error('결제 승인 실패:', error);
-    // 실패 페이지로 리다이렉트
-    router.push(`/payment/fail?message=${error.response?.data?.message || '알 수 없는 오류'}`);
+    const errorMessage = error.response?.data?.message || error.response?.data || '알 수 없는 오류가 발생했습니다.';
+    router.push(`/payment/fail?message=${encodeURIComponent(errorMessage)}`);
   }
 });
 </script>

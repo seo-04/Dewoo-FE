@@ -2,11 +2,9 @@
   <CommonLayout>
     <div class="channel">Turkey > Istanbul > <span style="font-size: 20px; color: black"> 해튼호텔 </span></div>
     <div class="payment-body">
-
       <div class="payment-big">
         <div class="big-roomInfo">
-
-          <div class = "Reservation_Info">
+          <div class="Reservation_Info">
             <div class="roomInfo">
               <span class="room">Superior room - 1 더블베드 or 2 트윈 베드</span>
               <span class="roomPrice">₩240,000/night</span>
@@ -16,10 +14,8 @@
                 <div>
                   <img class="hotel-logo" src="../assets/img/cvk_hotel_logo.png" alt="">
                 </div>
-                <div class = "hotel-link-details">
-                  <div style="font-size: 20px;">
-                    해튼호텔
-                  </div>
+                <div class="hotel-link-details">
+                  <div style="font-size: 20px;">해튼호텔</div>
                   <div style="font-size: 14px; color: #888888">
                     <img class="location-logo" src="../assets/img/location.png" alt="">
                     Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437
@@ -29,8 +25,8 @@
             </div>
             <div class="Reservation_date">
               <div class="date">
-                <span class = "day">Thursday, Dec 8</span>
-                <span class = "check-IO">Check-In</span>
+                <span class="day">Thursday, Dec 8</span>
+                <span class="check-IO">Check-In</span>
               </div>
               <div class="Reservation_image">
                 <img src="../assets/img/left_line.png" height="7" width="39" alt="" style="margin-right: 30px"/>
@@ -38,8 +34,8 @@
                 <img src="../assets/img/right_line.png" height="7" width="39" alt=""/>
               </div>
               <div class="date">
-                <span class = "day">Friday, Dec 9</span>
-                <span class = "check-IO">Check-Out</span>
+                <span class="day">Friday, Dec 9</span>
+                <span class="check-IO">Check-Out</span>
               </div>
             </div>
           </div>
@@ -59,82 +55,9 @@
               <div class="radio-icon"></div>
             </div>
           </div>
-
           <div class="card-chest" v-if="selectedPayment === 'card'">
-            <div style="font-size: 32px; font-weight: bold; margin-bottom: 25px; text-align: left">카드등록</div>
-            <div class="card-container" ref="slider" @mousedown="handleMouseDown" @mouseleave="handleMouseLeave"
-                 @mouseup="handleMouseUp" @mousemove="handleMouseMove">
-              <div v-for="card in cards" :key="card.id" class="existing-card">
-                <div style="text-align: left">
-                  <span style="font-size: 24px; font-weight: bold;">**** **** ****</span><br>
-                  <span style="font-size: 32px; font-weight: bold;">{{ card.lastFour }}</span>
-                </div>
-                <img src="../assets/img/trash.png" @click="deleteCard(card.id)" alt="Delete Card" class="delete-card-btn"
-                     style="cursor: pointer; width: 21px; height: 18px">
-                <div style="display: flex; justify-content: space-between; align-content: center;">
-                  <div>
-                    <span>valid thru</span><br>
-                    <span style="font-size: 20px; font-weight: bold;">{{ card.expDate }}</span>
-                  </div>
-                  <div style="align-content: center">
-                    <img src="../assets/img/visa.png" height="33" width="52" alt=""/>
-                  </div>
-                </div>
-
-              </div>
-              <div class="add-card" @click="openModal">
-                <img style="position: absolute; z-index: 1; transform: translate(-50%, -50%); top: 50%; left: 50%" src="../assets/img/circle.png" alt="">
-                <img style="position: absolute; z-index: 2; transform: translate(-50%, -50%); top: 50%; left: 50%" src="../assets/img/plus.png" alt="">
-              </div>
-            </div>
-            <div v-if="isModalOpen" class="modal-overlay show" @click.self="closeModal">
-              <div class="modal-content">
-                <div class="card_all">
-                  <p style="font-size: 40px; font-weight: bold; margin-bottom: 20px">카드 추가</p>
-                  <div class="card_input">
-                    <label for="cardNumber">Card Number</label>
-                    <input type="text" id="cardNumber" v-model="newCard.number" placeholder="1234 5678 9101 1121">
-                  </div>
-                  <div class="form-row">
-                    <div class="card_input half-width">
-                      <label for="expDate">Exp. Date</label>
-                      <input type="text" id="expDate" v-model="newCard.expDate" placeholder="MM/YY">
-                    </div>
-                    <div class="card_input half-width">
-                      <label for="CVC">CVC</label>
-                      <input type="text" id="CVC" v-model="newCard.cvc" placeholder="123">
-                    </div>
-                  </div>
-                  <div class="card_input">
-                    <label for="nameOnCard">Name on Card</label>
-                    <input type="text" id="nameOnCard" v-model="newCard.name" placeholder="John Doe">
-                  </div>
-                  <div class="card_input">
-                    <label for="country-select">Country or Region</label>
-                    <div class="select-wrapper">
-                      <select id="country-select" v-model="selectedCountry">
-                        <option v-for="country in countries" :key="country.code" :value="country.name">
-                          {{ country.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="card_input">
-                    <div class="checkbox-container">
-                      <input type="checkbox" id="save-info-checkbox" v-model="newCard.saveInfo">
-                      <label for="save-info-checkbox">정보 저장하기</label>
-                    </div>
-                  </div>
-                </div>
-                <button @click="addCard"
-                        style="width: 512px; height: 48px; font-weight: bold; background-color: #8dd3bb; border-radius: 5px; font-size: 14px; border: none;">
-                  Add Card
-                </button>
-              </div>
-            </div>
           </div>
           <div id="payment-widget" v-show="selectedPayment === 'simple'"></div>
-
         </div>
       </div>
       <div class="payment-small">
@@ -153,13 +76,9 @@
               </div>
             </div>
           </div>
-          <div class="boundary_line">
-          </div>
-          <div class="reservation-protect">
-            Your booking is protected by <span style="font-weight: bold">golobe</span>
-          </div>
-          <div class="boundary_line">
-          </div>
+          <div class="boundary_line"></div>
+          <div class="reservation-protect">Your booking is protected by <span style="font-weight: bold">golobe</span></div>
+          <div class="boundary_line"></div>
           <div class="price-details">
             <div style="font-size: 16px; font-weight: bold">Price Details</div>
             <div class = "price-type">
@@ -179,8 +98,7 @@
               <span class = "detail-amount">₩5,000</span>
             </div>
           </div>
-          <div class="boundary_line">
-          </div>
+          <div class="boundary_line"></div>
           <div class = "price-type">
             <span class = "price-type">Total</span>
             <span class = "detail-amount">₩265,000</span>
@@ -191,63 +109,53 @@
   </CommonLayout>
 </template>
 
-<script setup lang="js">
+<script setup>
 import { ref, watch, onMounted } from 'vue';
 import CommonLayout from '../components/common/CommonLayout.vue';
 
-// [!code ++]
-// ------------------- 토스페이먼츠 연동 시작 -------------------
-const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm'; // 테스트 클라이언트 키
-const tossPayments = ref(null);
-
-onMounted(async () => {
-  // TossPayments 객체 초기화
-  tossPayments.value = await window.TossPayments(clientKey);
-});
-
+// --- 토스페이먼츠 연동 로직 ---
+const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
 
 const requestTossPayment = async () => {
-  if (!tossPayments.value) {
-    alert('Toss Payments가 로드되지 않았습니다.');
+  // 1. window.TossPayments가 존재하는지 확인합니다.
+  if (typeof window.TossPayments === 'undefined') {
+    alert("Toss Payments SDK가 로드되지 않았습니다. 페이지를 새로고침 후 다시 시도해주세요.");
     return;
   }
 
+  // 2. TossPayments 객체를 생성합니다.
+  const tossPayments = window.TossPayments(clientKey);
+
   try {
-    await tossPayments.value.requestPayment('카드', {
-      amount: 265000, // 총 결제 금액
-      orderId: 'order-' + new Date().getTime(), // 주문 ID (고유해야 함)
-      orderName: '해튼호텔 Superior room', // 주문명
-      customerName: '박토스', // 고객 이름
-      successUrl: window.location.origin + '/payment/success', // 성공 시 리다이렉트 될 URL
-      failUrl: window.location.origin + '/payment/fail', // 실패 시 리다이렉트 될 URL
+    // 3. 결제창을 호출합니다.
+    await tossPayments.requestPayment('카드', {
+      amount: 265000,
+      orderId: `order-${new Date().getTime()}-${Math.random().toString(36).slice(2)}`,
+      orderName: '해튼호텔 Superior room',
+      customerName: '박토스',
+      successUrl: `${window.location.origin}/payment/success`,
+      failUrl: `${window.location.origin}/payment/fail`,
     });
   } catch (error) {
-    console.error('Toss Payments 에러:', error);
+    console.error("Toss Payments 에러:", error);
     if (error.code === 'USER_CANCEL') {
       alert('결제를 취소했습니다.');
-      selectedPayment.value = null; // 선택 취소
     } else {
-      alert('결제 중 오류가 발생했습니다: ' + error.message);
+      // 그 외의 모든 오류는 토스에서 받은 메시지를 그대로 노출합니다.
+      alert(`결제 요청에 실패했습니다: ${error.message || '알 수 없는 오류'}`);
     }
+    selectedPayment.value = null; // 오류 발생 시 선택 초기화
   }
 };
-// ------------------- 토스페이먼츠 연동 끝 -------------------
-// [!code --]
+// --- 토스페이먼츠 연동 로직 끝 ---
 
+
+// --- 기존 컴포넌트 로직 ---
 const cards = ref([]);
 const paymentOptions = ref([
-  {
-    key: 'card',
-    title: '카드결제',
-    subtitle: '카드 등록 후 결제가 진행됩니다.',
-  },
-  {
-    key: 'simple',
-    title: '간편결제',
-    subtitle: '토스페이먼츠로 결제가 진행됩니다.',
-  },
+  { key: 'card', title: '카드결제', subtitle: '카드 등록 후 결제가 진행됩니다.' },
+  { key: 'simple', title: '간편결제', subtitle: '토스페이먼츠로 결제가 진행됩니다.' },
 ]);
-
 const selectedPayment = ref(null);
 
 const selectPayment = async (key) => {
@@ -311,7 +219,7 @@ function deleteCard(cardId) {
 
 function handleMouseDown(e) {
   isDown.value = true;
-  slider.value.style.cursor = 'grabbing';
+  if (slider.value) slider.value.style.cursor = 'grabbing';
   startX.value = e.pageX - slider.value.offsetLeft;
   scrollLeft.value = slider.value.scrollLeft;
 }
@@ -331,7 +239,7 @@ function handleMouseMove(e) {
   e.preventDefault();
   const x = e.pageX - slider.value.offsetLeft;
   const walk = (x - startX.value) * 2;
-  slider.value.scrollLeft = scrollLeft.value - walk;
+  if (slider.value) slider.value.scrollLeft = scrollLeft.value - walk;
 }
 
 watch(() => newCard.value.number, (newValue) => {
