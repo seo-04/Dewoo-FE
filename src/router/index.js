@@ -12,6 +12,7 @@ import HotelListing from '../views/HotelListing.vue'
 import PaymentBody from '../views/PaymentBody.vue'
 import PaymentSuccess from '../views/PaymentSuccess.vue'
 import PaymentFail from '../views/PaymentFail.vue'
+import UserProfile from '../views/UserProfile.vue'
 
 
 const router = createRouter({
@@ -34,6 +35,8 @@ const router = createRouter({
         },
         { path: '/hotelsearch', name:"HotelSearch", component: HotelSearch},
         { path: '/hotellisting', name:"HotelListing", component: HotelListing},
+        { path: '/payment', name: "PaymentBody", component: PaymentBody},
+        { path: '/profile', name: "UserProfile", component: UserProfile}
         { path: '/payment', name: "PaymentBody", component: PaymentBody},
         { path: '/payment/success', name: "PaymentSuccess", component: PaymentSuccess},
         { path: '/payment/fail', name: "PaymentFail", component: PaymentFail}
