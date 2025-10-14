@@ -10,13 +10,20 @@
   align-items: center;
   position: absolute;
   bottom: 230px;
-  margin-bottom: 20px;
+}
+
+.subscription-form-container{
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
 }
 .subscription-form-container input {
   width: 500px;
   height: 50px;
   background-color: white;
   border-radius: 4px;
+  padding: 0 15px;
+  border: none;
 }
 .subscription-form-container button {
   width: 90px;
@@ -27,7 +34,8 @@
 }
 
 .subscription-image {
-  margin-top: 2px;
+  position: relative;
+  right: 40px;
 }
 
 footer {
@@ -36,13 +44,12 @@ footer {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 40px 105px;
   box-sizing: border-box;
   align-items: center;
   margin: 0 auto;
   position: relative;
   flex-direction: column;
-  margin-top: 340px;
+  margin-top: 320px;
   text-align: left;
 }
 
@@ -52,11 +59,11 @@ footer {
 
 .footer-bottom {
   display: flex;
-  justify-content: space-evenly;
-  width: 100%;
-  padding: 0 105px;
+  justify-content: space-between;
+  width: 1232px;
   position: relative;
-  top: 70px;
+  top: 75px;
+  padding: 0;
 }
 .footer-letter {
   justify-content: space-evenly;

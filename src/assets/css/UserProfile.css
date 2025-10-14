@@ -135,6 +135,9 @@ body {
     border-bottom: 1px solid #eee;
     padding: 15px 0;
 }
+.info-group:last-child {
+    border-bottom: none;
+}
 .info-label {
     font-weight: bold;
     color: #555;
