@@ -16,6 +16,7 @@
 
       <div class="item">
         <div class="flex vertical-center">
+
           <div class="nav-item-container"
                @mouseenter="hoveredTab = 'wishlist'"
                @mouseleave="hoveredTab = null"
@@ -44,6 +45,7 @@
                 </div>
               </div>
               <span>Tomhoon</span>
+
             </div>
 
             <transition name="fade">
@@ -83,9 +85,51 @@
               </div>
             </transition>
           </div>
+
         </div>
+
       </div>
     </nav>
+    <transition name="fade">
+      <div v-if="isDropdownVisible" class="profile-dropdown" ref="dropdownMenu">
+        <div class="dropdown-profile">
+          <div class="profile-avatar"></div>
+          <div class="profile-info">
+            <span class="profile-name">Tomhoon</span>
+            <span class="profile-status">Online</span>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="dropdown-menu">
+          <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="setActiveTab('account')">
+            <i class="fa-solid fa-user"></i>
+            <span>계정</span>
+            <i class="fa-solid fa-chevron-right arrow"></i>
+          </div>
+          <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="setActiveTab('payment')">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>결제내역</span>
+            <i class="fa-solid fa-chevron-right arrow"></i>
+          </div>
+          <div class="menu-item" :class="{ active: activeTab === 'settings' }" @click="setActiveTab('settings')">
+            <i class="fa-solid fa-gear"></i>
+            <span>설정</span>
+            <i class="fa-solid fa-chevron-right arrow"></i>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="dropdown-logout">
+          <div class="menu-item" @click="logout">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>로그아웃</span>
+          </div>
+        </div>
+      </div>
+    </transition>
   </header>
 </template>
 
@@ -94,6 +138,7 @@ export default {
   name: 'HeaderComponent',
   data() {
     return {
+
       activeTab: 'hotel', // 클릭된 탭 ('hotel', 'wishlist', 'profile')
       hoveredTab: null,   // 마우스가 올라간 탭
       activeDropdownTab: 'account',
@@ -117,20 +162,25 @@ export default {
         if (this.activeTab === 'profile') {
           this.activeTab = null;
         }
+
       }
     }
   },
   watch: {
+
     activeTab(newTab, oldTab) {
       if (newTab === 'profile') {
         document.addEventListener('click', this.handleOutsideClick);
       }
       else if (oldTab === 'profile') {
+
         document.removeEventListener('click', this.handleOutsideClick);
       }
     }
   },
   beforeUnmount() {
+
+
     document.removeEventListener('click', this.handleOutsideClick);
   }
 };
@@ -138,4 +188,6 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/css/Header.scss";
+
+
 </style>
