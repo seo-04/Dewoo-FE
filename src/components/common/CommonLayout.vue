@@ -1,11 +1,11 @@
 <template>
   <Header></Header>
-  
+
   <div class="template-container">
-    
+
     <!--✅ 넣고 싶은 컨텐츠를 외부에서 넣는다 -->
     <slot></slot>
-    
+
   </div>
 
   <Footer></Footer>

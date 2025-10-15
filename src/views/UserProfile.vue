@@ -182,88 +182,136 @@
   </div>
   </CommonLayout>
 </template>
-
-<script setup lang="js">
+<script setup>
 import CommonLayout from '../components/common/CommonLayout.vue';
-import {ref, reactive, computed, watch, onMounted, onBeforeUnmount} from 'vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import axios from '../util/axios.js'; // 💡 1. axios를 import 합니다.
 
 const activeTab = ref('account');
 
 // --- 계정 탭 관련 로직 ---
+
+// 💡 2. 사용자 정보를 저장할 reactive 객체를 준비합니다. 초기에는 비워둡니다.
 const user = reactive({
-  name: 'Tomhoon',
-  email: 'gnsdl9079@gmail.com',
-  phone: '010-5555-5555',
-  password: '••••••••••',
-  address: '경기도 화성시 화성읍 도레미아파트 101동 101호',
-  dob: '1999-99-99',
-  coverImage: 'https://picsum.photos/seed/cover/1000/250',
-  profileImage: 'https://picsum.photos/seed/profile/120/120'
+name: '',
+email: '',
+phone: '',
+password: '••••••••••', // 비밀번호는 보안상 직접 표시하지 않는 것이 좋습니다.
+address: '',
+dob: '',
+coverImage: 'https://picsum.photos/seed/cover/1000/250',
+profileImage: 'https://picsum.photos/seed/profile/120/120'
 });
 
 const editingField = ref(null);
 const tempUser = reactive({});
+
+// 💡 3. accountFields의 key 값을 UserEntity.java의 필드명과 일치시키거나 매핑합니다.
 const accountFields = ref([
-  { key: 'name', label: 'Name' },
-  { key: 'email', label: 'Email', type: 'email' },
-  { key: 'password', label: 'Password', type: 'password' },
-  { key: 'phone', label: 'Phone Number', type: 'tel' },
-  { key: 'address', label: 'Address' },
-  { key: 'dob', label: 'Date of birth' }
+{ key: 'name', label: 'Name' },
+{ key: 'email', label: 'Email', type: 'email' },
+{ key: 'password', label: 'Password', type: 'password' },
+{ key: 'phone', label: 'Phone Number', type: 'tel' },
+{ key: 'address', label: 'Address' },
+{ key: 'dob', label: 'Date of birth' }
 ]);
 
+// 💡 4. onMounted 훅을 사용하여 컴포넌트가 로드될 때 백엔드에서 사용자 정보를 가져옵니다.
+onMounted(async () => {
+try {
+// 🔔 중요: '/api/user/profile'는 실제 백엔드의 사용자 정보 API 엔드포인트로 변경해야 합니다.
+const response = await axios.get('/api/user/profile');
+const userData = response.data;
+
+// 💡 5. 백엔드(UserEntity.java) 필드명에 맞춰 프론트엔드 user 객체를 업데이트합니다.
+user.name = userData.username;
+user.email = userData.userEmail;
+user.phone = userData.userPhone;
+user.address = userData.userAddress;
+user.dob = userData.userBirth; // 필요시 날짜 형식을 'YYYY-MM-DD'로 변환해야 할 수 있습니다.
+user.profileImage = userData.imageUrl || 'https://picsum.photos/seed/profile/120/120'; // imageUrl이 없으면 기본 이미지 사용
+
+} catch (error) {
+console.error('사용자 정보를 불러오는 데 실패했습니다:', error);
+// 실제 서비스에서는 사용자에게 알림을 표시하는 등의 에러 처리를 추가하는 것이 좋습니다.
+}
+});
+
 function startEditing(fieldKey) {
-  Object.assign(tempUser, user);
-  editingField.value = fieldKey;
+Object.assign(tempUser, user);
+editingField.value = fieldKey;
 }
 
-function saveChanges(fieldKey) {
-  if (fieldKey === 'email') {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(tempUser.email)) {
-      alert('올바른 이메일 형식을 입력해주세요. (예: user@example.com)');
-      return;
-    }
-  }
-  user[fieldKey] = tempUser[fieldKey];
-  editingField.value = null;
+// 💡 6. 정보 수정 시 백엔드 API로 업데이트 요청을 보내도록 수정합니다.
+async function saveChanges(fieldKey) {
+// 이메일 유효성 검사
+if (fieldKey === 'email') {
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!emailRegex.test(tempUser.email)) {
+alert('올바른 이메일 형식을 입력해주세요. (예: user@example.com)');
+return;
+}
+}
+
+try {
+// 🔔 중요: '/api/user/update'는 실제 백엔드의 사용자 정보 수정 API 엔드포인트로 변경해야 합니다.
+// 백엔드 API가 원하는 형식에 맞춰 데이터를 전송해야 합니다. (예: { username: '새이름' })
+const payload = {};
+const backendFieldMap = {
+name: 'username',
+email: 'userEmail',
+phone: 'userPhone',
+address: 'userAddress',
+dob: 'userBirth'
+};
+payload[backendFieldMap[fieldKey] || fieldKey] = tempUser[fieldKey];
+
+await axios.put('/api/user/update', payload);
+
+user[fieldKey] = tempUser[fieldKey];
+editingField.value = null;
+} catch (error) {
+console.error('정보 수정에 실패했습니다:', error);
+// 에러 처리 로직
+}
 }
 
 function cancelEdit() {
-  editingField.value = null;
+editingField.value = null;
 }
 
 // --- 내역 탭 관련 로직 ---
 const allBookings = ref([
-  { id: 1, roomImageSrc: "https://picsum.photos/seed/room1/80/80", checkInDate: "2025-12-08", checkInDisplay: "Thur, Dec 8", checkOutDate: "2025-12-09", checkOutDisplay: "Fri, Dec 9" },
-  { id: 2, roomImageSrc: "https://picsum.photos/seed/room2/80/80", checkInDate: "2026-01-15", checkInDisplay: "Mon, Jan 15", checkOutDate: "2026-01-18", checkOutDisplay: "Thur, Jan 18" },
-  { id: 3, roomImageSrc: "https://picsum.photos/seed/room3/80/80", checkInDate: "2025-09-20", checkInDisplay: "Mon, Nov 20", checkOutDate: "2025-09-22", checkOutDisplay: "Wed, Nov 22" },
+{ id: 1, roomImageSrc: "https://picsum.photos/seed/room1/80/80", checkInDate: "2025-12-08", checkInDisplay: "Thur, Dec 8", checkOutDate: "2025-12-09", checkOutDisplay: "Fri, Dec 9" },
+{ id: 2, roomImageSrc: "https://picsum.photos/seed/room2/80/80", checkInDate: "2026-01-15", checkInDisplay: "Mon, Jan 15", checkOutDate: "2026-01-18", checkOutDisplay: "Thur, Jan 18" },
+{ id: 3, roomImageSrc: "https://picsum.photos/seed/room3/80/80", checkInDate: "2025-09-20", checkInDisplay: "Mon, Nov 20", checkOutDate: "2025-09-22", checkOutDisplay: "Wed, Nov 22" },
 ]);
 const selectedFilter = ref('upcoming');
 const isFilterOpen = ref(false);
+const filterWrapper = ref(null);
 
 const filteredBookings = computed(() => {
-  const todayStr = new Date().toISOString().split('T')[0];
-  switch (selectedFilter.value) {
-    case 'upcoming': return allBookings.value.filter(b => b.checkInDate >= todayStr);
-    case 'latest': return [...allBookings.value].sort((a, b) => new Date(b.checkInDate) - new Date(a.checkInDate));
-    case 'oldest': return [...allBookings.value].sort((a, b) => new Date(a.checkInDate) - new Date(b.checkInDate));
-    default: return [];
-  }
+const todayStr = new Date().toISOString().split('T')[0];
+switch (selectedFilter.value) {
+case 'upcoming': return allBookings.value.filter(b => b.checkInDate >= todayStr);
+case 'latest': return [...allBookings.value].sort((a, b) => new Date(b.checkInDate) - new Date(a.checkInDate));
+case 'oldest': return [...allBookings.value].sort((a, b) => new Date(a.checkInDate) - new Date(b.checkInDate));
+default: return [];
+}
 });
 
 function selectFilter(filter) {
-  selectedFilter.value = filter;
-  isFilterOpen.value = false;
+selectedFilter.value = filter;
+isFilterOpen.value = false;
 }
 
-// =================== [수정됨] 결제수단 관련 로직 START ===================
+// =================== 결제수단 관련 로직 START ===================
 const cards = ref([]);
 const isModalOpen = ref(false);
 const newCard = ref({ number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false });
 const selectedCountry = ref('United States');
 const countries = ref([
-  { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' }, { code: 'KR', name: 'South Korea' }, { code: 'JP', name: 'Japan' }, { code: 'GB', name: 'United Kingdom' },
+{ code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' }, { code: 'KR', name: 'South Korea' }, { code: 'JP', name: 'Japan' }, { code: 'GB', name: 'United Kingdom' },
 ]);
 
 const slider = ref(null);
@@ -273,70 +321,69 @@ const scrollLeft = ref(0);
 
 function openModal() { isModalOpen.value = true; }
 function closeModal() {
-  isModalOpen.value = false;
-  newCard.value = {number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false};
+isModalOpen.value = false;
+newCard.value = {number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false};
 }
 
 function addCard() {
-  if (newCard.value.number.length < 19) {
-    alert('올바른 카드 번호를 입력하세요.');
-    return;
-  }
-  const cardToAdd = { id: Date.now(), lastFour: newCard.value.number.slice(-4), expDate: newCard.value.expDate };
-  cards.value.unshift(cardToAdd);
-  if (!newCard.value.saveInfo) { closeModal(); } else { isModalOpen.value = false; }
+if (newCard.value.number.length < 19) {
+alert('올바른 카드 번호를 입력하세요.');
+return;
+}
+const cardToAdd = { id: Date.now(), lastFour: newCard.value.number.slice(-4), expDate: newCard.value.expDate };
+cards.value.unshift(cardToAdd);
+if (!newCard.value.saveInfo) { closeModal(); } else { isModalOpen.value = false; }
 }
 
 function deleteCard(cardId) {
-  if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
-    cards.value = cards.value.filter(card => card.id !== cardId);
-  }
+if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
+cards.value = cards.value.filter(card => card.id !== cardId);
+}
 }
 
 function handleMouseDown(e) {
-  isDown.value = true;
-  slider.value.style.cursor = 'grabbing';
-  startX.value = e.pageX - slider.value.offsetLeft;
-  scrollLeft.value = slider.value.scrollLeft;
+isDown.value = true;
+slider.value.style.cursor = 'grabbing';
+startX.value = e.pageX - slider.value.offsetLeft;
+scrollLeft.value = slider.value.scrollLeft;
 }
 function handleMouseLeave() {
-  isDown.value = false;
-  if(slider.value) slider.value.style.cursor = 'grab';
+isDown.value = false;
+if(slider.value) slider.value.style.cursor = 'grab';
 }
 function handleMouseUp() {
-  isDown.value = false;
-  if(slider.value) slider.value.style.cursor = 'grab';
+isDown.value = false;
+if(slider.value) slider.value.style.cursor = 'grab';
 }
 function handleMouseMove(e) {
-  if (!isDown.value) return;
-  e.preventDefault();
-  const x = e.pageX - slider.value.offsetLeft;
-  const walk = (x - startX.value) * 2;
-  slider.value.scrollLeft = scrollLeft.value - walk;
+if (!isDown.value) return;
+e.preventDefault();
+const x = e.pageX - slider.value.offsetLeft;
+const walk = (x - startX.value) * 2;
+slider.value.scrollLeft = scrollLeft.value - walk;
 }
 
 watch(() => newCard.value.number, (newValue) => {
-  const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
-  newCard.value.number = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
+const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
+newCard.value.number = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
 });
 watch(() => newCard.value.expDate, (newValue) => {
-  const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
-  newCard.value.expDate = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
+const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
+newCard.value.expDate = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
 });
 watch(() => newCard.value.cvc, (newValue) => {
-  newCard.value.cvc = newValue.replace(/[^\d]/g, '').slice(0, 3);
+newCard.value.cvc = newValue.replace(/[^\d]/g, '').slice(0, 3);
 });
 watch(() => newCard.value.name, (newValue) => {
-  newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
+newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
 });
-// =================== [수정됨] 결제수단 관련 로직 END =====================
+// =================== 결제수단 관련 로직 END =====================
 
 // --- 공통 라이프사이클 훅 ---
-const filterWrapper = ref(null);
 const handleClickOutside = (event) => {
-  if (filterWrapper.value && !filterWrapper.value.contains(event.target)) {
-    isFilterOpen.value = false;
-  }
+if (filterWrapper.value && !filterWrapper.value.contains(event.target)) {
+isFilterOpen.value = false;
+}
 };
 
 onMounted(() => { document.addEventListener('click', handleClickOutside); });

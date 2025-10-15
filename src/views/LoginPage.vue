@@ -14,14 +14,14 @@
 
               <div class="password">
                 <input
-                    :type="showPassword ? 'text' : 'password'"
-                    v-model="password"
-                    placeholder="Password"
+                  :type="showPassword ? 'text' : 'password'"
+                  v-model="password"
+                  placeholder="Password"
                 />
                 <i class="fa-solid fa-lock left-icon"></i>
                 <i
-                    :class="[showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash', 'right-icon']"
-                    @click="togglePassword"
+                  :class="[showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash', 'right-icon']"
+                  @click="togglePassword"
                 ></i>
               </div>
             </form>
@@ -37,7 +37,7 @@
 
           <button class="loginbox" @click="handleSubmit">Login</button>
           <p class="signup" @click ="$router.push('/SignUp');">
-           회원가입
+            회원가입
           </p>
 
           <div class="boundary_line">
@@ -47,28 +47,28 @@
           <div class="snsbox">
             <a href="http://localhost:8085/oauth2/authorization/google" class="google sns-button">
               <img
-                  width="20"
-                  height="20"
-                  src="https://img.icons8.com/color/48/google-logo.png"
-                  alt="google-logo"
+                width="20"
+                height="20"
+                src="https://img.icons8.com/color/48/google-logo.png"
+                alt="google-logo"
               />
             </a>
 
             <a href="http://localhost:8085/oauth2/authorization/kakao" class="kakao sns-button">
               <img
-                  width="20"
-                  height="20"
-                  src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
-                  alt="kakao-logo"
+                width="20"
+                height="20"
+                src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                alt="kakao-logo"
               />
             </a>
 
             <a href="http://localhost:8085/oauth2/authorization/naver" class="naver sns-button">
               <img
-                  width="20"
-                  height="20"
-                  src="@/assets/img/naver_icon.png"
-                  alt="naver-logo"
+                width="20"
+                height="20"
+                src="@/assets/img/naver_icon.png"
+                alt="naver-logo"
               />
             </a>
           </div>
@@ -81,11 +81,11 @@
 
           <div class="dots">
           <span
-              v-for="(dot, i) in 3"
-              :key="i"
-              class="dot"
-              :class="{ active: currentSlide === i }"
-              @click="setSlide(i)"
+            v-for="(dot, i) in 3"
+            :key="i"
+            class="dot"
+            :class="{ active: currentSlide === i }"
+            @click="setSlide(i)"
           ></span>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default {
           // 💡 일반 로그인 성공 시, JWT 토큰을 localStorage에 저장하는 로직이 추가되어야 합니다.
           // 현재는 Alert 후 바로 리다이렉션하지만, 실제 JWT를 받으면 저장 로직이 필요합니다.
           alert("로그인 성공!");
-          this.$router.push('/hotelsearch');
+          this.$router.push('/accommodation');
         } else {
           alert(response.data.message);
         }
