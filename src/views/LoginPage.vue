@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '@/util/axios';
 
 export default {
   name: "LoginPage",
@@ -131,21 +131,30 @@ export default {
           password: this.password,
         });
 
-        if (response.data.code === 'SUCCESS') {
-          // 💡 일반 로그인 성공 시, JWT 토큰을 localStorage에 저장하는 로직이 추가되어야 합니다.
-          // 현재는 Alert 후 바로 리다이렉션하지만, 실제 JWT를 받으면 저장 로직이 필요합니다.
-          alert("로그인 성공!");
-          this.$router.push('/accommodation');
+        console.log('백엔드로부터 받은 실제 응답:', response.data);
+
+        if (response.data && response.data.code === 'SUCCESS') {
+
+          // 💡💡💡 최종 수정된 부분: 'data' -> 'result' 💡💡💡
+          const token = response.data.result;
+
+          if (token && typeof token === 'string') {
+            localStorage.setItem('token', token);
+            console.log('성공! localStorage에 토큰을 저장했습니다.');
+            alert("로그인 성공!");
+            this.$router.push('/profile');
+          } else {
+            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', token);
+            alert("로그인에 실패했습니다. (토큰 없음)");
+          }
         } else {
-          alert(response.data.message);
+          const errorMessage = response.data ? response.data.message : "알 수 없는 응답";
+          console.error('백엔드에서 SUCCESS 코드를 받지 못했습니다:', errorMessage);
+          alert(`로그인 실패: ${errorMessage}`);
         }
       } catch (error) {
-        console.error("로그인 실패:", error);
-        if (error.response && error.response.data && error.response.data.message) {
-          alert(error.response.data.message);
-        } else {
-          alert("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
-        }
+        console.error("로그인 API 호출 중 오류 발생:", error);
+        alert("이메일 또는 비밀번호가 일치하지 않거나, 서버에 문제가 발생했습니다.");
       }
     },
     startSlideShow() {
