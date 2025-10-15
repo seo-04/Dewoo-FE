@@ -61,8 +61,9 @@
               class="slider"
           />
           <div class="price_labels">
-            <span>$50</span>
-            <span>$1200</span>
+            <option value="50">$50</option>
+            <option value="300">$300</option>
+            <option value="100">$1200</option>
           </div>
         </div>
 
@@ -70,12 +71,16 @@
         <div class="filter_section">
           <p>Rating</p>
           <div class="rating_buttons">
-            <button v-for="n in 5" :key="n" @click="setRating(n)">
+            <button
+                v-for="n in 5"
+                :key="n"
+                @click="setRating(n)"
+                :class="{ active: selectedRating === n }"
+            >
               {{ n - 1 }}+
             </button>
           </div>
         </div>
-
         <!-- Freebies -->
         <div class="filter_section">
           <p>Freebies</p>
@@ -458,6 +463,8 @@ export default {
           price: "₩104,000",
         },
       ],
+
+      selectedRating: null,
     };
   },
 
@@ -524,7 +531,7 @@ export default {
       this.currentSort = option;
       this.showSortModal = false;
 
-      // 정렬 로직 추가 (필요 시)
+      // 저가순, 고가순, 리뷰 많은 순으로 클릭
       if (option === "저가순") {
         this.rooms.sort((a, b) => {
           const priceA = parseInt(a.price?.replace(/[₩,]/g, "")) || 0;
@@ -586,10 +593,16 @@ export default {
       this.closePeopleModal();
     },
 
-    //  별점 필터 (추후 확장용)
+    //  Rating 버튼 하나씩 클릭
     setRating(n) {
-      console.log("Rating filter:", n);
+      if (this.selectedRating === n) {
+        this.selectedRating = null;
+      } else {
+        this.selectedRating = n;
+      }
+      console.log("Rating filter:", this.selectedRating);
     },
+
 
     // 하트 찜하기 (하트)
     toggleHeart(index) {
