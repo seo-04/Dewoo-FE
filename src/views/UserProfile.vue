@@ -42,7 +42,7 @@
           <div class="info-value-wrapper">
             <template v-if="editingField !== field.key">
               <span class="info-value">{{ user[field.key] }}</span>
-              <button v-if="field.key !== 'password'" @click="startEditing(field.key)" class="change-btn">
+              <button v-if="field.key !== 'password' && field.key !== 'email'" @click="startEditing(field.key)" class="change-btn">
                 <img src="../assets/img/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change
               </button>
             </template>
