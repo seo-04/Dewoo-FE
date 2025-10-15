@@ -622,12 +622,11 @@
 }
 
 /*추천인 부분*/
-
 .showing {
     margin-top: 10px;
     font-size: 15px;
     display: flex;
-    gap: 600px;
+    gap: 580px;
     align-items: center;
 }
 
@@ -638,7 +637,8 @@
 }
 
 .place{
-    margin-left: 60px;
+    width: 150px;
+    margin-left: 45px;
 }
 
 .menu {
@@ -647,15 +647,21 @@
     border: none;
     align-items: center;
     cursor: pointer;
-    margin-right: 60px;
     font-size: 13px;
 }
 
-.menu i {
-    margin-bottom: 15px;
-    margin-left: 5px;
+.menu p {
+    width: 100px;
 }
 
+.menu i {
+    margin-left: 2px;
+}
+
+.menu span{
+    font-weight: bold;
+    color: black;
+}
 /* 박스 배경 */
 .sort_modal {
     position: fixed;

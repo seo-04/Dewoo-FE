@@ -26,7 +26,7 @@
             <p>Price</p>
             <input
                 type="range"
-                min="50"
+                min="300"
                 max="1200"
                 v-model="priceFilter"
                 class="slider"
@@ -316,7 +316,7 @@ export default {
         else if (avg > 0) reviewTitle = "Very Bad";
 
         return {
-          category: item.category || "호텔",
+          category: item.category || "호텔" || "모텔" || "리조트",
           comId: item.comId,
           comTitle: item.comTitle,
           comAddress: item.comAddress,
