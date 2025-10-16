@@ -295,45 +295,7 @@ export default {
   },
 
   async mounted() {
-    try {
-      const response = await bTeamApi.get("/api/accommodation");
-      const result = response.data.result;
-
-      const list = result.accommodations.content || [];
-
-      this.rooms = list.map((item) => ({
-        category: item.category || "호텔",
-        comId: item.comId,
-        comTitle: item.comTitle,
-        comAddress: item.comAddress,
-        star: item.star || 0,
-        price: item.price ? `₩${item.price.toLocaleString()}` : "가격 정보 없음",
-        reviewAvg: item.reviewAvg || 0,
-        reviewCount: item.reviewCount || 0,
-        reviewTitle:
-            item.reviewAvg >= 4
-                ? "Very Good"
-                : item.reviewAvg >= 3
-                    ? "Good"
-                    : item.reviewAvg >= 2
-                        ? "SoSo"
-                        : item.reviewAvg >= 1
-                            ? "Bad"
-                            : "리뷰 없음",
-        image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
-        isFavorite: item.isFavorite || false,
-      }));
-
-      // 카테고리별 숙소 개수
-      this.totalCounts = this.tabs.reduce((acc, tab) => {
-        acc[tab.value] = this.rooms.filter(
-            (r) => r.category === tab.value
-        ).length;
-        return acc;
-      }, {});
-    } catch (error) {
-      console.error("API 실패", error);
-    }
+    await this.setSearchFilters();
   },
 
   methods: {
@@ -341,6 +303,47 @@ export default {
       const visible = this.visibleCount?.[tabValue] || 0;
       const total = this.totalCounts?.[tabValue] || 0;
       return `Showing ${visible} of ${total} places`;
+    },
+    async setSearchFilters(){
+      try {
+        const response = await bTeamApi.get("/api/accommodation");
+        const result = response.data.result;
+
+        const list = result.accommodations.content || [];
+
+        this.rooms = list.map((item) => ({
+          category: item.category || "호텔",
+          comId: item.comId,
+          comTitle: item.comTitle,
+          comAddress: item.comAddress,
+          star: item.star || 0,
+          price: item.price ? `₩${item.price.toLocaleString()}` : "가격 정보 없음",
+          reviewAvg: item.reviewAvg || 0,
+          reviewCount: item.reviewCount || 0,
+          reviewTitle:
+              item.reviewAvg >= 4
+                  ? "Very Good"
+                  : item.reviewAvg >= 3
+                      ? "Good"
+                      : item.reviewAvg >= 2
+                          ? "SoSo"
+                          : item.reviewAvg >= 1
+                              ? "Bad"
+                              : "리뷰 없음",
+          image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
+          isFavorite: item.isFavorite || false,
+        }));
+
+        // 카테고리별 숙소 개수
+        this.totalCounts = this.tabs.reduce((acc, tab) => {
+          acc[tab.value] = this.rooms.filter(
+              (r) => r.category === tab.value
+          ).length;
+          return acc;
+        }, {});
+      } catch (error) {
+        console.error("API 실패", error);
+      }
     },
     setActiveTab(tab) {
       this.activeTab = tab;

@@ -503,6 +503,11 @@
     color: #333;
 }
 
+.review_text p b{
+    color: black;
+    font-weight: bold;
+}
+
 /* 가격 */
 .price {
     position: absolute;
@@ -513,7 +518,6 @@
 
 .price p {
     font-family: 'SacheonUniverse';
-    margin: 0;
     font-size: 13px;
     color: #777;
 }
@@ -629,6 +633,7 @@
     gap: 580px;
     align-items: center;
 }
+
 
 
 .place p{
