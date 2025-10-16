@@ -44,7 +44,7 @@
                   <div class="check_box"></div>
                 </div>
               </div>
-              <span>Tomhoon</span>
+              <span>{{ userName }}</span>
 
             </div>
 
@@ -53,13 +53,13 @@
                 <div class="dropdown-profile">
                   <div class="profile-avatar"></div>
                   <div class="profile-info">
-                    <span class="profile-name">Tomhoon</span>
+                    <span class="profile-name">{{ userName }}</span>
                     <span class="profile-status">Online</span>
                   </div>
                 </div>
                 <hr class="divider">
                 <div class="dropdown-menu">
-                  <div class="menu-item" :class="{ active: activeDropdownTab === 'account' }" @click="setActiveDropdownTab('account')">
+                  <div class="menu-item" :class="{ active: activeDropdownTab === 'account' }" @click="navigateTo('/profile')">
                     <i class="fa-solid fa-user"></i>
                     <span>계정</span>
                     <i class="fa-solid fa-chevron-right arrow"></i>
@@ -95,33 +95,29 @@
         <div class="dropdown-profile">
           <div class="profile-avatar"></div>
           <div class="profile-info">
-            <span class="profile-name">Tomhoon</span>
+            <span class="profile-name">{{ userName }}</span>
             <span class="profile-status">Online</span>
           </div>
         </div>
-
-            <hr class="divider">
-
-            <div class="dropdown-menu">
-              <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="setActiveTab('account')">
-                <i class="fa-solid fa-user"></i>
-                <span>계정</span>
-                <i class="fa-solid fa-chevron-right arrow"></i>
-              </div>
-              <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="setActiveTab('payment')">
-                <i class="fa-solid fa-credit-card"></i>
-                <span>결제내역</span>
-                <i class="fa-solid fa-chevron-right arrow"></i>
-              </div>
-              <div class="menu-item" :class="{ active: activeTab === 'settings' }" @click="setActiveTab('settings')">
-                <i class="fa-solid fa-gear"></i>
-                <span>설정</span>
-                <i class="fa-solid fa-chevron-right arrow"></i>
-              </div>
-            </div>
-
         <hr class="divider">
-
+        <div class="dropdown-menu">
+          <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="navigateTo('/my-page')">
+            <i class="fa-solid fa-user"></i>
+            <span>계정</span>
+            <i class="fa-solid fa-chevron-right arrow"></i>
+          </div>
+          <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="setActiveTab('payment')">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>결제내역</span>
+            <i class="fa-solid fa-chevron-right arrow"></i>
+          </div>
+          <div class="menu-item" :class="{ active: activeTab === 'settings' }" @click="setActiveTab('settings')">
+            <i class="fa-solid fa-gear"></i>
+            <span>설정</span>
+            <i class="fa-solid fa-chevron-right arrow"></i>
+          </div>
+        </div>
+        <hr class="divider">
         <div class="dropdown-logout">
           <div class="menu-item" @click="logout">
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -134,20 +130,15 @@
 </template>
 
 <script>
-// 💡 1. API 통신을 위해 이전에 설정한 axios를 가져옵니다.
-// 경로가 다를 경우, 실제 파일 위치에 맞게 수정해주세요. (예: '../util/axios')
 import axios from '@/util/axios';
 
 export default {
   data() {
     return {
-
-      activeTab: 'hotel', // 클릭된 탭 ('hotel', 'wishlist', 'profile')
-      hoveredTab: null,   // 마우스가 올라간 탭
+      activeTab: 'hotel',
+      hoveredTab: null,
       activeDropdownTab: 'account',
       isDropdownVisible: false,
-      activeMainTab: 'hotel',
-      // 💡 2. 로그인 상태와 사용자 이름을 저장할 변수를 추가합니다.
       isLoggedIn: false,
       userName: 'Guest', // 로그인하지 않았을 때 기본값
     };
@@ -160,98 +151,96 @@ export default {
     setActiveDropdownTab(tabName) {
       this.activeDropdownTab = tabName;
     },
+    /**
+     * 💡 변경점 2: 로그아웃 로직 구현
+     * 로컬 스토리지 토큰 삭제 및 로그인 페이지로 리디렉션
+     */
     logout() {
       console.log("로그아웃 처리");
-      if (this.activeTab === 'profile') {
-        this.activeTab = null;
-      }
+      // 1. 로컬 스토리지에서 토큰을 제거합니다.
+      localStorage.removeItem('token');
+      // 2. 컴포넌트의 로그인 상태를 업데이트합니다.
+      this.isLoggedIn = false;
+      this.userName = 'Guest'; // 사용자 이름을 기본값으로 변경
+      // 3. Vue Router를 사용하여 로그인 페이지('/')로 이동합니다.
+      this.$router.push('/');
+    },
+    /**
+     * 💡 변경점 3: 페이지 이동을 위한 메소드 추가
+     * @param {string} path - 이동할 경로
+     */
+    navigateTo(path) {
+      this.activeTab = null; // 드롭다운 메뉴를 닫습니다.
+      this.$router.push(path); // 지정된 경로로 이동합니다.
     },
     handleOutsideClick(event) {
       if (this.$refs.profileWrapper && !this.$refs.profileWrapper.contains(event.target)) {
         if (this.activeTab === 'profile') {
           this.activeTab = null;
         }
-
       }
     }
   },
   watch: {
-
     activeTab(newTab, oldTab) {
       if (newTab === 'profile') {
         document.addEventListener('click', this.handleOutsideClick);
-      }
-      else if (oldTab === 'profile') {
-
+      } else if (oldTab === 'profile') {
         document.removeEventListener('click', this.handleOutsideClick);
       }
     }
   },
   beforeUnmount() {
-
-
     document.removeEventListener('click', this.handleOutsideClick);
   },
-  // 💡 3. 컴포넌트가 로드될 때 사용자 정보를 가져옵니다.
   async mounted() {
-    document.addEventListener('click', this.handleClickOutside);
-
+    // 참고: 기존 코드에 있던 handleClickOutside 리스너가 중복으로 보여서 하나로 정리했습니다.
     const token = localStorage.getItem('token');
     if (token) {
       this.isLoggedIn = true;
       try {
         const response = await axios.get('/api/user/profile');
         if (response.data && response.data.username) {
-          this.userName = response.data.username; // API에서 받은 이름으로 교체
+          this.userName = response.data.username;
         }
       } catch (error) {
         console.error("헤더에서 사용자 정보를 가져오는데 실패했습니다:", error);
-        localStorage.removeItem('token'); // 유효하지 않은 토큰 삭제
+        // 토큰이 유효하지 않을 경우 로그아웃 처리
+        localStorage.removeItem('token');
         this.isLoggedIn = false;
       }
     }
-  },
-
-  beforeDestroy() {
-    document.removeEventListener('click', this.handleClickOutside);
   },
 };
 </script>
 
 <style scoped lang="scss">
-/* 사용자가 제공한 기본 스타일 파일 Import */
+/* 스타일은 변경되지 않았으므로 그대로 사용하시면 됩니다. */
 @import "@/assets/css/Header.scss";
 
 /* ▼▼▼ 아래는 추가/수정된 스타일입니다 ▼▼▼ */
-
-/* 드롭다운의 기준점이 될 부모 요소 */
 .item {
   position: relative;
 }
-
-/* 프로필(.window) 영역 관련 스타일 */
 .window {
   position: relative;
   cursor: pointer;
   padding-bottom: 5px;
 }
-
 .window.active-dropdown::after {
   content: '';
   position: absolute;
-  bottom: -21px; /* .tab의 밑줄과 높이를 맞춤 */
+  bottom: -21px;
   left: 0;
   width: 100%;
   height: 3px;
   background: #46bd7b;
   border-radius: 8px 8px 0 0;
 }
-
-/* 드롭다운 메뉴 포지셔닝 */
 .profile-dropdown {
   position: absolute;
-  top: 68px; /* 헤더 아이콘들 아래에 위치하도록 조정 */
-  right: -1px;  /* 부모(.item)의 오른쪽 끝에 맞춤 */
+  top: 68px;
+  right: -1px;
   width: 280px;
   background-color: #ffffff;
   border-radius: 12px;
@@ -260,48 +249,39 @@ export default {
   z-index: 1100;
   padding: 10px 0;
 }
-
-/* 드롭다운 메뉴 내부 스타일 */
 .dropdown-profile {
   display: flex;
   align-items: center;
   padding: 10px 20px;
   gap: 15px;
 }
-
 .profile-avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   background-color: #d9d9d9;
 }
-
 .profile-info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-
 .profile-name {
   font-weight: 600;
   font-size: 1.1em;
 }
-
 .profile-status {
   font-size: 0.9em;
   color: #666;
 }
-
 .divider {
   border: none;
   border-top: 1px solid #f0f0f0;
   margin: 10px 0;
 }
-
 .dropdown-menu, .dropdown-logout {
   padding: 0 10px;
 }
-
 .menu-item {
   display: flex;
   align-items: center;
@@ -313,37 +293,29 @@ export default {
   color: #333;
   transition: background-color 0.2s ease;
 }
-
 .menu-item:hover {
   background-color: #f5f5f5;
 }
-
 .menu-item.active {
   background-color: #eef7f4;
   color: #46bd7b;
   font-weight: 600;
 }
-
 .menu-item i {
   width: 20px;
   text-align: center;
 }
-
 .menu-item .arrow {
   margin-left: auto;
   font-size: 0.8em;
   color: #aaa;
 }
-
 .menu-item.active .arrow {
   color: #46bd7b;
 }
-
-/* 트랜지션 효과 */
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
-
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
