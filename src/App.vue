@@ -6,7 +6,7 @@
 export default {
   name: "App",
   mounted() {
-	fetch('/api/user/all');
+	// fetch('/api/user/all');
   }
 }
 </script>

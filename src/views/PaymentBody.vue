@@ -49,7 +49,7 @@
               :key="option.key"
               class="option"
               :class="{ selected: selectedPayment === option.key }"
-              @click="selectPayment(option.key)"
+              @click="option.key === 'simple' ? requestTossPayment() : selectPayment(option.key)"
           >
             <div class="text-group">
               <span class="paymentTitle">{{ option.title }}</span>
@@ -132,48 +132,8 @@
           </div>
         </div>
       </div>
-            <div class="Reservation_sign" v-if="selectedPayment === 'simple'">
-
-              <div class="social-login-buttons">
-                <div class="social-button-box">
-                  <img src="../assets/img/login_facebook.png" alt="">
-                </div>
-                <div class="social-button-box">
-                  <img src="../assets/img/login_google.png" alt="">
-                </div>
-                <div class="social-button-box">
-                  <img src="../assets/img/login_apple.png" alt="">
-                </div>
-              </div>
-            </div>
-
       </div>
     </div>
-<!--    <div class="Reservation_sign">-->
-<!--      <span style="font-size: 20px; font-weight: bold; display: block; padding: 15px 0">Login or Sign up to book</span>-->
-<!--      <input class="Reservation_phoneNumber" placeholder="Phone Number" v-model="phoneNumber">-->
-<!--      <span style="font-size: 14px; display: block; padding: 15px 0">예약확인 문자/전화를 위해 전화번호를 남겨주세요</span>-->
-<!--      <button class="continue" :disabled="!isContinueButtonEnabled">continue</button>-->
-<!--      <div class="boundary_line_1">-->
-<!--        <p>Or</p>-->
-<!--      </div>-->
-<!--      <div class="social-login-buttons">-->
-<!--        <div class="social-button-box">-->
-<!--          <img src="@/assets/login_facebook.png" alt="">-->
-<!--        </div>-->
-<!--        <div class="social-button-box">-->
-<!--          <img src="@/assets/login_google.png" alt="">-->
-<!--        </div>-->
-<!--        <div class="social-button-box">-->
-<!--          <img src="@/assets/login_apple.png" alt="">-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="continue-with-email">-->
-<!--        <img src="@/assets/email_icon.png" alt="">-->
-<!--        <span>Continue with email</span>-->
-<!--      </div>-->
-<!--    </div>-->
-
 
     <div class="payment-small">
       <div class="payment-small-body">
@@ -229,7 +189,70 @@
 </template>
 
 <script setup lang="js">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+
+let tossPayments = null;
+let tossPaymentsLoadPromise = null;
+
+// --- Toss Payments SDK 로드 ---
+const loadTossPayments = () => {
+  if (tossPaymentsLoadPromise) {
+    return tossPaymentsLoadPromise;
+  }
+
+  tossPaymentsLoadPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://js.tosspayments.com/v1/payment.js';
+    script.crossOrigin = 'anonymous';
+    script.onload = () => {
+      try {
+        const clientKey = 'test_ck_EP59LybZ8BLeQDq27EjbV6GYo7pR';
+        tossPayments = window.TossPayments(clientKey);
+        resolve(tossPayments);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    script.onerror = (error) => {
+      tossPaymentsLoadPromise = null; // Allow retrying
+      reject(error);
+    };
+    document.head.appendChild(script);
+  });
+
+  return tossPaymentsLoadPromise;
+};
+
+onMounted(() => {
+  loadTossPayments().catch(error => {
+    console.error("Failed to load Toss Payments SDK:", error);
+    alert("결제 모듈을 불러오는 데 실패했습니다. 페이지를 새로고침하거나 다시 시도해주세요.");
+  });
+});
+
+
+// --- 토스 결제 요청 ---
+const requestTossPayment = async () => {
+  selectedPayment.value = 'simple';
+  try {
+    await loadTossPayments();
+    tossPayments.requestPayment('토스페이', {
+      amount: 265000,
+      orderId: `order_${new Date().getTime()}`,
+      orderName: 'Superior room - 1 더블베드 or 2 트윈 베드',
+      customerName: 'Tomhoon',
+      successUrl: `${window.location.origin}/payment/success`,
+      failUrl: `${window.location.origin}/payment/fail`,
+    }).catch(error => {
+      console.error("결제 요청 실패:", error);
+      alert("결제 요청에 실패했습니다. 다시 시도해주세요.");
+    });
+  } catch (error) {
+    console.error("결제 모듈 로드 또는 결제 요청 실패:", error);
+    alert("결제 중 오류가 발생했습니다. 다시 시도해주세요.");
+  }
+};
+
 
 // 새로 추가된 카드를 저장할 배열
 const cards = ref([]);

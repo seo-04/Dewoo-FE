@@ -111,7 +111,7 @@
 
 
       <div class="room-section">
-        <h2 class="section-title">잔여 객실</h2>
+        <h2 class="section-title">객실</h2>
         <div class="room-list">
           <div class="room-item" v-for="room in rooms" :key="room.id">
             <div class="room-details">
