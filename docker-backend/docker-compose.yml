@@ -30,7 +30,7 @@ services:
     # image: jhh0101/back_image
     container_name: boot_container
     ports:
-      - 8085:8085
+      - 18888:8085
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb_container:3306/hotels_db

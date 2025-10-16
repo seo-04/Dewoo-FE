@@ -4,7 +4,10 @@
 
 <script>
 export default {
-  name: "App"
+  name: "App",
+  mounted() {
+	// fetch('/api/user/all');
+  }
 }
 </script>
 
