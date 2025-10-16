@@ -11,7 +11,7 @@
             @click="setActiveTab(tab.value)"
         >
           <h4>{{ tab.label }}</h4>
-          <p>{{ showingData[tab.value] }}</p>
+          <p>{{ showingText(tab.value) }}</p>
         </div>
       </div>
 
@@ -78,7 +78,7 @@
           <!-- Sort bar -->
           <div class="showing">
             <div class="place">
-              <p>{{ showingData[activeTab] }}</p>
+              <p>{{ showingText(activeTab) }}</p>
             </div>
             <button class="menu" @click="toggleSortModal">
               <p>Sort by <span>{{ currentSort }}</span></p>
@@ -115,7 +115,7 @@
             <div
                 class="room_box"
                 v-for="(room, index) in getVisibleRooms(tab.value)"
-                :key="index"
+                :key="room.comId"
             >
               <!-- 이미지 -->
               <div class="image">
@@ -166,7 +166,7 @@
 
                 <!-- 버튼 -->
                 <div class="two">
-                  <button class="heart" @click="toggleHeart(index)">
+                  <button class="heart" @click="toggleHeart(room)">
                     <i
                         :class="[
                         room.isFavorite ? 'fa-solid active-heart' : 'fa-regular',
@@ -181,7 +181,9 @@
 
             <!-- 더보기 버튼 -->
             <div class="button_result" v-if="hasMoreRooms(tab.value)">
-              <button @click="showMoreResults(tab.value)">Show more results</button>
+              <button @click="showMoreResults(tab.value)">
+                Show more results
+              </button>
             </div>
           </div>
         </div>
@@ -190,7 +192,6 @@
       <!-- 검색 박스 -->
       <div class="search_box1">
         <div class="search_inputs2">
-          <!-- 여행지 입력 -->
           <div class="input-group3">
             <label for="destination">Enter Destination</label>
             <input type="text" id="destination" placeholder="Enter Destination" />
@@ -206,7 +207,6 @@
             <input type="date" id="checkout" placeholder="Check-out" />
           </div>
 
-          <!-- Rooms & Guests -->
           <div class="input-group3 dropdown-container">
             <label>Rooms & Guests</label>
             <button class="number_people4" @click="openPeopleModal">
@@ -214,7 +214,6 @@
             </button>
           </div>
 
-          <!-- 검색 버튼 -->
           <button class="search_icon4">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
@@ -230,39 +229,37 @@
             role="dialog"
             aria-modal="true"
         >
-          <transition name="slide-up">
-            <div class="people_content2" @click.stop>
-              <h3>방 개수와 인원수 선택</h3>
+          <div class="people_content2" @click.stop>
+            <h3>방 개수와 인원수 선택</h3>
 
-              <div class="counter">
-                <span>Rooms</span>
-                <div class="controls">
-                  <button @click="decrease('room')">-</button>
-                  <span>{{ roomsCount }}</span>
-                  <button @click="increase('room')">+</button>
-                </div>
-              </div>
-
-              <div class="counter">
-                <span>Guests</span>
-                <div class="controls">
-                  <button @click="decrease('guest')">-</button>
-                  <span>{{ guestsCount }}</span>
-                  <button @click="increase('guest')">+</button>
-                </div>
-              </div>
-
-              <div v-if="guestsCount === 1" class="warning">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                <p>최소 2명이상 선택해주세요.</p>
-              </div>
-
-              <div class="modal-actions">
-                <button @click="closePeopleModal" class="close_btn">Close</button>
-                <button @click="applyPeople" class="apply_btn">Check</button>
+            <div class="counter">
+              <span>Rooms</span>
+              <div class="controls">
+                <button @click="decrease('room')">-</button>
+                <span>{{ roomsCount }}</span>
+                <button @click="increase('room')">+</button>
               </div>
             </div>
-          </transition>
+
+            <div class="counter">
+              <span>Guests</span>
+              <div class="controls">
+                <button @click="decrease('guest')">-</button>
+                <span>{{ guestsCount }}</span>
+                <button @click="increase('guest')">+</button>
+              </div>
+            </div>
+
+            <div v-if="guestsCount === 1" class="warning">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <p>최소 2명이상 선택해주세요.</p>
+            </div>
+
+            <div class="modal-actions">
+              <button @click="closePeopleModal" class="close_btn">Close</button>
+              <button @click="applyPeople" class="apply_btn">Check</button>
+            </div>
+          </div>
         </div>
       </transition>
     </div>
@@ -270,7 +267,7 @@
 </template>
 
 <script>
-import bTeamApi from '@/util/axios';
+import bTeamApi from "@/util/axios";
 import CommonLayout from "@/components/common/CommonLayout.vue";
 
 export default {
@@ -283,19 +280,15 @@ export default {
         { value: "리조트", label: "Resorts" },
       ],
       activeTab: "호텔",
-      showingData: {
-        호텔: "Showing 24 of 257 places",
-        모텔: "Showing 16 of 51 places",
-        리조트: "Showing 20 of 72 places",
-      },
+      totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
+      visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
+      rooms: [],
       showSortModal: false,
       sortOptions: ["저가순", "고가순", "리뷰 많은순"],
       currentSort: "선택",
       showPeopleModal: false,
       roomsCount: 1,
       guestsCount: 2,
-      visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
-      rooms: [],
       selectedRating: null,
       priceFilter: 50,
     };
@@ -304,107 +297,67 @@ export default {
   async mounted() {
     try {
       const response = await bTeamApi.get("/api/accommodation");
-      const resultData = response.data.result.accommodations.content || [];
+      const result = response.data.result;
 
-      this.rooms = resultData.map((item) => {
-        const avg = item.reviewAvg || 0;
-        let reviewTitle = "리뷰 없음";
-        if (avg >= 4) reviewTitle = "Very Good";
-        else if (avg >= 3) reviewTitle = "Good";
-        else if (avg >= 2) reviewTitle = "SoSo";
-        else if (avg >= 1) reviewTitle = "Bad";
-        else if (avg > 0) reviewTitle = "Very Bad";
+      const list = result.accommodations.content || [];
 
-        return {
-          category: item.category || "호텔" || "모텔" || "리조트",
-          comId: item.comId,
-          comTitle: item.comTitle,
-          comAddress: item.comAddress,
-          star: item.star || 0,
-          price: item.price
-              ? `₩${item.price.toLocaleString()}`
-              : "가격 정보 없음",
-          reviewAvg: avg,
-          reviewCount: item.reviewCount || 0,
-          reviewTitle,
-          image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
-          isFavorite: item.isFavorite || false,
-        };
-      });
+      this.rooms = list.map((item) => ({
+        category: item.category || "호텔",
+        comId: item.comId,
+        comTitle: item.comTitle,
+        comAddress: item.comAddress,
+        star: item.star || 0,
+        price: item.price ? `₩${item.price.toLocaleString()}` : "가격 정보 없음",
+        reviewAvg: item.reviewAvg || 0,
+        reviewCount: item.reviewCount || 0,
+        reviewTitle:
+            item.reviewAvg >= 4
+                ? "Very Good"
+                : item.reviewAvg >= 3
+                    ? "Good"
+                    : item.reviewAvg >= 2
+                        ? "SoSo"
+                        : item.reviewAvg >= 1
+                            ? "Bad"
+                            : "리뷰 없음",
+        image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
+        isFavorite: item.isFavorite || false,
+      }));
+
+      // 카테고리별 숙소 개수
+      this.totalCounts = this.tabs.reduce((acc, tab) => {
+        acc[tab.value] = this.rooms.filter(
+            (r) => r.category === tab.value
+        ).length;
+        return acc;
+      }, {});
     } catch (error) {
       console.error("API 실패", error);
-
-      //  오류 났을 시
-      // this.rooms = [
-      //   {
-      //     category: "호텔",
-      //     comTitle: "해운대 오션뷰 호텔",
-      //     comAddress: "부산 해운대구",
-      //     star: 5,
-      //     price: "₩150,000",
-      //     reviewAvg: 4.5,
-      //     reviewCount: 50,
-      //     reviewTitle: "Very Good",
-      //     image: require("@/assets/img/Hatton_Hotel.jpg"),
-      //     isFavorite: false,
-      //   },
-      //   {
-      //     category: "호텔",
-      //     comTitle: "대구 동성로 게스트하우스",
-      //     comAddress: "대구 중구",
-      //     star: 3,
-      //     price: "₩70,000",
-      //     reviewAvg: 3.8,
-      //     reviewCount: 80,
-      //     reviewTitle: "Good",
-      //     image: require("@/assets/img/Hatton_Hotel.jpg"),
-      //     isFavorite: false,
-      //   },
-      //   {
-      //     category: "모텔",
-      //     comTitle: "제주 돌담 펜션",
-      //     comAddress: "제주 서귀포시",
-      //     star: 4,
-      //     price: "₩120,000",
-      //     reviewAvg: 4.2,
-      //     reviewCount: 35,
-      //     reviewTitle: "Very Good",
-      //     image: require("@/assets/img/Hatton_Hotel.jpg"),
-      //     isFavorite: false,
-      //   },
-      //   {
-      //     category: "리조트",
-      //     comTitle: "송도 비즈니스 레지던스",
-      //     comAddress: "인천 연수구",
-      //     star: 4,
-      //     price: "₩90,000",
-      //     reviewAvg: 4,
-      //     reviewCount: 60,
-      //     reviewTitle: "Very Good",
-      //     image: require("@/assets/img/Hatton_Hotel.jpg"),
-      //     isFavorite: false,
-      //   },
-      // ];
     }
   },
 
   methods: {
+    showingText(tabValue) {
+      const visible = this.visibleCount?.[tabValue] || 0;
+      const total = this.totalCounts?.[tabValue] || 0;
+      return `Showing ${visible} of ${total} places`;
+    },
     setActiveTab(tab) {
       this.activeTab = tab;
     },
     toggleSortModal() {
       this.showSortModal = !this.showSortModal;
-      },
+    },
     closeSortModal() {
       this.showSortModal = false;
-      },
+    },
     applySort(option) {
       this.currentSort = option;
       this.showSortModal = false;
-      if (option === "저가순")
-        this.rooms.sort((a, b) => parseInt(a.price.replace(/[₩,]/g,'')) - parseInt(b.price.replace(/[₩,]/g,'')));
+      const getPrice = (r) => parseInt(r.price.replace(/[₩,]/g, ""));
+      if (option === "저가순") this.rooms.sort((a, b) => getPrice(a) - getPrice(b));
       else if (option === "고가순")
-        this.rooms.sort((a, b) => parseInt(b.price.replace(/[₩,]/g,'')) - parseInt(a.price.replace(/[₩,]/g,'')));
+        this.rooms.sort((a, b) => getPrice(b) - getPrice(a));
       else if (option === "리뷰 많은순")
         this.rooms.sort((a, b) => b.reviewCount - a.reviewCount);
     },
@@ -414,37 +367,39 @@ export default {
           .slice(0, this.visibleCount[category]);
     },
     hasMoreRooms(category) {
-      return this.rooms.filter((r) => r.category === category).length > this.visibleCount[category];
+      return (
+          this.rooms.filter((r) => r.category === category).length >
+          this.visibleCount[category]
+      );
     },
     showMoreResults(category) {
       this.visibleCount[category] += 4;
-      },
+    },
     openPeopleModal() {
       this.showPeopleModal = true;
-      },
+    },
     closePeopleModal() {
       this.showPeopleModal = false;
-      },
-    increase(type) { if(type==='room')
-      this.roomsCount++; if(type==='guest')
-        this.guestsCount++;
-      },
+    },
+    increase(type) {
+      if (type === "room") this.roomsCount++;
+      if (type === "guest") this.guestsCount++;
+    },
     decrease(type) {
-      if(type==='room' && this.roomsCount>1)
-        this.roomsCount--;
-      if(type==='guest' && this.guestsCount>1)
-        this.guestsCount--;
-      },
+      if (type === "room" && this.roomsCount > 1) this.roomsCount--;
+      if (type === "guest" && this.guestsCount > 1) this.guestsCount--;
+    },
     applyPeople() {
       this.closePeopleModal();
-      },
+    },
     setRating(n) {
-      this.selectedRating = this.selectedRating===n ? null : n;
-      },
-    toggleHeart(index) {
-      this.rooms[index].isFavorite = !this.rooms[index].isFavorite;
-      },
-  }
+      this.selectedRating = this.selectedRating === n ? null : n;
+    },
+    toggleHeart(room) {
+      const target = this.rooms.find((r) => r.comId === room.comId);
+      if (target) target.isFavorite = !target.isFavorite;
+    },
+  },
 };
 </script>
 
