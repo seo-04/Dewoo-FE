@@ -18,7 +18,7 @@ import UserProfile from '../views/UserProfile.vue'
 const router = createRouter({
     history: createWebHistory(),
     routes : [
-        { path: '/', name: 'LoginPage', component: LoginPage, meta: { layout: 'login' } },
+        { path: '/', name: 'Home', component: LoginPage, meta: { layout: 'login' } },
         {
             path: '/password-setting/:userEmail/:verificationCode',
             name: 'Password_Setting',

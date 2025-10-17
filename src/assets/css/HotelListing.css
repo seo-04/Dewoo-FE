@@ -296,6 +296,7 @@
 
 .filter_box .filter_text{
     font-family: 'SacheonUniverse';
+    padding-bottom: 20px;
     font-size: 20px;
 }
 
@@ -312,6 +313,7 @@
 /* Price 슬라이더 */
 .slider {
     width: 100%;
+    accent-color:#46BD7B;
 }
 
 .price_labels {
@@ -319,6 +321,8 @@
     justify-content: space-between;
     font-size: 14px;
     color: black;
+    grid-auto-flow: column;
+
 }
 
 /* Rating 버튼 */
@@ -442,24 +446,19 @@
     gap: 2px;
     font-size: 12px;
     color: #555;
-    margin-bottom: 5px;
 }
 
 .locate i {
-    margin-bottom: 20px;
     display: flex;
     color: #46BD7B;
     font-size: 14px;
-
 }
 
 /* 리뷰/편의시설 */
 .review_container {
-
     display: flex;
     gap: 20px;
     align-items: center;
-    margin-bottom: 6px;
     font-size: 12px;
 }
 
@@ -468,12 +467,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-
     font-size: 12px;
-}
-
-.star_icon i {
-   margin-bottom: 20px;
 }
 
 .AMinities_box {
@@ -481,35 +475,37 @@
     gap: 5px;
     align-items: center;
     font-size: 12px;
+
     color: #333;
 }
 
-.AMinities_box i{
-    margin-bottom: 20px;
-
-}
 .score_review_box{
     align-items: center;
     text-align: center;
     display: flex;
-    gap: 8px;
+    margin-top: 10px;
+    gap: 10px;
 }
 
 .score {
     border: 1px solid #46BD7B;
     border-radius: 8px;
-    width: 40px;
-    height: 40px;
-    padding-top: 12px;
+    width: 35px;
+    height: 35px;
+   padding: 10px 10px;
     font-size: 12px;
     font-weight: bold;
     color: #112211;
 }
 
 .review_text {
-  margin-top: 15px;
     font-size: 12px;
     color: #333;
+}
+
+.review_text p b{
+    color: black;
+    font-weight: bold;
 }
 
 /* 가격 */
@@ -522,7 +518,6 @@
 
 .price p {
     font-family: 'SacheonUniverse';
-    margin: 0;
     font-size: 13px;
     color: #777;
 }
@@ -631,14 +626,14 @@
 }
 
 /*추천인 부분*/
-
 .showing {
     margin-top: 10px;
     font-size: 15px;
     display: flex;
-    gap: 600px;
+    gap: 580px;
     align-items: center;
 }
+
 
 
 .place p{
@@ -647,7 +642,8 @@
 }
 
 .place{
-    margin-left: 60px;
+    width: 150px;
+    margin-left: 45px;
 }
 
 .menu {
@@ -656,15 +652,21 @@
     border: none;
     align-items: center;
     cursor: pointer;
-    margin-right: 60px;
     font-size: 13px;
 }
 
-.menu i {
-    margin-bottom: 15px;
-    margin-left: 5px;
+.menu p {
+    width: 100px;
 }
 
+.menu i {
+    margin-left: 2px;
+}
+
+.menu span{
+    font-weight: bold;
+    color: black;
+}
 /* 박스 배경 */
 .sort_modal {
     position: fixed;
@@ -709,11 +711,11 @@
     box-shadow: 0 8px 20px rgba(0,0,0,0.17);
     border-radius: 10px;
     padding: 20px 40px;
-    max-width: 800px;
+    max-width: 850px;
     margin: 30px auto;
     position: relative;
     top: 170px;
-    left: 8%;
+    left: 12%;
     /*z-index:5;*/
 }
 
