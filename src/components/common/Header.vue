@@ -59,12 +59,12 @@
                 </div>
                 <hr class="divider">
                 <div class="dropdown-menu">
-                  <div class="menu-item" :class="{ active: activeDropdownTab === 'account' }" @click="setActiveDropdownTab('account')">
+                  <div class="menu-item" :class="{ active: activeDropdownTab === 'account' }" @click="goToAccountPage">
                     <i class="fa-solid fa-user"></i>
                     <span>계정</span>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                   </div>
-                  <div class="menu-item" :class="{ active: activeDropdownTab === 'payment' }" @click="setActiveDropdownTab('payment')">
+                  <div class="menu-item" :class="{ active: activeDropdownTab === 'payment' }" @click="goToPaymentHistory">
                     <i class="fa-solid fa-credit-card"></i>
                     <span>결제내역</span>
                     <i class="fa-solid fa-chevron-right arrow"></i>
@@ -142,6 +142,7 @@ export default {
       activeTab: 'hotel', // 클릭된 탭 ('hotel', 'wishlist', 'profile')
       hoveredTab: null,   // 마우스가 올라간 탭
       activeDropdownTab: 'account',
+      currentActiveTab: 'account',
     };
   },
   methods: {
@@ -157,17 +158,23 @@ export default {
         this.activeTab = null;
       }
     },
+    setActiveTab(tabName){
+      this.currentActiveTab = tabName;
+    },
+
     handleOutsideClick(event) {
       if (this.$refs.profileWrapper && !this.$refs.profileWrapper.contains(event.target)) {
         if (this.activeTab === 'profile') {
           this.activeTab = null;
         }
-
       }
     }
   },
   watch: {
-
+    $route:{
+      immediate: true,
+      handler(){}
+    },
     activeTab(newTab, oldTab) {
       if (newTab === 'profile') {
         document.addEventListener('click', this.handleOutsideClick);

@@ -1,4 +1,5 @@
 <template>
+  <CommonLayout>
   <div class="channel">Turkey > Istanbul > <span style="font-size: 20px; color: black"> 해튼호텔 </span></div>
   <div class="payment-body">
 
@@ -13,7 +14,7 @@
           <div class="hotel-link">
             <div style="display: flex">
               <div>
-                <img class="hotel-logo" src="../assets/img/cvk_hotel_logo.png" alt="">
+                <img class="payment-hotel-logo" src="../assets/img/cvk_hotel_logo.png" alt="">
               </div>
               <div class = "hotel-link-details">
                 <div style="font-size: 20px;">
@@ -226,10 +227,12 @@
       </div>
     </div>
   </div>
+  </CommonLayout>
 </template>
 
 <script setup lang="js">
 import { ref, watch } from 'vue';
+import CommonLayout from "../components/common/CommonLayout.vue";
 
 // 새로 추가된 카드를 저장할 배열
 const cards = ref([]);

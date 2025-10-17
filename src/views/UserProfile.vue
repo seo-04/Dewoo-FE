@@ -1,12 +1,18 @@
 <template>
   <CommonLayout>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <div class="main-container">
 
     <section class="profile-section">
       <div class="cover-image-container">
         <img :src="user.coverImage" :alt="`${user.name}'s cover photo`" class="cover-image"/>
-        <button class="upload-cover-btn">
+        <input type="file"
+               ref="coverImageInput"
+               @change="handleCoverImageUpload"
+               style="display: none;"
+               accept="image/*"
+               >
+        <button class="upload-cover-btn" @click="triggerCoverImageUpload">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -19,6 +25,15 @@
       <div class="profile-info-container">
         <div class="profile-image-wrapper">
           <img :src="user.profileImage" :alt="`${user.name}'s profile picture`" class="profile-image"/>
+
+          <input type="file"
+                 ref="profileImageInput"
+                 @change="handleProfileImageUpload"
+                 style="display: none;"
+                 accept="image/*">
+          <button class="edit-profile-btn" @click="triggerProfileImageUpload">
+            <i class="fa-solid fa-pen"></i>
+          </button>
         </div>
         <h1 class="user-name">{{ user.name }}</h1>
         <p class="user-email">{{ user.email }}</p>
@@ -86,9 +101,10 @@
           <div v-else v-for="booking in filteredBookings" :key="booking.id" class="booking-item">
             <div class="booking-card">
               <div class="card-left">
-                <div class="hotel-logo-container"><img :src="booking.roomImageSrc" alt="Hotel Logo" class="hotel-logo">
+                <div class="hotel-logo-container"><img :src="booking.roomImageSrc" alt="Hotel Logo" class="profile-hotel-logo">
                 </div>
                 <div class="checkin-checkout-dates">
+                  <div class="date-section-wrapper">
                   <div class="date-info-group">
                     <span class="date-label">Check-In</span>
                     <span class="date-value">{{ booking.checkInDisplay }}</span>
@@ -99,11 +115,54 @@
                     <span class="date-value">{{ booking.checkOutDisplay }}</span>
                   </div>
                 </div>
+                  <div class="profile-history-divider"></div>
+
+                  <div class="checkIO-container">
+
+                    <div class="checkIO">
+
+                      <div class="checkIO-time">
+                        <div class="profile-icon-wrapper">
+                        <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class =checkIO-details>
+                          <span class="checkIO-label"> 체크인 </span>
+                          <span class="checkIO-value"> 12:00pm </span>
+                        </div>
+                      </div>
+
+                      <div class="checkIO-time">
+                        <div class="profile-icon-wrapper">
+                        <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class =checkIO-details>
+                          <span class="checkIO-label"> 체크아웃 </span>
+                          <span class="checkIO-value"> 11:00am </span>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="checkIO">
+                      <div class="checkIO-time">
+                        <div class="profile-icon-wrapper">
+                        <i class="fa-solid fa-door-open "></i>
+                        </div>
+                        <div class =checkIO-details>
+                          <span class="checkIO-label"> 방번호 </span>
+                          <span class="checkIO-value"> On arrival </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  </div>
+                </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
       <div v-if="activeTab === 'payment'" class="tab-content active" id="payment-tab">
         <div class="content-title" style= "font-size: 32px; text-align: left">결제수단</div>
@@ -179,18 +238,17 @@
         </button>
       </div>
     </div>
-  </div>
   </CommonLayout>
 </template>
 
 <script setup lang="js">
-import CommonLayout from '../components/common/CommonLayout.vue';
-import {ref, reactive, computed, watch, onMounted, onBeforeUnmount} from 'vue';
+  import CommonLayout from '../components/common/CommonLayout.vue';
+  import {ref, reactive, computed, watch, onMounted, onBeforeUnmount} from 'vue';
 
-const activeTab = ref('account');
+  const activeTab = ref('account');
 
-// --- 계정 탭 관련 로직 ---
-const user = reactive({
+  // --- 계정 탭 관련 로직 ---
+  const user = reactive({
   name: 'Tomhoon',
   email: 'gnsdl9079@gmail.com',
   phone: '010-5555-5555',
@@ -201,113 +259,147 @@ const user = reactive({
   profileImage: 'https://picsum.photos/seed/profile/120/120'
 });
 
-const editingField = ref(null);
-const tempUser = reactive({});
-const accountFields = ref([
+  const editingField = ref(null);
+  const tempUser = reactive({});
+  const accountFields = ref([
   { key: 'name', label: 'Name' },
   { key: 'email', label: 'Email', type: 'email' },
   { key: 'password', label: 'Password', type: 'password' },
   { key: 'phone', label: 'Phone Number', type: 'tel' },
   { key: 'address', label: 'Address' },
   { key: 'dob', label: 'Date of birth' }
-]);
+  ]);
 
-function startEditing(fieldKey) {
+  // ⭐️ coverImageInput 선언은 여기 하나만 남깁니다.
+  const coverImageInput = ref(null);
+  const profileImageInput = ref(null);
+
+  function triggerProfileImageUpload(){
+    profileImageInput.value.click();
+  }
+
+  function handleProfileImageUpload(event){
+    const file = event.target.files[0];
+    if(file){
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        user.profileImage = e.target.result; // 미리보기 업데이트
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function triggerCoverImageUpload(){
+  coverImageInput.value.click();
+}
+
+  function handleCoverImageUpload(event){
+  const file = event.target.files[0];
+  if(file){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+  user.coverImage = e.target.result;
+};
+  reader.readAsDataURL(file);
+}
+}
+
+  function startEditing(fieldKey) {
   Object.assign(tempUser, user);
   editingField.value = fieldKey;
 }
 
-function saveChanges(fieldKey) {
+  function saveChanges(fieldKey) {
   if (fieldKey === 'email') {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(tempUser.email)) {
-      alert('올바른 이메일 형식을 입력해주세요. (예: user@example.com)');
-      return;
-    }
-  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(tempUser.email)) {
+  alert('올바른 이메일 형식을 입력해주세요. (예: user@example.com)');
+  return;
+}
+}
   user[fieldKey] = tempUser[fieldKey];
   editingField.value = null;
 }
 
-function cancelEdit() {
+  function cancelEdit() {
   editingField.value = null;
 }
 
-// --- 내역 탭 관련 로직 ---
-const allBookings = ref([
+  // --- 내역 탭 관련 로직 ---
+  const allBookings = ref([
   { id: 1, roomImageSrc: "https://picsum.photos/seed/room1/80/80", checkInDate: "2025-12-08", checkInDisplay: "Thur, Dec 8", checkOutDate: "2025-12-09", checkOutDisplay: "Fri, Dec 9" },
   { id: 2, roomImageSrc: "https://picsum.photos/seed/room2/80/80", checkInDate: "2026-01-15", checkInDisplay: "Mon, Jan 15", checkOutDate: "2026-01-18", checkOutDisplay: "Thur, Jan 18" },
   { id: 3, roomImageSrc: "https://picsum.photos/seed/room3/80/80", checkInDate: "2025-09-20", checkInDisplay: "Mon, Nov 20", checkOutDate: "2025-09-22", checkOutDisplay: "Wed, Nov 22" },
-]);
-const selectedFilter = ref('upcoming');
-const isFilterOpen = ref(false);
+  ]);
+  const selectedFilter = ref('upcoming');
+  const isFilterOpen = ref(false);
 
-const filteredBookings = computed(() => {
+  const filteredBookings = computed(() => {
   const todayStr = new Date().toISOString().split('T')[0];
   switch (selectedFilter.value) {
-    case 'upcoming': return allBookings.value.filter(b => b.checkInDate >= todayStr);
-    case 'latest': return [...allBookings.value].sort((a, b) => new Date(b.checkInDate) - new Date(a.checkInDate));
-    case 'oldest': return [...allBookings.value].sort((a, b) => new Date(a.checkInDate) - new Date(b.checkInDate));
-    default: return [];
-  }
+  case 'upcoming': return allBookings.value.filter(b => b.checkInDate >= todayStr);
+  case 'latest': return [...allBookings.value].sort((a, b) => new Date(b.checkInDate) - new Date(a.checkInDate));
+  case 'oldest': return [...allBookings.value].sort((a, b) => new Date(a.checkInDate) - new Date(b.checkInDate));
+  default: return [];
+}
 });
 
-function selectFilter(filter) {
+  function selectFilter(filter) {
   selectedFilter.value = filter;
   isFilterOpen.value = false;
 }
 
-// =================== [수정됨] 결제수단 관련 로직 START ===================
-const cards = ref([]);
-const isModalOpen = ref(false);
-const newCard = ref({ number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false });
-const selectedCountry = ref('United States');
-const countries = ref([
+  // =================== [수정됨] 결제수단 관련 로직 START ===================
+  const cards = ref([]);
+  const isModalOpen = ref(false);
+  const newCard = ref({ number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false });
+  const selectedCountry = ref('United States');
+  const countries = ref([
   { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' }, { code: 'KR', name: 'South Korea' }, { code: 'JP', name: 'Japan' }, { code: 'GB', name: 'United Kingdom' },
-]);
+  ]);
 
-const slider = ref(null);
-const isDown = ref(false);
-const startX = ref(0);
-const scrollLeft = ref(0);
+  const slider = ref(null);
+  const isDown = ref(false);
+  const startX = ref(0);
+  const scrollLeft = ref(0);
 
-function openModal() { isModalOpen.value = true; }
-function closeModal() {
+  function openModal() { isModalOpen.value = true; }
+  function closeModal() {
   isModalOpen.value = false;
   newCard.value = {number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false};
 }
 
-function addCard() {
+  function addCard() {
   if (newCard.value.number.length < 19) {
-    alert('올바른 카드 번호를 입력하세요.');
-    return;
-  }
+  alert('올바른 카드 번호를 입력하세요.');
+  return;
+}
   const cardToAdd = { id: Date.now(), lastFour: newCard.value.number.slice(-4), expDate: newCard.value.expDate };
   cards.value.unshift(cardToAdd);
   if (!newCard.value.saveInfo) { closeModal(); } else { isModalOpen.value = false; }
 }
 
-function deleteCard(cardId) {
+  function deleteCard(cardId) {
   if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
-    cards.value = cards.value.filter(card => card.id !== cardId);
-  }
+  cards.value = cards.value.filter(card => card.id !== cardId);
+}
 }
 
-function handleMouseDown(e) {
+  function handleMouseDown(e) {
   isDown.value = true;
   slider.value.style.cursor = 'grabbing';
   startX.value = e.pageX - slider.value.offsetLeft;
   scrollLeft.value = slider.value.scrollLeft;
 }
-function handleMouseLeave() {
+  function handleMouseLeave() {
   isDown.value = false;
   if(slider.value) slider.value.style.cursor = 'grab';
 }
-function handleMouseUp() {
+  function handleMouseUp() {
   isDown.value = false;
   if(slider.value) slider.value.style.cursor = 'grab';
 }
-function handleMouseMove(e) {
+  function handleMouseMove(e) {
   if (!isDown.value) return;
   e.preventDefault();
   const x = e.pageX - slider.value.offsetLeft;
@@ -315,34 +407,35 @@ function handleMouseMove(e) {
   slider.value.scrollLeft = scrollLeft.value - walk;
 }
 
-watch(() => newCard.value.number, (newValue) => {
+  watch(() => newCard.value.number, (newValue) => {
   const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
   newCard.value.number = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
 });
-watch(() => newCard.value.expDate, (newValue) => {
+  watch(() => newCard.value.expDate, (newValue) => {
   const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
   newCard.value.expDate = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
 });
-watch(() => newCard.value.cvc, (newValue) => {
+  watch(() => newCard.value.cvc, (newValue) => {
   newCard.value.cvc = newValue.replace(/[^\d]/g, '').slice(0, 3);
 });
-watch(() => newCard.value.name, (newValue) => {
+  watch(() => newCard.value.name, (newValue) => {
   newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
 });
-// =================== [수정됨] 결제수단 관련 로직 END =====================
+  // =================== [수정됨] 결제수단 관련 로직 END =====================
 
-// --- 공통 라이프사이클 훅 ---
-const filterWrapper = ref(null);
-const handleClickOutside = (event) => {
+  // --- 공통 라이프사이클 훅 ---
+  const filterWrapper = ref(null);
+  const handleClickOutside = (event) => {
   if (filterWrapper.value && !filterWrapper.value.contains(event.target)) {
-    isFilterOpen.value = false;
-  }
+  isFilterOpen.value = false;
+}
 };
 
-onMounted(() => { document.addEventListener('click', handleClickOutside); });
-onBeforeUnmount(() => { document.removeEventListener('click', handleClickOutside); });
+  onMounted(() => { document.addEventListener('click', handleClickOutside); });
+  onBeforeUnmount(() => { document.removeEventListener('click', handleClickOutside); });
 </script>
 
 <style scoped>
 @import "../assets/css/UserProfile.css";
+
 </style>
