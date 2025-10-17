@@ -1,70 +1,63 @@
 <template>
   <CommonLayout>
     <div>
-      <!-- 호텔 , 모텔, 리조트 탭 메뉴-->
       <div class="tab_menu">
         <div
-            v-for="tab in tabs"
-            :key="tab.value"
-            class="tab_item"
-            :class="{ active: activeTab === tab.value }"
-            @click="setActiveTab(tab.value)"
+          v-for="tab in tabs"
+          :key="tab.value"
+          class="tab_item"
+          :class="{ active: activeTab === tab.value }"
+          @click="setActiveTab(tab.value)"
         >
           <h4>{{ tab.label }}</h4>
           <p>{{ showingText(tab.value) }}</p>
         </div>
       </div>
 
-      <!-- 필터 + 숙소 리스트 -->
       <div class="listing_layout">
-        <!-- Filters -->
         <div class="filter_box">
           <p class="filter_text">Filters</p>
 
-          <!-- Price -->
           <div class="filter_section">
             <p>Price</p>
             <input
-                type="range"
-                min="300"
-                max="1200"
-                v-model="priceFilter"
-                class="slider"
+              type="range"
+              min="0"
+              max="3000000"
+              step="10000"
+              v-model="priceFilter"
+              class="slider"
             />
             <div class="price_labels">
-              <option value="50">$50</option>
-              <option value="300">$300</option>
-              <option value="1200">$1200</option>
+              <span>0원</span>
+              <span>~</span>
+              <span>{{ formattedPrice }}</span>
             </div>
           </div>
 
-          <!-- Rating -->
           <div class="filter_section">
             <p>Rating</p>
             <div class="rating_buttons">
               <button
-                  v-for="n in 5"
-                  :key="n"
-                  @click="setRating(n)"
-                  :class="{ active: selectedRating === n }"
+                v-for="n in 5"
+                :key="n"
+                @click="setRating(n)"
+                :class="{ active: selectedRating === n }"
               >
                 {{ n - 1 }}+
               </button>
             </div>
           </div>
 
-          <!-- Freebies -->
           <div class="filter_section">
             <p>Freebies</p>
             <label><input type="checkbox" value="조식포함" v-model="selectedFreebies" /> 조식포함</label><br />
             <label><input type="checkbox" value="무료주차" v-model="selectedFreebies" /> 무료주차</label><br />
             <label><input type="checkbox" value="WIFI" v-model="selectedFreebies" /> WIFI</label><br />
-            <label><input type="checkbox" value="공항셔틀버스" v-model="selectedFreebies" /> 공항셔틀버스</label><br />
-            <label><input type="checkbox" value="무료취소" v-model="selectedFreebies" /> 무료취소</label><br/>
-            <label><input type="checkbox" value="취사 가능" v-model="selectedFreebies" /> 취사 가능</label>
+            <label><input type="checkbox" value="취사 가능" v-model="selectedFreebies" /> 취사 가능</label><br />
+            <label><input type="checkbox" value="에어컨" v-model="selectedAmenities" /> 에어컨</label>
           </div>
 
-          <!-- Amenities -->
           <div class="filter_section">
             <p>Amenities</p>
             <label><input type="checkbox" value="24시 프론트데스크" v-model="selectedAmenities" /> 24시 프론트데스크</label><br />
@@ -76,9 +69,7 @@
           </div>
         </div>
 
-        <!-- 호텔 리스트 -->
         <div class="content_box">
-          <!-- Sort bar -->
           <div class="showing">
             <div class="place">
               <p>{{ showingText(activeTab) }}</p>
@@ -91,16 +82,16 @@
 
           <transition name="slide-up">
             <div
-                v-if="showSortModal"
-                class="sort_modal"
-                @click.self="closeSortModal"
+              v-if="showSortModal"
+              class="sort_modal"
+              @click.self="closeSortModal"
             >
               <div class="sort_content">
                 <ol
-                    v-for="option in sortOptions"
-                    :key="option"
-                    :class="{ active: option === currentSort }"
-                    @click="applySort(option)"
+                  v-for="option in sortOptions"
+                  :key="option"
+                  :class="{ active: option === currentSort }"
+                  @click="applySort(option)"
                 >
                   {{ option }}
                 </ol>
@@ -108,24 +99,20 @@
             </div>
           </transition>
 
-          <!-- 숙소 리스트 -->
           <div
-              class="room_list"
-              v-for="tab in tabs"
-              :key="tab.value"
-              v-show="activeTab === tab.value"
+            class="room_list"
+            v-for="tab in tabs"
+            :key="tab.value"
+            v-show="activeTab === tab.value"
           >
             <div
-                class="room_box"
-                v-for="(room, index) in getVisibleRooms(tab.value)"
-                :key="room.comId"
+              class="room_box"
+              v-for="(room) in getVisibleRooms(tab.value)"
+              :key="room.comId"
             >
-              <!-- 이미지 -->
               <div class="image">
                 <img :src="room.image" :alt="room.comTitle + ' 사진'" />
               </div>
-
-              <!-- 오른쪽 컨텐츠 -->
               <div class="content">
                 <div class="one">
                   <h3>{{ room.comTitle }}</h3>
@@ -133,8 +120,6 @@
                     <i class="fa-solid fa-location-dot"></i>
                     <p>{{ room.comAddress }}</p>
                   </div>
-
-                  <!-- 별점 리뷰 -->
                   <div class="review_container">
                     <div class="star_icon">
                       <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
@@ -145,8 +130,6 @@
                       <p>Amenities</p>
                     </div>
                   </div>
-
-                  <!-- 점수 리뷰 -->
                   <div class="score_review_box">
                     <div class="score"><p>{{ room.reviewAvg }}</p></div>
                     <div class="review_text">
@@ -157,21 +140,16 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="divider"></div>
-
-                <!-- 가격 -->
                 <div class="price">
                   <p>starting from</p>
                   <h2>{{ room.price }}<span>/night</span></h2>
                   <small>excl. tax</small>
                 </div>
-
-                <!-- 버튼 -->
                 <div class="two">
                   <button class="heart" @click="toggleHeart(room)">
                     <i
-                        :class="[
+                      :class="[
                         room.isFavorite ? 'fa-solid active-heart' : 'fa-regular',
                         'fa-heart'
                       ]"
@@ -181,8 +159,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- 더보기 버튼 -->
             <div class="button_result" v-if="hasMoreRooms(tab.value)">
               <button @click="showMoreResults(tab.value)">
                 Show more results
@@ -192,7 +168,6 @@
         </div>
       </div>
 
-      <!-- 검색 박스 -->
       <div class="search_box1">
         <div class="search_inputs2">
           <div class="input-group3">
@@ -222,15 +197,13 @@
           </button>
         </div>
       </div>
-
-      <!-- Rooms & Guests 모달 -->
       <transition name="slide-up">
         <div
-            v-if="showPeopleModal"
-            class="people_modal4"
-            @click.self="closePeopleModal"
-            role="dialog"
-            aria-modal="true"
+          v-if="showPeopleModal"
+          class="people_modal4"
+          @click.self="closePeopleModal"
+          role="dialog"
+          aria-modal="true"
         >
           <div class="people_content2" @click.stop>
             <h3>방 개수와 인원수 선택</h3>
@@ -274,171 +247,147 @@ import bTeamApi from "@/util/axios";
 import CommonLayout from "@/components/common/CommonLayout.vue";
 
 export default {
-components: { CommonLayout },
-data() {
-return {
-tabs: [
-{ value: "호텔", label: "Hotels" },
-{ value: "모텔", label: "Motels" },
-{ value: "리조트", label: "Resorts" },
-],
-activeTab: "호텔",
-totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
-visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
-rooms: [],
-showSortModal: false,
-sortOptions: ["저가순", "고가순", "리뷰 많은순"],
-currentSort: "선택",
-showPeopleModal: false,
-roomsCount: 1,
-guestsCount: 2,
-selectedRating: null,
-priceFilter: 1200,
-selectedFreebies: [],
-selectedAmenities: [],
-};
-},
+  components: { CommonLayout },
+  data() {
+    return {
+      tabs: [
+        { value: "호텔", label: "Hotels" },
+        { value: "모텔", label: "Motels" },
+        { value: "리조트", label: "Resorts" },
+      ],
+      activeTab: "호텔",
+      totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
+      visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
+      rooms: [],
+      showSortModal: false,
+      sortOptions: ["저가순", "고가순", "리뷰 많은순"],
+      currentSort: "선택",
+      // --- 👇 [추가] 모달 관련 데이터 ---
+      showPeopleModal: false,
+      roomsCount: 1,
+      guestsCount: 2,
+      // ---------------------------------
+      selectedRating: null,
+      priceFilter: 3000000,
+      selectedFreebies: [],
+      selectedAmenities: [],
+    };
+  },
 
-watch: {
-priceFilter() {
-this.setSearchFilters();
-},
-selectedRating() {
-this.setSearchFilters();
-},
-selectedFreebies: {
-handler() {
-this.setSearchFilters();
-},
-deep: true,
-},
-selectedAmenities: {
-handler() {
-this.setSearchFilters();
-},
-deep: true,
-},
-},
+  computed: {
+    formattedPrice() {
+      return new Intl.NumberFormat('ko-KR').format(this.priceFilter) + '원';
+    },
+  },
 
-async mounted() {
-await this.setSearchFilters();
-},
+  watch: {
+    priceFilter() { this.setSearchFilters(); },
+    selectedRating() { this.setSearchFilters(); },
+    selectedFreebies: { handler() { this.setSearchFilters(); }, deep: true },
+    selectedAmenities: { handler() { this.setSearchFilters(); }, deep: true },
+  },
 
-methods: {
-showingText(tabValue) {
-const visible = this.getVisibleRooms(tabValue).length;
-const total = this.totalCounts?.[tabValue] || 0;
-return `Showing ${visible} of ${total} places`;
-},
-async setSearchFilters() {
-try {
-const params = new URLSearchParams();
-params.append('price', this.priceFilter);
+  async mounted() {
+    await this.setSearchFilters();
+  },
 
-if (this.selectedRating) {
-params.append('star', this.selectedRating);
-}
+  methods: {
+    showingText(tabValue) {
+      const visible = this.getVisibleRooms(tabValue).length;
+      const total = this.totalCounts?.[tabValue] || 0;
+      return `Showing ${visible} of ${total} places`;
+    },
+    async setSearchFilters() {
+      try {
+        const params = new URLSearchParams();
 
-const allAmenities = [...this.selectedFreebies, ...this.selectedAmenities];
-if (allAmenities.length > 0) {
-params.append('amCategory', allAmenities.join(','));
-}
+        params.append('minPrice', 0);
+        params.append('maxPrice', this.priceFilter);
 
-const response = await bTeamApi.get(`/api/accommodation?${params.toString()}`);
-const result = response.data.result;
-const list = result.accommodations.content || [];
+        if (this.selectedRating) {
+          params.append('star', this.selectedRating);
+        }
 
-this.rooms = list.map((item) => ({
-category: item.category || "호텔",
-comId: item.comId,
-comTitle: item.comTitle,
-comAddress: item.comAddress,
-star: item.star || 0,
-price: item.price ? `₩${item.price.toLocaleString()}` : "가격 정보 없음",
-reviewAvg: item.reviewAvg || 0,
-reviewCount: item.reviewCount || 0,
-reviewTitle:
-item.reviewAvg >= 4
-? "Very Good"
-: item.reviewAvg >= 3
-? "Good"
-: item.reviewAvg >= 2
-? "SoSo"
-: item.reviewAvg >= 1
-? "Bad"
-: "리뷰 없음",
-image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
-isFavorite: item.isFavorite || false,
-}));
+        const allAmenities = [...this.selectedFreebies, ...this.selectedAmenities];
+        if (allAmenities.length > 0) {
+          params.append('amCategory', allAmenities.join(','));
+        }
 
-this.totalCounts = this.tabs.reduce((acc, tab) => {
-acc[tab.value] = this.rooms.filter(
-(r) => r.category === tab.value
-).length;
-return acc;
-}, {});
-} catch (error) {
-console.error("API 실패", error);
-}
-},
-setActiveTab(tab) {
-this.activeTab = tab;
-},
-toggleSortModal() {
-this.showSortModal = !this.showSortModal;
-},
-closeSortModal() {
-this.showSortModal = false;
-},
-applySort(option) {
-this.currentSort = option;
-this.showSortModal = false;
-const getPrice = (r) => parseInt(r.price.replace(/[₩,]/g, ""));
-if (option === "저가순") this.rooms.sort((a, b) => getPrice(a) - getPrice(b));
-else if (option === "고가순")
-this.rooms.sort((a, b) => getPrice(b) - getPrice(a));
-else if (option === "리뷰 많은순")
-this.rooms.sort((a, b) => b.reviewCount - a.reviewCount);
-},
-getVisibleRooms(category) {
-return this.rooms
-.filter((r) => r.category === category)
-.slice(0, this.visibleCount[category]);
-},
-hasMoreRooms(category) {
-return (
-this.rooms.filter((r) => r.category === category).length >
-this.visibleCount[category]
-);
-},
-showMoreResults(category) {
-this.visibleCount[category] += 4;
-},
-openPeopleModal() {
-this.showPeopleModal = true;
-},
-closePeopleModal() {
-this.showPeopleModal = false;
-},
-increase(type) {
-if (type === "room") this.roomsCount++;
-if (type === "guest") this.guestsCount++;
-},
-decrease(type) {
-if (type === "room" && this.roomsCount > 1) this.roomsCount--;
-if (type === "guest" && this.guestsCount > 1) this.guestsCount--;
-},
-applyPeople() {
-this.closePeopleModal();
-},
-setRating(n) {
-this.selectedRating = this.selectedRating === n ? null : n;
-},
-toggleHeart(room) {
-const target = this.rooms.find((r) => r.comId === room.comId);
-if (target) target.isFavorite = !target.isFavorite;
-},
-},
+        const response = await bTeamApi.get(`/api/accommodation?${params.toString()}`);
+        const result = response.data.result;
+        const list = result.accommodations.content || [];
+
+        this.rooms = list.map((item) => ({
+          category: item.category || "호텔",
+          comId: item.comId,
+          comTitle: item.comTitle,
+          comAddress: item.comAddress,
+          star: item.star || 0,
+          price: item.price ? `₩${item.price.toLocaleString()}` : "가격 정보 없음",
+          reviewAvg: item.reviewAvg || 0,
+          reviewCount: item.reviewCount || 0,
+          reviewTitle:
+            item.reviewAvg >= 4 ? "Very Good" :
+              item.reviewAvg >= 3 ? "Good" :
+                item.reviewAvg >= 2 ? "SoSo" :
+                  item.reviewAvg >= 1 ? "Bad" : "리뷰 없음",
+          image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
+          isFavorite: item.isFavorite || false,
+        }));
+
+        this.totalCounts = this.tabs.reduce((acc, tab) => {
+          acc[tab.value] = this.rooms.filter((r) => r.category === tab.value).length;
+          return acc;
+        }, {});
+      } catch (error) {
+        console.error("API 실패", error);
+      }
+    },
+    setActiveTab(tab) { this.activeTab = tab; },
+    toggleSortModal() { this.showSortModal = !this.showSortModal; },
+    closeSortModal() { this.showSortModal = false; },
+    applySort(option) {
+      this.currentSort = option;
+      this.showSortModal = false;
+      const getPrice = (r) => parseInt(r.price.replace(/[₩,]/g, ""));
+      if (option === "저가순") this.rooms.sort((a, b) => getPrice(a) - getPrice(b));
+      else if (option === "고가순") this.rooms.sort((a, b) => getPrice(b) - getPrice(a));
+      else if (option === "리뷰 많은순") this.rooms.sort((a, b) => b.reviewCount - a.reviewCount);
+    },
+    getVisibleRooms(category) {
+      return this.rooms.filter((r) => r.category === category).slice(0, this.visibleCount[category]);
+    },
+    hasMoreRooms(category) {
+      return (this.rooms.filter((r) => r.category === category).length > this.visibleCount[category]);
+    },
+    showMoreResults(category) { this.visibleCount[category] += 4; },
+
+    // ==================== 👇 [추가] 모달 및 인원수 관련 메소드 👇 ====================
+    openPeopleModal() {
+      this.showPeopleModal = true;
+    },
+    closePeopleModal() {
+      this.showPeopleModal = false;
+    },
+    increase(type) {
+      if (type === "room") this.roomsCount++;
+      if (type === "guest") this.guestsCount++;
+    },
+    decrease(type) {
+      if (type === "room" && this.roomsCount > 1) this.roomsCount--;
+      if (type === "guest" && this.guestsCount > 1) this.guestsCount--;
+    },
+    applyPeople() {
+      this.closePeopleModal();
+    },
+    // ==========================================================================
+
+    setRating(n) { this.selectedRating = this.selectedRating === n ? null : n; },
+    toggleHeart(room) {
+      const target = this.rooms.find((r) => r.comId === room.comId);
+      if (target) target.isFavorite = !target.isFavorite;
+    },
+  },
 };
 </script>
 
