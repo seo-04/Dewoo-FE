@@ -1,8 +1,7 @@
 /* --- 기존 스타일 (대부분 변경되지 않았습니다) --- */
 .payment-body{
     display: flex;
-    width: 95%;
-    max-width: 1280px;
+    width: 1280px;
     justify-content: space-between;
     margin: 0 auto;
     gap: 2%;
