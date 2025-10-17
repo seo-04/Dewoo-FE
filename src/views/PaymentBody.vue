@@ -1,6 +1,6 @@
 <template>
   <CommonLayout>
-  <div class="channel">Turkey > Istanbul > <span style="font-size: 20px; color: black"> 해튼호텔 </span></div>
+  <div class="channel">Istanbul &nbsp; &gt; <span style="font-size: 20px; color: black"> &nbsp; 해튼호텔 </span></div>
   <div class="payment-body">
 
     <div class="payment-big">
