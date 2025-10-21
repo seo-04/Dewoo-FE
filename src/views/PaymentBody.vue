@@ -8,29 +8,26 @@
 
           <div class = "Reservation_Info">
             <div class="roomInfo">
-              <!--            <span class="room"> Superior room - 1 더블베드 or 2 트윈 베드</span>-->
-              <span class="room"> {{roomTypeName}}</span>
-              <span class="roomPrice">/night</span>
+              <span class="room">{{roomType.roomTypeName}}</span>
+              <span class="roomPrice">{{roomType.price}}/night</span>
             </div>
             <div class="hotel-link">
               <div style="display: flex">
                 <div>
-                  <!--                호텔로고 따로 넣기-->
                   <img class="payment-hotel-logo" src="../assets/img/cvk_hotel_logo.png" alt="">
                 </div>
                 <div class = "hotel-link-details">
                   <div style="font-size: 20px;">
-                    {{comTitle}}
+                    {{paymentAccommodation.comTile}}
                   </div>
                   <div style="font-size: 14px; color: #888888">
                     <img class="location-logo" src="../assets/img/location.png" alt="">
-                    {{comAddress}}
+                    {{paymentAccommodation.comAddress}}
                   </div>
                 </div>
               </div>
             </div>
             <div class="Reservation_date">
-
               <div class="date">
                 <span class = "day">{{checkIn}}</span>
                 <span class = "check-IO">Check-In</span>
@@ -182,15 +179,15 @@
       <div class="payment-small">
         <div class="payment-small-body">
           <div class="hotel-details">
-            <img :src="mainImage" height="120" width="121" alt=""/>
+            <img src="../assets/img/cvk_hotel_photo.png" height="120" width="121" alt=""/>
             <div>
               <div style="display: block; font-size: 16px; color: #888888; text-align: left">{{comTitle}}</div>
-              <div style="font-size: 20px; font-weight: bold; text-align: left; margin-bottom: 15px">{{roomTypeName}}</div>
+              <div style="font-size: 20px; font-weight: bold; text-align: left; margin-bottom: 15px">{{roomType.roomTypeName}}</div>
               <div class ="mini-review">
-                <div class="review-box">{{reviewAvg}}</div>
+                <div class="review-box">{{paymentAccommodation.reviewAvg}}</div>
                 <div style="position: relative; bottom: 1px">
                   <span style="font-weight: bold; font-size: 14px">Very good</span>
-                  <span style="font-size: 12px; margin-left: 10px">{{reviewCount}} reviews</span>
+                  <span style="font-size: 12px; margin-left: 10px">{{paymentAccommodation.reviewCount}} reviews</span>
                 </div>
               </div>
             </div>
@@ -203,10 +200,10 @@
           <div class="boundary_line">
           </div>
           <div class="price-details">
-            <div style="font-size: 16px; font-weight: bold">Price Details</div>
+            <div style="font-size: 16px; font-weight: bold; text-align: left; margin-bottom: 5px">Price Details</div>
             <div class = "price-type">
               <span>Base Fare</span>
-              <span class = "detail-amount">{{price}}</span>
+              <span class = "detail-amount">₩{{roomType.price}}</span>
             </div>
             <div class = "price-type">
               <span>Discount</span>
@@ -215,7 +212,6 @@
             <div class = "price-type">
               <span>Taxes</span>
               <span class = "detail-amount">₩24,000</span>
-              <!--            가격에 10%만 넣게-->
             </div>
             <div class = "price-type">
               <span>Service Fee</span>
@@ -234,223 +230,247 @@
   </CommonLayout>
 </template>
 
-<script>
-import { ref, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import CommonLayout from "../components/common/CommonLayout.vue";
-import bTeamApi from '@/util/axios';
+<script setup lang="js">
+  import { ref, watch, onMounted } from 'vue'; // (1) onMounted 추가
+  import { useRoute } from 'vue-router'; // (2) useRoute 추가
+  import axios from 'axios'; // (3) axios 추가
+  import CommonLayout from "../components/common/CommonLayout.vue";
 
-export default {
-  components: {
-    CommonLayout
+  // ----- (4) API 데이터를 저장할 ref 변수 선언 -----
+  const location = ref('');
+  const comTitle = ref('');
+  const roomType = ref({}); // 객실 정보 (이름, 가격 등)
+  const paymentAccommodation = ref({}); // 숙소 정보 (주소, 이름 등)
+  const checkIn = ref('');
+  const checkOut = ref('');
+  // (가격 정보 등 추가 ref)
+  const priceDetails = ref({
+  baseFare: 0,
+  discount: 0,
+  taxes: 0,
+  serviceFee: 0,
+  total: 0
+});
+
+  // (5) vue-router의 useRoute 훅을 사용해 현재 URL 정보에 접근
+  const route = useRoute();
+
+  // --- 기존 카드 관련 로직 ---
+  const cards = ref([]); // (수정) API에서 가져와 채울 빈 배열로 시작
+  const paymentOptions = ref([
+  // ... (기존과 동일)
+  {
+    key: 'card',
+    title: '카드결제',
+    subtitle: '카드 등록 후 결제가 진행됩니다.',
   },
-  setup() {
-    const route = useRoute();
-
-    // --API로부터 가져올 데이터--
-    const location = ref('');
-    const comTitle = ref('');
-    const roomTypeName = ref('');
-    const comAddress = ref('');
-    const checkIn = ref('');
-    const checkOut = ref('');
-    const mainImage = ref('');
-    const reviewAvg = ref(0);
-    const reviewCount = ref(0);
-    const price = ref(0);
-    const roomDetails = ref(null);
-    const isLoading = ref(false);
-    const error = ref(null);
-
-    // 카드를 저장할 배열
-    const cards = ref([]);
-
-    // 결제 옵션 데이터
-    const selectedPayment = ref(null);
-    const paymentOptions = ref([
-      {key: 'card', title: '카드결제', subtitle: '카드 등록 후 결제가 진행됩니다.'},
-      {key: 'simple', title: '간편결제', subtitle: '카드 등록 없이 간편인증으로 결제가 진행됩니다.'},
-    ]);
-    const isModalOpen = ref(false);
-    const newCard = ref({
-      number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false
-    });
-
-    // --- 카드 추가 관련 로직 ---
-    const selectedCountry = ref('United States');
-    const countries = ref([
-      { code: 'US', name: 'United States' },
-      { code: 'CA', name: 'Canada' },
-      { code: 'KR', name: 'South Korea' },
-      { code: 'JP', name: 'Japan' },
-      { code: 'GB', name: 'United Kingdom' },
-    ]);
-
-    // 드래그 스크롤 기능을 위한 변수
-    const slider = ref(null);
-    const isDown = ref(false);
-    const startX = ref(0);
-    const scrollLeft = ref(0);
-
-    // API 호출 함수
-    const fetchRoomDetails = async (accId) => {
-      isLoading.value = true;
-      error.value = null;
-      try {
-        const response = await bTeamApi.get(`/api/room/${accId}`);
-        const data = response.data;
-
-        // API 응답 데이터를 각 변수에 할당
-        location.value = data.location || '';
-        comTitle.value = data.comTitle || '';
-        roomTypeName.value = data.roomTypeName || '';
-        comAddress.value = data.comAddress || '';
-        checkIn.value = data.checkIn || '';
-        checkOut.value = data.checkOut || '';
-        mainImage.value = data.mainImage || '';
-        reviewAvg.value = data.reviewAvg || 0;
-        reviewCount.value = data.reviewCount || 0;
-        price.value = data.price || 0;
-        roomDetails.value = data;
-
-        isLoading.value = false;
-      } catch (err) {
-        console.error('Failed to fetch room details:', err);
-        error.value = err.message;
-        isLoading.value = false;
-      }
-    };
-
-    // 결제 방법 선택
-    const selectPayment = (key) => {
-      selectedPayment.value = key;
-    };
-
-    // 모달 열기/닫기
-    function openModal() {
-      isModalOpen.value = true;
-    }
-
-    function closeModal() {
-      isModalOpen.value = false;
-      newCard.value = {number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false};
-    }
-
-    // 카드 추가
-    function addCard() {
-      if (newCard.value.number.length < 19) {
-        alert('올바른 카드 번호를 입력하세요.');
-        return;
-      }
-      const cardToAdd = {
-        id: Date.now(),
-        lastFour: newCard.value.number.slice(-4),
-        expDate: newCard.value.expDate,
-      };
-      cards.value.unshift(cardToAdd);
-
-      if (!newCard.value.saveInfo) {
-        closeModal();
-      } else {
-        isModalOpen.value = false;
-      }
-    }
-
-    // 카드 삭제
-    function deleteCard(cardId) {
-      if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
-        cards.value = cards.value.filter(card => card.id !== cardId);
-      }
-    }
-
-    // 드래그 스크롤 함수들
-    function handleMouseDown(e) {
-      isDown.value = true;
-      slider.value.style.cursor = 'grabbing';
-      startX.value = e.pageX - slider.value.offsetLeft;
-      scrollLeft.value = slider.value.scrollLeft;
-    }
-
-    function handleMouseLeave() {
-      isDown.value = false;
-      if (slider.value) slider.value.style.cursor = 'grab';
-    }
-
-    function handleMouseUp() {
-      isDown.value = false;
-      if (slider.value) slider.value.style.cursor = 'grab';
-    }
-
-    function handleMouseMove(e) {
-      if (!isDown.value) return;
-      e.preventDefault();
-      const x = e.pageX - slider.value.offsetLeft;
-      const walk = (x - startX.value) * 2;
-      slider.value.scrollLeft = scrollLeft.value - walk;
-    }
-
-    // 입력값 자동 서식 기능
-    watch(() => newCard.value.number, (newValue) => {
-      const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
-      let formatted = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
-      newCard.value.number = formatted;
-    });
-
-    watch(() => newCard.value.expDate, (newValue) => {
-      const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
-      newCard.value.expDate = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
-    });
-
-    watch(() => newCard.value.cvc, (newValue) => {
-      newCard.value.cvc = newValue.replace(/[^\d]/g, '').slice(0, 3);
-    });
-
-    watch(() => newCard.value.name, (newValue) => {
-      newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
-    });
-
-    // 컴포넌트 마운트 시 API 호출
-    onMounted(async () => {
-      const accId = route.params.accId || 1;
-      await fetchRoomDetails(accId);
-    });
-
-    // setup()에서 템플릿에 노출할 모든 변수와 함수 반환
-    return {
-      location,
-      comTitle,
-      roomTypeName,
-      comAddress,
-      checkIn,
-      checkOut,
-      mainImage,
-      reviewAvg,
-      reviewCount,
-      price,
-      isLoading,
-      error,
-      roomDetails,
-      cards,
-      selectedPayment,
-      paymentOptions,
-      isModalOpen,
-      newCard,
-      selectedCountry,
-      countries,
-      slider,
-      selectPayment,
-      openModal,
-      closeModal,
-      addCard,
-      deleteCard,
-      handleMouseDown,
-      handleMouseLeave,
-      handleMouseUp,
-      handleMouseMove
-    };
-  }
+  {
+    key: 'simple',
+    title: '간편결제',
+    subtitle: '카드 등록 없이 간편인증으로 결제가 진행됩니다.',
+  },
+  ]);
+  const selectedPayment = ref(null);
+  const selectPayment = (key) => {
+  selectedPayment.value = key;
 };
+  const isModalOpen = ref(false);
+  const newCard = ref({
+  number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false
+});
+  const selectedCountry = ref('United States');
+  const countries = ref([
+  { code: 'US', name: 'United States' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'KR', name: 'South Korea' },
+  { code: 'JP', name: 'Japan' },
+  { code: 'GB', name: 'United Kingdom' },
+  ]);
+  const slider = ref(null);
+  const isDown = ref(false);
+  const startX = ref(0);
+  const scrollLeft = ref(0);
+  function openModal() {
+  isModalOpen.value = true;
+}
+  function closeModal() {
+  isModalOpen.value = false;
+  newCard.value = {number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false};
+}
+
+  // ----- (6) 컴포넌트가 마운트될 때 (화면에 그려질 때) 실행될 로직 -----
+  onMounted(() => {
+  // 1. URL 쿼리에서 정보 추출 및 ref에 할당
+  // (예: /payment?accId=12&checkIn=2025-11-20&checkOut=2025-11-21&location=서울)
+  const accId = route.query.accId;
+  checkIn.value = route.query.checkIn || '날짜 없음';
+  checkOut.value = route.query.checkOut || '날짜 없음';
+  location.value = route.query.location || '지역 없음';
+
+  // 2. URL에서 가져온 ID로 API 호출
+  if (accId) {
+  fetchPaymentData(accId);
+} else {
+  console.error("URL에 accId가 없습니다.");
+  alert("객실 정보를 불러올 수 없습니다.");
+}
+
+  // 3. (로그인된 사용자의) 카드 목록 불러오기
+  fetchCards();
+});
+
+  // ----- (7) (추가) 결제 상세 정보를 API로 가져오는 함수 -----
+  async function fetchPaymentData(accId) {
+  try {
+  // '/api/room/{id}' 엔드포인트를 호출합니다.
+  const response = await axios.get(`/api/room/${accId}`);
+
+  // 백엔드가 ResponseDto로 감쌌기 때문에 response.data.result 사용
+  if (response.data.code === 'SUCCESS') {
+  const result = response.data.result;
+
+  // API 응답(PaymentAccRoomTypeDto)을 기반으로 ref 변수 채우기
+  paymentAccommodation.value = result.paymentAccommodation;
+  roomType.value = result.roomType;
+
+  // 템플릿 상단의 comTitle도 채워줍니다.
+  comTitle.value = result.paymentAccommodation.comTitle;
+
+  // (가정) 가격 정보도 API에서 받아와서 설정
+  // AccRoomTypeDto에 가격이 있다고 가정
+  priceDetails.value.baseFare = result.roomType.price || 240000;
+  priceDetails.value.taxes = (result.roomType.price || 240000) * 0.1; // 예시: 10%
+  priceDetails.value.serviceFee = 5000; // 예시
+  priceDetails.value.total = priceDetails.value.baseFare + priceDetails.value.taxes + priceDetails.value.serviceFee;
+
+} else {
+  throw new Error(response.data.message);
+}
+} catch (error) {
+  console.error("결제 정보 로딩 실패:", error);
+  alert("결제 정보를 불러오는 데 실패했습니다.");
+}
+}
+
+  // ----- (8) (수정) 카드 목록을 API로 가져오는 함수 -----
+  async function fetchCards() {
+  try {
+  // 'GET /api/card' 엔드포인트 호출 (인증된 사용자)
+  const response = await axios.get('/api/card');
+  if (response.data.code === 'SUCCESS') {
+  // API 응답(List<CardDto>)을 cards ref에 할당
+  cards.value = response.data.result.map(card => ({
+  id: card.cardId,
+  lastFour: card.cardNumber.slice(-4), // CardDto에 cardNumber가 있다고 가정
+  expDate: card.expDate
+}));
+} else {
+  throw new Error(response.data.message);
+}
+} catch (error) {
+  console.error("카드 목록 로딩 실패:", error);
+  // (로그인 안 했을 수도 있으니 alert 대신 콘솔 로그만)
+}
+}
+
+  // ----- (9) (수정) 카드 추가 API 호출 -----
+  async function addCard() {
+  if (newCard.value.number.length < 19) {
+  alert('올바른 카드 번호를 입력하세요.');
+  return;
+}
+
+  // CardDto 형식에 맞게 데이터 준비
+  const cardData = {
+  cardNumber: newCard.value.number.replace(/\s/g, ''), // 공백 제거
+  expDate: newCard.value.expDate,
+  cvc: parseInt(newCard.value.cvc),
+  name: newCard.value.name,
+  country: selectedCountry.value,
+};
+
+  try {
+  // 'POST /api/card' 엔드포인트 호출
+  const response = await axios.post('/api/card', cardData);
+
+  if (response.data.code === 'SUCCESS') {
+  // API 성공 시, 로컬 목록에 즉시 반영 (혹은 fetchCards() 다시 호출)
+  const addedCard = response.data.result; // (서버가 등록된 카드 정보를 반환한다고 가정)
+  cards.value.unshift({
+  id: addedCard.cardId,
+  lastFour: addedCard.cardNumber.slice(-4),
+  expDate: addedCard.expDate
+});
+  closeModal();
+} else {
+  throw new Error(response.data.message);
+}
+} catch (error) {
+  console.error("카드 등록 실패:", error);
+  alert("카드 등록에 실패했습니다.");
+}
+}
+
+  // ----- (10) (수정) 카드 삭제 API 호출 -----
+  async function deleteCard(cardId) {
+  if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
+  try {
+  // 'DELETE /api/card/{cardId}' 엔드포인트 호출
+  const response = await axios.delete(`/api/card/${cardId}`);
+  if (response.data.code === 'SUCCESS') {
+  // API 성공 시, 로컬 목록에서 즉시 제거
+  cards.value = cards.value.filter(card => card.id !== cardId);
+} else {
+  throw new Error(response.data.message);
+}
+} catch (error) {
+  console.error("카드 삭제 실패:", error);
+  alert("카드 삭제에 실패했습니다.");
+}
+}
+}
+
+  // --- 기존 드래그 스크롤 함수 (변경 없음) ---
+  function handleMouseDown(e) {
+  isDown.value = true;
+  slider.value.style.cursor = 'grabbing';
+  startX.value = e.pageX - slider.value.offsetLeft;
+  scrollLeft.value = slider.value.scrollLeft;
+}
+  function handleMouseLeave() {
+  isDown.value = false;
+  if (slider.value) slider.value.style.cursor = 'grab';
+}
+  function handleMouseUp() {
+  isDown.value = false;
+  if (slider.value) slider.value.style.cursor = 'grab';
+}
+  function handleMouseMove(e) {
+  if (!isDown.value) return;
+  e.preventDefault();
+  const x = e.pageX - slider.value.offsetLeft;
+  const walk = (x - startX.value) * 2;
+  slider.value.scrollLeft = scrollLeft.value - walk;
+}
+
+  // --- 기존 입력값 자동 서식 (변경 없음) ---
+  watch(() => newCard.value.number, (newValue) => {
+  const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
+  let formatted = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
+  newCard.value.number = formatted;
+});
+  watch(() => newCard.value.expDate, (newValue) => {
+  const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
+  newCard.value.expDate = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
+});
+  watch(() => newCard.value.cvc, (newValue) => {
+  newCard.value.cvc = newValue.replace(/[^\d]/g, '').slice(0, 3);
+});
+  watch(() => newCard.value.name, (newValue) => {
+  newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
+});
 </script>
+
 
 <style scoped>
 @import '../assets/css/PaymentBody.css';

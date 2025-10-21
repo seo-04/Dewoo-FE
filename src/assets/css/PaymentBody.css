@@ -89,6 +89,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 40px;
+    padding: 0 15px;
     border-radius: 20px;
     align-items: center;
 }
@@ -193,9 +194,7 @@
     content: "";
     flex-grow: 1;
     background: gray;
-    height: 2px;
-    font-size: 0px;
-    line-height: 0px;
+    height: 1px;
     margin: 10px 0px;
 }
 
