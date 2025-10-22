@@ -179,7 +179,7 @@
       <div class="payment-small">
         <div class="payment-small-body">
           <div class="hotel-details">
-            <img src="../assets/img/cvk_hotel_photo.png" height="120" width="121" alt=""/>
+            <img src={{paymentAccommodation.mainImage}} height="120" width="121" alt=""/>
             <div>
               <div style="display: block; font-size: 16px; color: #888888; text-align: left">{{comTitle}}</div>
               <div style="font-size: 20px; font-weight: bold; text-align: left; margin-bottom: 15px">{{roomType.roomTypeName}}</div>
