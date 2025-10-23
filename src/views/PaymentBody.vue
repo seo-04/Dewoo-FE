@@ -44,21 +44,21 @@
             </div>
           </div>
 
-          <div class="payment-type">
-            <div
-                v-for="option in paymentOptions"
-                :key="option.key"
-                class="option"
-                :class="{ selected: selectedPayment === option.key }"
-                @click="selectPayment(option.key)"
-            >
-              <div class="text-group">
-                <span class="paymentTitle">{{ option.title }}</span>
-                <span class="paymentSubtitle">{{ option.subtitle }}</span>
-              </div>
-              <div class="radio-icon"></div>
+        <div class="payment-type">
+          <div
+              v-for="option in paymentOptions"
+              :key="option.key"
+              class="option"
+              :class="{ selected: selectedPayment === option.key }"
+              @click="option.key === 'simple' ? requestTossPayment() : selectPayment(option.key)"
+          >
+            <div class="text-group">
+              <span class="paymentTitle">{{ option.title }}</span>
+              <span class="paymentSubtitle">{{ option.subtitle }}</span>
             </div>
+            <div class="radio-icon"></div>
           </div>
+        </div>
 
           <div class="card-chest" v-if="selectedPayment === 'card'">
             <div style="font-size: 32px; font-weight: bold; margin-bottom: 25px; text-align: left">카드등록</div>
@@ -244,6 +244,69 @@
   const checkIn = ref('');
   const checkOut = ref('');
   // (가격 정보 등 추가 ref)
+
+let tossPayments = null;
+let tossPaymentsLoadPromise = null;
+
+// --- Toss Payments SDK 로드 ---
+const loadTossPayments = () => {
+  if (tossPaymentsLoadPromise) {
+    return tossPaymentsLoadPromise;
+  }
+
+  tossPaymentsLoadPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://js.tosspayments.com/v1/payment.js';
+    script.crossOrigin = 'anonymous';
+    script.onload = () => {
+      try {
+        const clientKey = 'test_ck_EP59LybZ8BLeQDq27EjbV6GYo7pR';
+        tossPayments = window.TossPayments(clientKey);
+        resolve(tossPayments);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    script.onerror = (error) => {
+      tossPaymentsLoadPromise = null; // Allow retrying
+      reject(error);
+    };
+    document.head.appendChild(script);
+  });
+
+  return tossPaymentsLoadPromise;
+};
+
+onMounted(() => {
+  loadTossPayments().catch(error => {
+    console.error("Failed to load Toss Payments SDK:", error);
+    alert("결제 모듈을 불러오는 데 실패했습니다. 페이지를 새로고침하거나 다시 시도해주세요.");
+  });
+});
+
+
+// --- 토스 결제 요청 ---
+const requestTossPayment = async () => {
+  selectedPayment.value = 'simple';
+  try {
+    await loadTossPayments();
+    tossPayments.requestPayment('토스페이', {
+      amount: 265000,
+      orderId: `order_${new Date().getTime()}`,
+      orderName: 'Superior room - 1 더블베드 or 2 트윈 베드',
+      customerName: 'Tomhoon',
+      successUrl: `${window.location.origin}/payment/success`,
+      failUrl: `${window.location.origin}/payment/fail`,
+    }).catch(error => {
+      console.error("결제 요청 실패:", error);
+      alert("결제 요청에 실패했습니다. 다시 시도해주세요.");
+    });
+  } catch (error) {
+    console.error("결제 모듈 로드 또는 결제 요청 실패:", error);
+    alert("결제 중 오류가 발생했습니다. 다시 시도해주세요.");
+  }
+};
+
 
   const priceDetails = ref({
   baseFare: 0,
@@ -516,7 +579,6 @@
   });
 
 </script>
-
 
 <style scoped>
 @import '../assets/css/PaymentBody.css';

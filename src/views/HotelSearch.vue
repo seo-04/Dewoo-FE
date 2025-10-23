@@ -171,7 +171,6 @@
               <p>From<br /><b>$700</b></p>
             </div>
           </div>
-
           <p>
             오래된 시간의 숨결이 머무는 도시, 말라카(Melaka).<br>
             말레이시아의 작은 보석 같은 이 도시는 동서양 문화가 만나는 관문이자, 세계문화유산으로<br>
@@ -333,8 +332,8 @@ export default {
   },
 };
 </script>
-
-<style scoped>
+<style>
+@import "@/assets/css/HotelSearch.css";
 .search-container h1 {
   margin-bottom: 20px;
   font-size: 24px;

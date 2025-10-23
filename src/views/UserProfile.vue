@@ -57,7 +57,7 @@
           <div class="info-value-wrapper">
             <template v-if="editingField !== field.key">
               <span class="info-value">{{ user[field.key] }}</span>
-              <button v-if="field.key !== 'password' && field.key !== 'email'" @click="startEditing(field.key)" class="change-btn">
+              <button v-if="field.key !== 'password' && field.key !== 'email' && field.key !== 'dob'" @click="startEditing(field.key)" class="change-btn">
                 <img src="../assets/img/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change
               </button>
             </template>
@@ -240,28 +240,30 @@
     </div>
   </CommonLayout>
 </template>
-
-<script setup lang="js">
-  import CommonLayout from '../components/common/CommonLayout.vue';
-  import {ref, reactive, computed, watch, onMounted, onBeforeUnmount} from 'vue';
+<script setup>
+import CommonLayout from '../components/common/CommonLayout.vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import axios from '../util/axios.js'; // 우리가 설정한 axios 인스턴스
 
   const activeTab = ref('account');
 
-  // --- 계정 탭 관련 로직 ---
-  const user = reactive({
-  name: 'Tomhoon',
-  email: 'gnsdl9079@gmail.com',
-  phone: '010-5555-5555',
+// --- 계정 탭 관련 로직 ---
+
+const user = reactive({
+  name: '',
+  email: '',
+  phone: '',
   password: '••••••••••',
-  address: '경기도 화성시 화성읍 도레미아파트 101동 101호',
-  dob: '1999-99-99',
+  address: '',
+  dob: '',
   coverImage: 'https://picsum.photos/seed/cover/1000/250',
   profileImage: 'https://picsum.photos/seed/profile/120/120'
 });
 
-  const editingField = ref(null);
-  const tempUser = reactive({});
-  const accountFields = ref([
+const editingField = ref(null);
+const tempUser = reactive({});
+
+const accountFields = ref([
   { key: 'name', label: 'Name' },
   { key: 'email', label: 'Email', type: 'email' },
   { key: 'password', label: 'Password', type: 'password' },
@@ -270,6 +272,25 @@
   { key: 'dob', label: 'Date of birth' }
   ]);
 
+onMounted(async () => {
+  try {
+    const response = await axios.get('/api/user/profile');
+    const userData = response.data;
+
+    user.name = userData.username;
+    user.email = userData.userEmail;
+    user.phone = userData.userPhone;
+    user.address = userData.userAddress;
+    user.dob = userData.userBirth;
+    user.profileImage = userData.imageUrl || 'https://picsum.photos/seed/profile/120/120';
+
+  } catch (error) {
+    console.error('사용자 정보를 불러오는 데 실패했습니다:', error);
+    alert('사용자 정보를 불러오는 중 오류가 발생했습니다.');
+  }
+});
+
+function startEditing(fieldKey) {
   // ⭐️ coverImageInput 선언은 여기 하나만 남깁니다.
   const coverImageInput = ref(null);
   const profileImageInput = ref(null);
@@ -309,16 +330,40 @@
   editingField.value = fieldKey;
 }
 
-  function saveChanges(fieldKey) {
+async function saveChanges(fieldKey) {
   if (fieldKey === 'email') {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(tempUser.email)) {
-  alert('올바른 이메일 형식을 입력해주세요. (예: user@example.com)');
-  return;
-}
-}
-  user[fieldKey] = tempUser[fieldKey];
-  editingField.value = null;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(tempUser.email)) {
+      alert('올바른 이메일 형식을 입력해주세요.');
+      return;
+    }
+  }
+
+  try {
+    const backendFieldMap = {
+      name: 'username',
+      email: 'userEmail',
+      phone: 'userPhone',
+      address: 'userAddress',
+      dob: 'userBirth'
+    };
+
+    const payload = {};
+    payload[backendFieldMap[fieldKey] || fieldKey] = tempUser[fieldKey];
+
+    // ⭐ 핵심 수정:
+    // 1. axios.put -> axios.patch 로 변경
+    // 2. '/api/user/update' -> '/api/user' 로 변경
+    await axios.patch('/api/user', payload);
+
+    user[fieldKey] = tempUser[fieldKey];
+    editingField.value = null;
+    alert('정보가 성공적으로 수정되었습니다.');
+
+  } catch (error) {
+    console.error('정보 수정에 실패했습니다:', error);
+    alert('정보 수정 중 오류가 발생했습니다.');
+  }
 }
 
   function cancelEdit() {
@@ -330,9 +375,10 @@
   { id: 1, roomImageSrc: "https://picsum.photos/seed/room1/80/80", checkInDate: "2025-12-08", checkInDisplay: "Thur, Dec 8", checkOutDate: "2025-12-09", checkOutDisplay: "Fri, Dec 9" },
   { id: 2, roomImageSrc: "https://picsum.photos/seed/room2/80/80", checkInDate: "2026-01-15", checkInDisplay: "Mon, Jan 15", checkOutDate: "2026-01-18", checkOutDisplay: "Thur, Jan 18" },
   { id: 3, roomImageSrc: "https://picsum.photos/seed/room3/80/80", checkInDate: "2025-09-20", checkInDisplay: "Mon, Nov 20", checkOutDate: "2025-09-22", checkOutDisplay: "Wed, Nov 22" },
-  ]);
-  const selectedFilter = ref('upcoming');
-  const isFilterOpen = ref(false);
+]);
+const selectedFilter = ref('upcoming');
+const isFilterOpen = ref(false);
+const filterWrapper = ref(null);
 
   const filteredBookings = computed(() => {
   const todayStr = new Date().toISOString().split('T')[0];
@@ -349,12 +395,12 @@
   isFilterOpen.value = false;
 }
 
-  // =================== [수정됨] 결제수단 관련 로직 START ===================
-  const cards = ref([]);
-  const isModalOpen = ref(false);
-  const newCard = ref({ number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false });
-  const selectedCountry = ref('United States');
-  const countries = ref([
+// =================== 결제수단 관련 로직 START ===================
+const cards = ref([]);
+const isModalOpen = ref(false);
+const newCard = ref({ number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false });
+const selectedCountry = ref('United States');
+const countries = ref([
   { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' }, { code: 'KR', name: 'South Korea' }, { code: 'JP', name: 'Japan' }, { code: 'GB', name: 'United Kingdom' },
   ]);
 
@@ -379,27 +425,27 @@
   if (!newCard.value.saveInfo) { closeModal(); } else { isModalOpen.value = false; }
 }
 
-  function deleteCard(cardId) {
+function deleteCard(cardId) {
   if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
-  cards.value = cards.value.filter(card => card.id !== cardId);
-}
+    cards.value = cards.value.filter(card => card.id !== cardId);
+  }
 }
 
-  function handleMouseDown(e) {
+function handleMouseDown(e) {
   isDown.value = true;
   slider.value.style.cursor = 'grabbing';
   startX.value = e.pageX - slider.value.offsetLeft;
   scrollLeft.value = slider.value.scrollLeft;
 }
-  function handleMouseLeave() {
+function handleMouseLeave() {
   isDown.value = false;
   if(slider.value) slider.value.style.cursor = 'grab';
 }
-  function handleMouseUp() {
+function handleMouseUp() {
   isDown.value = false;
   if(slider.value) slider.value.style.cursor = 'grab';
 }
-  function handleMouseMove(e) {
+function handleMouseMove(e) {
   if (!isDown.value) return;
   e.preventDefault();
   const x = e.pageX - slider.value.offsetLeft;
@@ -407,35 +453,37 @@
   slider.value.scrollLeft = scrollLeft.value - walk;
 }
 
-  watch(() => newCard.value.number, (newValue) => {
+watch(() => newCard.value.number, (newValue) => {
   const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
   newCard.value.number = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
 });
-  watch(() => newCard.value.expDate, (newValue) => {
+watch(() => newCard.value.expDate, (newValue) => {
   const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
   newCard.value.expDate = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
 });
-  watch(() => newCard.value.cvc, (newValue) => {
+watch(() => newCard.value.cvc, (newValue) => {
   newCard.value.cvc = newValue.replace(/[^\d]/g, '').slice(0, 3);
 });
-  watch(() => newCard.value.name, (newValue) => {
+watch(() => newCard.value.name, (newValue) => {
   newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
 });
-  // =================== [수정됨] 결제수단 관련 로직 END =====================
+// =================== 결제수단 관련 로직 END =====================
 
+// --- 공통 라이프사이클 훅 ---
+const handleClickOutside = (event) => {
   // --- 공통 라이프사이클 훅 ---
   const filterWrapper = ref(null);
   const handleClickOutside = (event) => {
   if (filterWrapper.value && !filterWrapper.value.contains(event.target)) {
-  isFilterOpen.value = false;
-}
+    isFilterOpen.value = false;
+  }
 };
 
-  onMounted(() => { document.addEventListener('click', handleClickOutside); });
-  onBeforeUnmount(() => { document.removeEventListener('click', handleClickOutside); });
+onMounted(() => { document.addEventListener('click', handleClickOutside); });
+onBeforeUnmount(() => { document.removeEventListener('click', handleClickOutside); });
+
 </script>
 
 <style scoped>
 @import "../assets/css/UserProfile.css";
-
 </style>

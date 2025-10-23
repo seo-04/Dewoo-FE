@@ -13,10 +13,10 @@
             <div class="row-input email-verify-row">
               <input v-model="email" type="email" placeholder="Email" />
               <button
-                  type="button"
-                  class="send-code-btn"
-                  @click="sendVerificationCode"
-                  :disabled="isVerificationSent"
+                type="button"
+                class="send-code-btn"
+                @click="sendVerificationCode"
+                :disabled="isVerificationSent"
               >
                 {{ isVerificationSent ? '재전송' : '인증번호 보내기' }}
               </button>
@@ -24,13 +24,13 @@
 
             <div class="passwordbox" v-if="isVerificationSent">
               <input
-                  :type="showCode ? 'text' : 'password'"
-                  v-model="verificationCode"
-                  placeholder="Verification Code"
+                :type="showCode ? 'text' : 'password'"
+                v-model="verificationCode"
+                placeholder="Verification Code"
               />
               <i
-                  :class="['fa-solid', showCode ? 'fa-eye' : 'fa-eye-slash']"
-                  @click="toggleCodeVisibility"
+                :class="['fa-solid', showCode ? 'fa-eye' : 'fa-eye-slash']"
+                @click="toggleCodeVisibility"
               ></i>
             </div>
 
@@ -49,32 +49,32 @@
 
             <div class="passwordbox">
               <input
-                  :type="showPassword ? 'text' : 'password'"
-                  v-model="password"
-                  placeholder="8자리 이상 영문, 숫자, 특수기호 포함"
+                :type="showPassword ? 'text' : 'password'"
+                v-model="password"
+                placeholder="8자리 이상 영문, 숫자, 특수기호 포함"
               />
               <i
-                  :class="['fa-solid', showPassword ? 'fa-eye' : 'fa-eye-slash']"
-                  @click="togglePassword('password')"
+                :class="['fa-solid', showPassword ? 'fa-eye' : 'fa-eye-slash']"
+                @click="togglePassword('password')"
               ></i>
             </div>
 
             <div class="passwordbox">
               <input
-                  :type="showConfirmPassword ? 'text' : 'password'"
-                  v-model="confirmPassword"
-                  placeholder="Confirm Password"
-                  :class="{ 'error-border': confirmPassword && password !== confirmPassword }"
+                :type="showConfirmPassword ? 'text' : 'password'"
+                v-model="confirmPassword"
+                placeholder="Confirm Password"
+                :class="{ 'error-border': confirmPassword && password !== confirmPassword }"
               />
               <i
-                  :class="['fa-solid', showConfirmPassword ? 'fa-eye' : 'fa-eye-slash']"
-                  @click="togglePassword('confirm')"
+                :class="['fa-solid', showConfirmPassword ? 'fa-eye' : 'fa-eye-slash']"
+                @click="togglePassword('confirm')"
               ></i>
             </div>
 
             <div
-                v-if="confirmPassword && password !== confirmPassword"
-                class="error-box"
+              v-if="confirmPassword && password !== confirmPassword"
+              class="error-box"
             >
               <i class="fa-solid fa-circle-exclamation"></i>
               <span>비밀번호가 일치하지 않습니다.</span>
@@ -87,10 +87,10 @@
             </div>
 
             <button
-                type="submit"
-                class="loginbox"
-                :class="{ disabled: !isFormValid }"
-                :disabled="!isFormValid"
+              type="submit"
+              class="loginbox"
+              :class="{ disabled: !isFormValid }"
+              :disabled="!isFormValid"
             >
               {{ isVerificationSent ? '인증하고 회원가입 완료' : '회원가입 진행' }}
             </button>
@@ -105,11 +105,11 @@
 
         <div class="dots">
           <span
-              v-for="(dot, i) in 3"
-              :key="i"
-              class="dot"
-              :class="{ active: currentSlide === i }"
-              @click="showSlide(i)"
+            v-for="(dot, i) in 3"
+            :key="i"
+            class="dot"
+            :class="{ active: currentSlide === i }"
+            @click="showSlide(i)"
           ></span>
         </div>
       </div>
@@ -152,13 +152,13 @@ export default {
     },
     isFormValid() {
       const baseValid =
-          this.name &&
-          this.email &&
-          this.phone &&
-          this.address &&
-          this.dateOfBirth &&
-          this.isPasswordValid &&
-          this.agree;
+        this.name &&
+        this.email &&
+        this.phone &&
+        this.address &&
+        this.dateOfBirth &&
+        this.isPasswordValid &&
+        this.agree;
 
       return this.isVerificationSent ? (baseValid && this.verificationCode) : baseValid;
     },
@@ -212,15 +212,20 @@ export default {
         return;
       }
       try {
-        const response = await axios.post('/api/user/verify-email', {
+        // Step 1: Verify the email with the verification code.
+        const verificationResponse = await axios.post('/api/user/verify-email', {
           userEmail: this.email,
           verificationCode: this.verificationCode,
         });
-        if (response.data.code === 'SUCCESS') {
-          alert(response.data.message);
-          this.$router.push('/');
+
+        // Step 2: Check if email verification was successful.
+        if (verificationResponse.data.code === 'SUCCESS') {
+          alert('이메일 인증 성공! 회원가입을 완료합니다.');
+          this.$router.push('/'); // Redirect to main page after successful verification and signup.
+
         } else {
-          alert(response.data.message);
+          // Alert if the verification code was incorrect.
+          alert(verificationResponse.data.message);
         }
       } catch (error) {
         console.error("이메일 인증 실패:", error);
