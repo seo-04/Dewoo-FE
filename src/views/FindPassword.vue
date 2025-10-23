@@ -112,14 +112,14 @@ export default {
       } catch (error) {
         console.error("비밀번호 찾기 실패:", error);
         if (error.response && error.response.data && error.response.data.message) {
-          alert(error.response.data.message); // 🚨 HTTP 오류 시에만 작동
+          alert(error.response.data.message);
         } else {
-          alert("비밀번호 찾기 중 오류가 발생했습니다. 서버 또는 네트워크 상태를 확인해주세요."); // 🚨 불충분
+          alert("비밀번호 찾기 중 오류가 발생했습니다. 서버 또는 네트워크 상태를 확인해주세요.");
         }
       }
     },
     goBack() {
-      this.$router.push("");
+      this.$router.push("/");
     },
     showSlide(n) {
       this.index = n;
