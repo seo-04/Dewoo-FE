@@ -3,6 +3,7 @@
     <div class="login-box">
       <!-- 왼쪽 결제수단 -->
       <div class="left">
+
         <h4>결제수단 추가</h4>
         <p>결제수단을 추가해주세요</p>
 
@@ -31,14 +32,13 @@
 
           <!-- 국적 -->
           <div class="county">
-            <div class="select-wrapper">
+            <div class="select-wrapper-local">
               <select v-model="country">
                 <option disabled value="">Country or Region</option>
                 <option v-for="(c, i) in countries" :key="i" :value="c">
                   {{ c }}
                 </option>
               </select>
-<!--              <i class="fa-solid fa-chevron-down"></i>-->
             </div>
           </div>
         </div>

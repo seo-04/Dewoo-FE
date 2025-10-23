@@ -1,41 +1,10 @@
 <template>
-  <div>
-    <!-- 헤더 -->
-    <header>
-      <nav class="nav-container">
-        <!-- 왼쪽 -->
-        <nav class="header_tabs">
-          <div class="nav-left">
-            <div class="tab active">
-              <i class="fa-solid fa-bed"></i>
-              hotel
-            </div>
-          </div>
-        </nav>
-
-        <!-- 오른쪽 -->
-        <div class="item">
-          <div class="flex vertical-center">
-            <i class="fa-solid fa-heart"></i>
-            <span>찜하기</span>
-            |
-            <div class="circle">
-              <div class="mini-circle">
-                <div class="check"></div>
-              </div>
-            </div>
-            <span>Tomhoon</span>
-          </div>
-        </div>
-      </nav>
-    </header>
-
+  <CommonLayout>
     <!-- Hero 섹션 -->
     <section class="hero">
       <div class="image">
         <img src="@/assets/img/header.jpg" alt="메인" />
       </div>
-
       <div class="hero_content">
         <div class="box">
           <h2>플러스 호텔 및 다양한<br />숙소를 확인하세요!</h2>
@@ -70,7 +39,6 @@
             <label for="checkout">Check-out</label>
             <input type="date" id="checkout" v-model="checkout" />
           </div>
-
 
           <!-- Rooms & Guests -->
           <div class="input-group dropdown-container">
@@ -177,87 +145,20 @@
             지정된 매혹적인 여행지입니다. 단 하루만 머물러도 그 깊은 매력에 빠지고,<br>
             며칠을 살아보면 다시 찾고 싶은 마음이 샘솟는 곳. 이제 저희 여행사가 준비한 특별한 말라카 투어상품과 함께 그 여정을 시작해 보세요.
           </p>
-          <button>Book Flight</button>
+          <button class="book">Book Flight</button>
         </div>
       </div>
     </section>
 
-    <!-- footer -->
-    <footer>
-      <section class="subscription-box">
-        <div class="subscription-content">
-          <h1>구독서비스<br /> 신청해보세요</h1>
-          <p>The Travel</p>
-          <p>구독하고 무료, 최신 여행 정보를 받아보세요</p>
-          <div class="subscription-form-container">
-            <input type="email" placeholder="Your email address" />
-            <button type="submit">Subscribe</button>
-          </div>
-        </div>
-        <div class="subscription-image">
-          <img src="@/assets/img/letter-box.png" height="330" width="400" alt="" />
-        </div>
-      </section>
-
-      <!-- footer-bottom -->
-      <div class="footer-bottom">
-        <div class="footer-letter">
-          <span>
-            <i class="fa-brands fa-facebook"></i>
-            <i class="fa-brands fa-twitter"></i>
-            <i class="fa-brands fa-youtube"></i>
-            <i class="fa-brands fa-instagram"></i>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">Our Destinations</span>
-          <span class="footer-span-details">
-            <span>Canada</span>
-            <span>Alaska</span>
-            <span>France</span>
-            <span>Iceland</span>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">Our Activities</span>
-          <span class="footer-span-details">
-            <span>Northern Lights</span>
-            <span>Cruising & sailing</span>
-            <span>Multi-activities</span>
-            <span>Kayaing</span>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">Travel Blogs</span>
-          <span class="footer-span-details">
-            <span>Bali Travel Guide</span>
-            <span>Sri Lanka Travel Guide</span>
-            <span>Peru Travel Guide</span>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">About Us</span>
-          <span class="footer-span-details">
-            <span>Our Story</span>
-            <span>Work with us</span>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">Contact Us</span>
-          <span class="footer-span-details">
-            <span>Email</span>
-            <span>Support</span>
-          </span>
-        </div>
-      </div>
-    </footer>
-  </div>
+  </CommonLayout>
 </template>
 
 <script>
 import "@/assets/css/HotelSearch.css";
+import CommonLayout from "@/components/common/CommonLayout.vue";
 export default {
   name: "HotelSearch",
+  components: {CommonLayout},
   data() {
     return {
       destination: "",
@@ -327,8 +228,6 @@ export default {
         },
       });
     },
-
-
   },
 };
 </script>
