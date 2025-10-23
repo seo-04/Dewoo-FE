@@ -9,7 +9,7 @@
           <div class = "Reservation_Info">
             <div class="roomInfo">
               <span class="room">{{roomType.roomTypeName}}</span>
-              <span class="roomPrice">₩{{paymentAccommodation.price}}/night</span>
+              <span class="roomPrice">₩{{ formatPrice(paymentAccommodation.price) }}/night</span>
             </div>
             <div class="hotel-link">
               <div style="display: flex">
@@ -203,15 +203,15 @@
             <div style="font-size: 16px; font-weight: bold; text-align: left; margin-bottom: 5px">Price Details</div>
             <div class = "price-type">
               <span>Base Fare</span>
-              <span class = "detail-amount">₩{{paymentAccommodation.price}}</span>
+              <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.price)}}</span>
             </div>
             <div class = "price-type">
               <span>Discount</span>
-              <span class = "detail-amount">₩0</span>
+              <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.discount)}}</span>
             </div>
             <div class = "price-type">
               <span>Taxes</span>
-              <span class = "detail-amount">₩24,000</span>
+              <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.price*0.1)}}</span>
             </div>
             <div class = "price-type">
               <span>Service Fee</span>
@@ -222,7 +222,7 @@
           </div>
           <div class = "price-type">
             <span class = "price-type">Total</span>
-            <span class = "detail-amount">₩265,000</span>
+            <span class = "detail-amount">₩{{formatPrice(TotalPrice)}}</span>
           </div>
         </div>
       </div>
@@ -231,7 +231,7 @@
 </template>
 
 <script setup lang="js">
-  import { ref, watch, onMounted } from 'vue'; // (1) onMounted 추가
+  import { ref, watch, onMounted, computed } from 'vue'; // (1) onMounted 추가
   import { useRoute } from 'vue-router'; // (2) useRoute 추가
   import axios from 'axios'; // (3) axios 추가
   import CommonLayout from "../components/common/CommonLayout.vue";
@@ -501,6 +501,20 @@
   watch(() => newCard.value.name, (newValue) => {
   newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
 });
+  const formatPrice = (price) => {
+    if (price === undefined || price === null) return '0';
+    return Number(price).toLocaleString('ko-KR');
+  };
+
+  // TotalPrice 계산 속성 (숫자로 반환)
+  const TotalPrice = computed(() => {
+    const basePrice = Number(paymentAccommodation.value.price) || 0;
+    const discount = Number(paymentAccommodation.value.discount) || 0;
+    const tax = basePrice * 0.1;
+    const serviceFee = 5000;
+    return basePrice - discount + tax + serviceFee;
+  });
+
 </script>
 
 
