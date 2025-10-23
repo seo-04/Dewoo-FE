@@ -420,7 +420,7 @@ const requestTossPayment = async () => {
   // (line 300 근처)
   async function fetchCards() {
     // 1. 로컬 스토리지에서 토큰 가져오기
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("token");
 
     if (!token) {
       console.error("토큰이 없어 카드 목록을 가져올 수 없습니다.");
@@ -453,7 +453,7 @@ const requestTossPayment = async () => {
 
   // ----- (9) (수정) 카드 추가 API 호출 -----
   async function addCard() {
-    const token = localStorage.getItem("accessToken")
+    const token = localStorage.getItem("token")
 
     if (newCard.value.number.length < 19) {
       alert('올바른 카드 번호를 입력하세요.');
@@ -502,7 +502,7 @@ const requestTossPayment = async () => {
 
   // ----- (10) (수정) 카드 삭제 API 호출 -----
   async function deleteCard(cardId) {
-  const token = localStorage.getItem("accessToken")
+  const token = localStorage.getItem("token")
   if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
   try {
 

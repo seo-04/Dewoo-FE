@@ -474,14 +474,19 @@ const handleClickOutside = (event) => {
   // --- 공통 라이프사이클 훅 ---
   const filterWrapper = ref(null);
   const handleClickOutside = (event) => {
-  if (filterWrapper.value && !filterWrapper.value.contains(event.target)) {
-    isFilterOpen.value = false;
-  }
-};
+    if (filterWrapper.value && !filterWrapper.value.contains(event.target)) {
+      isFilterOpen.value = false;
+    }
+  };
 
-onMounted(() => { document.addEventListener('click', handleClickOutside); });
-onBeforeUnmount(() => { document.removeEventListener('click', handleClickOutside); });
-
+  onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside);
+  });
+}
+}
 </script>
 
 <style scoped>
