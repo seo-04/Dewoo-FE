@@ -9,7 +9,7 @@
           <div class = "Reservation_Info">
             <div class="roomInfo">
               <span class="room">{{roomType.roomTypeName}}</span>
-              <span class="roomPrice">{{roomType.price}}/night</span>
+              <span class="roomPrice">₩{{paymentAccommodation.price}}/night</span>
             </div>
             <div class="hotel-link">
               <div style="display: flex">
@@ -203,7 +203,7 @@
             <div style="font-size: 16px; font-weight: bold; text-align: left; margin-bottom: 5px">Price Details</div>
             <div class = "price-type">
               <span>Base Fare</span>
-              <span class = "detail-amount">₩{{roomType.price}}</span>
+              <span class = "detail-amount">₩{{paymentAccommodation.price}}</span>
             </div>
             <div class = "price-type">
               <span>Discount</span>
@@ -244,6 +244,7 @@
   const checkIn = ref('');
   const checkOut = ref('');
   // (가격 정보 등 추가 ref)
+
   const priceDetails = ref({
   baseFare: 0,
   discount: 0,
@@ -338,10 +339,10 @@
 
   // (가정) 가격 정보도 API에서 받아와서 설정
   // AccRoomTypeDto에 가격이 있다고 가정
-  priceDetails.value.baseFare = result.roomType.price || 240000;
-  priceDetails.value.taxes = (result.roomType.price || 240000) * 0.1; // 예시: 10%
-  priceDetails.value.serviceFee = 5000; // 예시
-  priceDetails.value.total = priceDetails.value.baseFare + priceDetails.value.taxes + priceDetails.value.serviceFee;
+  // priceDetails.value.baseFare = result.roomType.price || 240000;
+  // priceDetails.value.taxes = (result.roomType.price || 240000) * 0.1; // 예시: 10%
+  // priceDetails.value.serviceFee = 5000; // 예시
+  // priceDetails.value.total = priceDetails.value.baseFare + priceDetails.value.taxes + priceDetails.value.serviceFee;
 
 } else {
   throw new Error(response.data.message);
@@ -353,32 +354,59 @@
 }
 
   // ----- (8) (수정) 카드 목록을 API로 가져오는 함수 -----
+  // (line 300 근처)
   async function fetchCards() {
-  try {
-  // 'GET /api/card' 엔드포인트 호출 (인증된 사용자)
-  const response = await axios.get('/api/card');
-  if (response.data.code === 'SUCCESS') {
-  // API 응답(List<CardDto>)을 cards ref에 할당
-  cards.value = response.data.result.map(card => ({
-  id: card.cardId,
-  lastFour: card.cardNumber.slice(-4), // CardDto에 cardNumber가 있다고 가정
-  expDate: card.expDate
-}));
-} else {
-  throw new Error(response.data.message);
-}
-} catch (error) {
-  console.error("카드 목록 로딩 실패:", error);
-  // (로그인 안 했을 수도 있으니 alert 대신 콘솔 로그만)
-}
-}
+    // 1. 로컬 스토리지에서 토큰 가져오기
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      console.error("토큰이 없어 카드 목록을 가져올 수 없습니다.");
+      return; // 토큰이 없으면 요청 중단
+    }
+
+    try {
+      // 2. 'axios.get'의 두 번째 인자로 config 객체(headers 포함) 전달
+      const response = await axios.get('/api/card', {
+        headers: {
+          'Authorization': `Bearer ${token}` // ✨ 이 헤더가 필수입니다!
+        }
+      });
+
+      if (response.data.code === 'SUCCESS') {
+        // API 응답(List<CardDto>)을 cards ref에 할당
+        cards.value = response.data.result.map(card => ({
+          id: card.cardId,
+          lastFour: card.cardNumber.slice(-4),
+          expDate: card.expDate
+        }));
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("카드 목록 로딩 실패:", error);
+      // (로그인 안 했을 수도 있으니 alert 대신 콘솔 로그만)
+    }
+  }
 
   // ----- (9) (수정) 카드 추가 API 호출 -----
   async function addCard() {
-  if (newCard.value.number.length < 19) {
-  alert('올바른 카드 번호를 입력하세요.');
-  return;
-}
+    const token = localStorage.getItem("accessToken")
+
+    if (newCard.value.number.length < 19) {
+      alert('올바른 카드 번호를 입력하세요.');
+      return;
+  }
+
+  if (!newCard.value.cvc || newCard.value.cvc.length < 3) {
+    alert('CVC 번호를 3자리 모두 입력하세요.');
+    return;
+  }
+
+    // [수정] 이름 유효성 검사 추가 (비어있는지 확인)
+    if (!newCard.value.name.trim()) {
+      alert('카드 소유자 이름을 입력하세요.');
+      return;
+    }
 
   // CardDto 형식에 맞게 데이터 준비
   const cardData = {
@@ -387,36 +415,40 @@
   cvc: parseInt(newCard.value.cvc),
   name: newCard.value.name,
   country: selectedCountry.value,
-};
+  };
 
   try {
-  // 'POST /api/card' 엔드포인트 호출
-  const response = await axios.post('/api/card', cardData);
+    // 'POST /api/card' 엔드포인트 호출
+    const response = await axios.post("api/card", cardData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
 
-  if (response.data.code === 'SUCCESS') {
-  // API 성공 시, 로컬 목록에 즉시 반영 (혹은 fetchCards() 다시 호출)
-  const addedCard = response.data.result; // (서버가 등록된 카드 정보를 반환한다고 가정)
-  cards.value.unshift({
-  id: addedCard.cardId,
-  lastFour: addedCard.cardNumber.slice(-4),
-  expDate: addedCard.expDate
-});
-  closeModal();
-} else {
-  throw new Error(response.data.message);
-}
-} catch (error) {
-  console.error("카드 등록 실패:", error);
-  alert("카드 등록에 실패했습니다.");
-}
+    // 등록 성공
+    console.log("카드 등록 성공:", response.data);
+
+  } catch (error) {
+    // (여기서 500 에러가 발생)
+    console.error("카드 등록 실패:", error);
+  }
+
+
 }
 
   // ----- (10) (수정) 카드 삭제 API 호출 -----
   async function deleteCard(cardId) {
+  const token = localStorage.getItem("accessToken")
   if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
   try {
+
   // 'DELETE /api/card/{cardId}' 엔드포인트 호출
-  const response = await axios.delete(`/api/card/${cardId}`);
+    const response = await axios.delete(`/api/card/${cardId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // ✨ 이 헤더가 필수입니다!
+      }
+    });
   if (response.data.code === 'SUCCESS') {
   // API 성공 시, 로컬 목록에서 즉시 제거
   cards.value = cards.value.filter(card => card.id !== cardId);
