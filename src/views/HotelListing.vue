@@ -20,6 +20,7 @@
 
           <div class="filter_section">
             <p>Price</p>
+
             <vue-slider
               v-model="priceRange"
               :min="0"
@@ -36,6 +37,7 @@
           </div>
 
            <div class="filter_section">
+
             <p>Rating</p>
             <div class="rating_buttons">
               <button
@@ -55,12 +57,15 @@
             <label><input type="checkbox" value="무료주차" v-model="selectedFreebies" /> 무료주차</label><br />
             <label><input type="checkbox" value="WIFI" v-model="selectedFreebies" /> WIFI</label><br />
             <label><input type="checkbox" value="취사 가능" v-model="selectedFreebies" /> 취사 가능</label><br />
+
             <label><input type="checkbox" value="에어컨" v-model="selectedFreebies" /> 에어컨</label>
+
           </div>
 
           <div class="filter_section">
             <p>Amenities</p>
             <label><input type="checkbox" value="24시 프론트데스크" v-model="selectedAmenities" /> 24시 프론트데스크</label><br />
+
             <label><input type="checkbox" value="피트니스" v-model="selectedAmenities" /> 피트니스</label><br />
             <label><input type="checkbox" value="수영장" v-model="selectedAmenities" /> 수영장</label><br/>
             <label><input type="checkbox" value="반려동물 동반 가능" v-model="selectedAmenities" /> 반려동물 동반 가능</label><br />
@@ -252,6 +257,7 @@ export default {
     CommonLayout,
     VueSlider,
   },
+
   data() {
     return {
       tabs: [
@@ -263,6 +269,7 @@ export default {
       totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
       visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
       rooms: [],
+
       priceRange: [0, 3000000],
       priceMin : 0,
       priceMax : 3000000,
@@ -274,22 +281,25 @@ export default {
       roomsCount: 1,
       guestsCount: 2,
       selectedRating: null,
+
       selectedFreebies: [],
       selectedAmenities: [],
     };
   },
 
   computed: {
+
     // 8. 표시용
     formattedMinPrice() {
       return new Intl.NumberFormat('ko-KR').format(this.priceRange[0]) + '원';
     },
     formattedMaxPrice() {
       return new Intl.NumberFormat('ko-KR').format(this.priceRange[1]) + '원';
-    },
+
   },
 
   watch: {
+
     priceRange() {
       if (this.priceTimer) {
         clearTimeout(this.priceTimer);
@@ -300,6 +310,7 @@ export default {
         this.setSearchFilters(); // API 호출
       }, 300); // 0.3초 딜레이
     },
+
     selectedRating() { this.setSearchFilters(); },
     selectedFreebies: { handler() { this.setSearchFilters(); }, deep: true },
     selectedAmenities: { handler() { this.setSearchFilters(); }, deep: true },
@@ -320,8 +331,10 @@ export default {
       try {
         const params = new URLSearchParams();
 
+
         params.append('minPrice', this.priceMin);
         params.append('maxPrice', this.priceMax);
+
 
         if (this.selectedRating) {
           params.append('star', this.selectedRating);
