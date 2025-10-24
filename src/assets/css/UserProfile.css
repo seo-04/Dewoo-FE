@@ -60,6 +60,7 @@ body {
     background-color: #ff8682;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     position: relative;
+    z-index: 1;
 }
 .profile-image {
     width: 150px;
