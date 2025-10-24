@@ -20,22 +20,22 @@
 
           <div class="filter_section">
             <p>Price</p>
-            <input
-              type="range"
-              min="0"
-              max="3000000"
-              step="10000"
-              v-model="priceFilter"
-              class="slider"
-            />
+            <vue-slider
+              v-model="priceRange"
+              :min="0"
+              :max="3000000"
+              :step="10000"
+              :enable-cross="false"
+            ></vue-slider>
+
             <div class="price_labels">
-              <span>0원</span>
+              <span>{{ formattedMinPrice }}</span>
               <span>~</span>
-              <span>{{ formattedPrice }}</span>
+              <span>{{ formattedMaxPrice }}</span>
             </div>
           </div>
 
-          <div class="filter_section">
+           <div class="filter_section">
             <p>Rating</p>
             <div class="rating_buttons">
               <button
@@ -55,13 +55,12 @@
             <label><input type="checkbox" value="무료주차" v-model="selectedFreebies" /> 무료주차</label><br />
             <label><input type="checkbox" value="WIFI" v-model="selectedFreebies" /> WIFI</label><br />
             <label><input type="checkbox" value="취사 가능" v-model="selectedFreebies" /> 취사 가능</label><br />
-            <label><input type="checkbox" value="에어컨" v-model="selectedAmenities" /> 에어컨</label>
+            <label><input type="checkbox" value="에어컨" v-model="selectedFreebies" /> 에어컨</label>
           </div>
 
           <div class="filter_section">
             <p>Amenities</p>
             <label><input type="checkbox" value="24시 프론트데스크" v-model="selectedAmenities" /> 24시 프론트데스크</label><br />
-            <label><input type="checkbox" value="에어컨" v-model="selectedAmenities" /> 에어컨</label><br />
             <label><input type="checkbox" value="피트니스" v-model="selectedAmenities" /> 피트니스</label><br />
             <label><input type="checkbox" value="수영장" v-model="selectedAmenities" /> 수영장</label><br/>
             <label><input type="checkbox" value="반려동물 동반 가능" v-model="selectedAmenities" /> 반려동물 동반 가능</label><br />
@@ -245,9 +244,14 @@
 <script>
 import bTeamApi from "@/util/axios";
 import CommonLayout from "@/components/common/CommonLayout.vue";
+import VueSlider from 'vue-slider-component';
+import 'vue-slider-component/theme/antd.css';
 
 export default {
-  components: { CommonLayout },
+  components: {
+    CommonLayout,
+    VueSlider,
+  },
   data() {
     return {
       tabs: [
@@ -259,33 +263,48 @@ export default {
       totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
       visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
       rooms: [],
+      priceRange: [0, 3000000],
+      priceMin : 0,
+      priceMax : 3000000,
+      priceTimer : null,
       showSortModal: false,
       sortOptions: ["저가순", "고가순", "리뷰 많은순"],
       currentSort: "선택",
-      // --- 👇 [추가] 모달 관련 데이터 ---
       showPeopleModal: false,
       roomsCount: 1,
       guestsCount: 2,
-      // ---------------------------------
       selectedRating: null,
-      priceFilter: 3000000,
       selectedFreebies: [],
       selectedAmenities: [],
     };
   },
 
   computed: {
-    formattedPrice() {
-      return new Intl.NumberFormat('ko-KR').format(this.priceFilter) + '원';
+    // 8. 표시용
+    formattedMinPrice() {
+      return new Intl.NumberFormat('ko-KR').format(this.priceRange[0]) + '원';
+    },
+    formattedMaxPrice() {
+      return new Intl.NumberFormat('ko-KR').format(this.priceRange[1]) + '원';
     },
   },
 
   watch: {
-    priceFilter() { this.setSearchFilters(); },
+    priceRange() {
+      if (this.priceTimer) {
+        clearTimeout(this.priceTimer);
+      }
+      this.priceTimer = setTimeout(() => {
+        this.priceMin = this.priceRange[0];
+        this.priceMax = this.priceRange[1];
+        this.setSearchFilters(); // API 호출
+      }, 300); // 0.3초 딜레이
+    },
     selectedRating() { this.setSearchFilters(); },
     selectedFreebies: { handler() { this.setSearchFilters(); }, deep: true },
     selectedAmenities: { handler() { this.setSearchFilters(); }, deep: true },
   },
+
 
   async mounted() {
     await this.setSearchFilters();
@@ -301,8 +320,8 @@ export default {
       try {
         const params = new URLSearchParams();
 
-        params.append('minPrice', 0);
-        params.append('maxPrice', this.priceFilter);
+        params.append('minPrice', this.priceMin);
+        params.append('maxPrice', this.priceMax);
 
         if (this.selectedRating) {
           params.append('star', this.selectedRating);
