@@ -37,7 +37,7 @@
                :class="{ active: activeTab === 'profile' || hoveredTab === 'profile' }">
 
             <div class="window"
-                 style="display: flex; align-items: center; gap: 7px; position: relative; top: 3px;"
+                 style="display: flex; align-items: center; gap: 7px; position: relative; top: 6px;"
                  @click.stop="toggleProfileDropdown">
               <div class="circle">
                 <div class="mini-circle">

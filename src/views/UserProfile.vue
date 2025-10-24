@@ -503,6 +503,6 @@ onBeforeUnmount(() => {
 }
 
 .cover-image-container .cover-image.active {
-  opacity: 1;
+  opacity: 0.7;
 }
 </style>
