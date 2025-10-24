@@ -23,7 +23,7 @@
             <vue-slider
               v-model="priceRange"
               :min="0"
-              :max="3000000"
+              :max="1000000"
               :step="10000"
               :enable-cross="false"
             ></vue-slider>
@@ -263,9 +263,9 @@ export default {
       totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
       visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
       rooms: [],
-      priceRange: [0, 3000000],
+      priceRange: [0, 1000000],
       priceMin : 0,
-      priceMax : 3000000,
+      priceMax : 1000000,
       priceTimer : null,
       showSortModal: false,
       sortOptions: ["저가순", "고가순", "리뷰 많은순"],
