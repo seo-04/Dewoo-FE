@@ -55,13 +55,12 @@
             <label><input type="checkbox" value="무료주차" v-model="selectedFreebies" /> 무료주차</label><br />
             <label><input type="checkbox" value="WIFI" v-model="selectedFreebies" /> WIFI</label><br />
             <label><input type="checkbox" value="취사 가능" v-model="selectedFreebies" /> 취사 가능</label><br />
-            <label><input type="checkbox" value="에어컨" v-model="selectedAmenities" /> 에어컨</label>
+            <label><input type="checkbox" value="에어컨" v-model="selectedFreebies" /> 에어컨</label>
           </div>
 
           <div class="filter_section">
             <p>Amenities</p>
             <label><input type="checkbox" value="24시 프론트데스크" v-model="selectedAmenities" /> 24시 프론트데스크</label><br />
-            <label><input type="checkbox" value="에어컨" v-model="selectedAmenities" /> 에어컨</label><br />
             <label><input type="checkbox" value="피트니스" v-model="selectedAmenities" /> 피트니스</label><br />
             <label><input type="checkbox" value="수영장" v-model="selectedAmenities" /> 수영장</label><br/>
             <label><input type="checkbox" value="반려동물 동반 가능" v-model="selectedAmenities" /> 반려동물 동반 가능</label><br />
