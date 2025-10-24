@@ -20,6 +20,7 @@
 
           <div class="filter_section">
             <p>Price</p>
+
             <vue-slider
               v-model="priceRange"
               :min="0"
