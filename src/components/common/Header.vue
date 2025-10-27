@@ -5,7 +5,7 @@
         <div class="nav-item-container"
              @mouseenter="hoveredTab = 'hotel'"
              @mouseleave="hoveredTab = null"
-             @click="activeTab = 'hotel'"
+             @click="navigateTo('/hotelsearch'); activeTab = 'hotel';"
              :class="{ active: activeTab === 'hotel' || hoveredTab === 'hotel' }">
           <div class="tab">
             <i class="fa-solid fa-bed"></i>

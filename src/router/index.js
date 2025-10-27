@@ -13,7 +13,7 @@ import PaymentBody from '../views/PaymentBody.vue'
 import PaymentSuccess from '../views/PaymentSuccess.vue'
 import PaymentFail from '../views/PaymentFail.vue'
 import UserProfile from '../views/UserProfile.vue'
-
+import FavoritePage from '../views/pages/FavoritePage.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -39,7 +39,9 @@ const router = createRouter({
         { path: '/profile', name: "UserProfile", component: UserProfile},
         { path: '/payment', name: "PaymentBody", component: PaymentBody},
         { path: '/payment/success', name: "PaymentSuccess", component: PaymentSuccess},
-        { path: '/payment/fail', name: "PaymentFail", component: PaymentFail}
+        { path: '/payment/fail', name: "PaymentFail", component: PaymentFail},
+        { path: '/favorite', name:"FavoritePage", component: FavoritePage}
+
     ]
 })
 

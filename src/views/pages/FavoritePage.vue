@@ -80,9 +80,11 @@ export default {
     margin-top: 24px;
     display: flex;
     width: 100%;
-    box-shadow: 0px 4px 16px rgba(17, 34, 17, 0.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     padding: 17px 24px;
     position: relative;
+    background-color: white;
+
 
     & .active::after {
       content: '';
