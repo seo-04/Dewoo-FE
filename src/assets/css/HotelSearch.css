@@ -385,15 +385,15 @@
 }
 
 .travel_box {
-    width: 100%;
+    width: 40%;
     display: flex;
     flex-wrap: nowrap;
-    animation: bannermove 10s ease-in-out infinite alternate;
+    animation: bannermove 8s ease-in-out infinite alternate;
 }
 
 @keyframes bannermove {
     0% { transform: translate(0); }
-    100% { transform: translate(-105%); }
+    100% { transform: translate(-90%); }
 }
 
 /*  여행 더보기  */
@@ -450,7 +450,7 @@
     border: none;
     background-color: white;
     text-align: center;
-    margin-top: 10%;
+    margin-top: 20%;
     margin-left: 17px;
     font-size: 15px;
     /*padding: 10px 10px;*/

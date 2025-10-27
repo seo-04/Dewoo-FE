@@ -155,20 +155,29 @@
                 </div>
               </div>
             </div>
+
+            <div v-if="getVisibleRooms(tab.value).length === 0" class="no-results">
+              해당하는 숙소가 없습니다.
+            </div>
+
             <div class="button_result" v-if="hasMoreRooms(tab.value)">
-              <button @click="showMoreResults(tab.value)">
-                Show more results
-              </button>
+              <button @click="showMoreResults(tab.value)">Show more results</button>
             </div>
           </div>
         </div>
       </div>
 
+      <!--  검색 -->
       <div class="search_box1">
         <div class="search_inputs2">
           <div class="input-group3">
             <label for="destination">Enter Destination</label>
-            <input v-model="destination" type="text" id="destination" placeholder="Enter Destination" />
+            <input
+                v-model="destination"
+                type="text"
+                id="destination"
+                placeholder="Enter Destination"
+            />
           </div>
 
           <div class="input-group3">
@@ -206,6 +215,7 @@
         </div>
       </div>
 
+      <!-- 인원수 선택 모달 -->
       <transition name="slide-up">
         <div
             v-if="showPeopleModal"
@@ -271,6 +281,7 @@ export default {
       totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
       visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
       rooms: [],
+      allRooms: [],
       priceRange: [0, 3000000],
       priceMin: 0,
       priceMax: 3000000,
@@ -303,40 +314,6 @@ export default {
     },
   },
 
-  watch: {
-    priceRange() {
-      if (this.priceTimer) clearTimeout(this.priceTimer);
-      this.priceTimer = setTimeout(() => {
-        this.priceMin = this.priceRange[0];
-        this.priceMax = this.priceRange[1];
-        this.filterRooms();
-      }, 300);
-    },
-    selectedRating() {
-      this.filterRooms();
-    },
-    selectedFreebies: {
-      handler() { this.filterRooms(); },
-      deep: true,
-    },
-    selectedAmenities: {
-      handler() { this.filterRooms(); },
-      deep: true,
-    },
-    checkin(newVal) {
-      if (this.checkout && new Date(this.checkout) <= new Date(newVal)) {
-        alert("체크아웃 날짜는 체크인 이후여야 합니다.");
-        this.checkout = "";
-      }
-    },
-    checkout(newVal) {
-      if (this.checkin && new Date(newVal) <= new Date(this.checkin)) {
-        alert("체크아웃 날짜는 체크인 날짜 이후로 선택해주세요.");
-        this.checkout = "";
-      }
-    },
-  },
-
   async mounted() {
     await this.loadAllRooms();
   },
@@ -353,7 +330,7 @@ export default {
         const response = await bTeamApi.get(`/api/accommodation`);
         const list = response.data.result?.accommodations?.content || [];
 
-        this.rooms = list.map(item => ({
+        this.allRooms = list.map(item => ({
           category: item.category || "호텔",
           comId: item.comId,
           comTitle: item.comTitle,
@@ -371,6 +348,7 @@ export default {
           isFavorite: item.isFavorite || false,
         }));
 
+        this.rooms = [...this.allRooms];
         this.updateTotalCounts();
       } catch (error) {
         console.error("API 실패", error);
@@ -399,11 +377,16 @@ export default {
     },
 
     filterRooms() {
-      let filtered = [...this.rooms];
+      const keyword = this.destination.trim().toLowerCase();
 
-      if (this.destination) {
-        const keyword = this.destination.toLowerCase();
-        filtered = filtered.filter(r => r.comTitle.toLowerCase().includes(keyword));
+      let filtered = this.allRooms.filter(r =>
+          r.comTitle?.toLowerCase().includes(keyword)
+      );
+
+      if (filtered.length === 0) {
+        this.rooms = [];
+        this.updateTotalCounts();
+        return;
       }
 
       filtered = filtered.filter(r => {
@@ -413,11 +396,6 @@ export default {
 
       if (this.selectedRating) {
         filtered = filtered.filter(r => r.star >= this.selectedRating);
-      }
-
-      const allAmenities = [...this.selectedFreebies, ...this.selectedAmenities];
-      if (allAmenities.length > 0) {
-        filtered = filtered.filter(r => allAmenities.every(a => r.amenities?.includes(a)));
       }
 
       this.rooms = filtered;
@@ -466,4 +444,6 @@ export default {
 
 <style>
 @import "@/assets/css/HotelListing.css";
+
+
 </style>

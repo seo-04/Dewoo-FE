@@ -496,6 +496,11 @@
     color: #112211;
 }
 
+.score p{
+    align-content: center;
+    justify-content: center;
+}
+
 
 .review_text {
     font-size: 12px;
@@ -686,7 +691,6 @@
     padding: 20px;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
     animation: slideUp 0.3s ease;
-
 }
 
 .sort_content ol {
@@ -777,4 +781,23 @@
 .button_result button:hover{
     background: #282828;
     cursor: pointer;
+}
+
+.no-results {
+    text-align: center;
+    margin-left: 30%;
+    font-size: 20px;
+    color: #777;
+    padding: 50px 0;
+    font-weight: 500;
+}
+
+
+.room_info {
+    padding: 10px;
+}
+
+.load_more {
+    text-align: center;
+    margin: 20px;
 }
