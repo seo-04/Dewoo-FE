@@ -83,6 +83,6 @@
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/Footer.scss";
+@use "@/assets/css/Footer.scss";
 
 </style>

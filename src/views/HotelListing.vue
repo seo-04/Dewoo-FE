@@ -271,9 +271,9 @@ export default {
       rooms: [],
 
       priceRange: [0, 3000000],
-      priceMin : 0,
-      priceMax : 3000000,
-      priceTimer : null,
+      priceMin: 0,
+      priceMax: 3000000,
+      priceTimer: null,
       showSortModal: false,
       sortOptions: ["저가순", "고가순", "리뷰 많은순"],
       currentSort: "선택",
@@ -296,131 +296,153 @@ export default {
     formattedMaxPrice() {
       return new Intl.NumberFormat('ko-KR').format(this.priceRange[1]) + '원';
 
-  },
-
-  watch: {
-
-    priceRange() {
-      if (this.priceTimer) {
-        clearTimeout(this.priceTimer);
-      }
-      this.priceTimer = setTimeout(() => {
-        this.priceMin = this.priceRange[0];
-        this.priceMax = this.priceRange[1];
-        this.setSearchFilters(); // API 호출
-      }, 300); // 0.3초 딜레이
     },
 
-    selectedRating() { this.setSearchFilters(); },
-    selectedFreebies: { handler() { this.setSearchFilters(); }, deep: true },
-    selectedAmenities: { handler() { this.setSearchFilters(); }, deep: true },
-  },
+    watch: {
 
-
-  async mounted() {
-    await this.setSearchFilters();
-  },
-
-  methods: {
-    showingText(tabValue) {
-      const visible = this.getVisibleRooms(tabValue).length;
-      const total = this.totalCounts?.[tabValue] || 0;
-      return `Showing ${visible} of ${total} places`;
-    },
-    async setSearchFilters() {
-      try {
-        const params = new URLSearchParams();
-
-
-        params.append('minPrice', this.priceMin);
-        params.append('maxPrice', this.priceMax);
-
-
-        if (this.selectedRating) {
-          params.append('star', this.selectedRating);
+      priceRange() {
+        if (this.priceTimer) {
+          clearTimeout(this.priceTimer);
         }
+        this.priceTimer = setTimeout(() => {
+          this.priceMin = this.priceRange[0];
+          this.priceMax = this.priceRange[1];
+          this.setSearchFilters(); // API 호출
+        }, 300); // 0.3초 딜레이
+      },
 
-        const allAmenities = [...this.selectedFreebies, ...this.selectedAmenities];
-        if (allAmenities.length > 0) {
-          params.append('amCategory', allAmenities.join(','));
+      selectedRating() {
+        this.setSearchFilters();
+      },
+      selectedFreebies: {
+        handler() {
+          this.setSearchFilters();
+        }, deep: true
+      },
+      selectedAmenities: {
+        handler() {
+          this.setSearchFilters();
+        }, deep: true
+      },
+    },
+
+
+    async mounted() {
+      await this.setSearchFilters();
+    },
+
+    methods: {
+      showingText(tabValue) {
+        const visible = this.getVisibleRooms(tabValue).length;
+        const total = this.totalCounts?.[tabValue] || 0;
+        return `Showing ${visible} of ${total} places`;
+      },
+      async setSearchFilters() {
+        try {
+          const params = new URLSearchParams();
+
+
+          params.append('minPrice', this.priceMin);
+          params.append('maxPrice', this.priceMax);
+
+
+          if (this.selectedRating) {
+            params.append('star', this.selectedRating);
+          }
+
+          const allAmenities = [...this.selectedFreebies, ...this.selectedAmenities];
+          if (allAmenities.length > 0) {
+            params.append('amCategory', allAmenities.join(','));
+          }
+
+          const response = await bTeamApi.get(`/api/accommodation?${params.toString()}`);
+          const result = response.data.result;
+          const list = result.accommodations.content || [];
+
+          this.rooms = list.map((item) => ({
+            category: item.category || "호텔",
+            comId: item.comId,
+            comTitle: item.comTitle,
+            comAddress: item.comAddress,
+            star: item.star || 0,
+            price: item.price ? `₩${item.price.toLocaleString()}` : "가격 정보 없음",
+            reviewAvg: item.reviewAvg || 0,
+            reviewCount: item.reviewCount || 0,
+            reviewTitle:
+              item.reviewAvg >= 4 ? "Very Good" :
+                item.reviewAvg >= 3 ? "Good" :
+                  item.reviewAvg >= 2 ? "SoSo" :
+                    item.reviewAvg >= 1 ? "Bad" : "리뷰 없음",
+            image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
+            isFavorite: item.isFavorite || false,
+          }));
+
+          this.totalCounts = this.tabs.reduce((acc, tab) => {
+            acc[tab.value] = this.rooms.filter((r) => r.category === tab.value).length;
+            return acc;
+          }, {});
+        } catch (error) {
+          console.error("API 실패", error);
         }
+      },
+      setActiveTab(tab) {
+        this.activeTab = tab;
+      },
+      toggleSortModal() {
+        this.showSortModal = !this.showSortModal;
+      },
+      closeSortModal() {
+        this.showSortModal = false;
+      },
+      applySort(option) {
+        this.currentSort = option;
+        this.showSortModal = false;
+        const getPrice = (r) => parseInt(r.price.replace(/[₩,]/g, ""));
+        if (option === "저가순") this.rooms.sort((a, b) => getPrice(a) - getPrice(b));
+        else if (option === "고가순") this.rooms.sort((a, b) => getPrice(b) - getPrice(a));
+        else if (option === "리뷰 많은순") this.rooms.sort((a, b) => b.reviewCount - a.reviewCount);
+      },
+      getVisibleRooms(category) {
+        return this.rooms.filter((r) => r.category === category).slice(0, this.visibleCount[category]);
+      },
+      hasMoreRooms(category) {
+        return (this.rooms.filter((r) => r.category === category).length > this.visibleCount[category]);
+      },
+      showMoreResults(category) {
+        this.visibleCount[category] += 4;
+      },
 
-        const response = await bTeamApi.get(`/api/accommodation?${params.toString()}`);
-        const result = response.data.result;
-        const list = result.accommodations.content || [];
+      // ==================== 👇 [추가] 모달 및 인원수 관련 메소드 👇 ====================
+      openPeopleModal() {
+        this.showPeopleModal = true;
+      },
+      closePeopleModal() {
+        this.showPeopleModal = false;
+      },
+      increase(type) {
+        if (type === "room") this.roomsCount++;
+        if (type === "guest") this.guestsCount++;
+      },
+      decrease(type) {
+        if (type === "room" && this.roomsCount > 1) this.roomsCount--;
+        if (type === "guest" && this.guestsCount > 1) this.guestsCount--;
+      },
+      applyPeople() {
+        this.closePeopleModal();
+      },
+      // ==========================================================================
 
-        this.rooms = list.map((item) => ({
-          category: item.category || "호텔",
-          comId: item.comId,
-          comTitle: item.comTitle,
-          comAddress: item.comAddress,
-          star: item.star || 0,
-          price: item.price ? `₩${item.price.toLocaleString()}` : "가격 정보 없음",
-          reviewAvg: item.reviewAvg || 0,
-          reviewCount: item.reviewCount || 0,
-          reviewTitle:
-            item.reviewAvg >= 4 ? "Very Good" :
-              item.reviewAvg >= 3 ? "Good" :
-                item.reviewAvg >= 2 ? "SoSo" :
-                  item.reviewAvg >= 1 ? "Bad" : "리뷰 없음",
-          image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
-          isFavorite: item.isFavorite || false,
-        }));
+      setRating(n) {
+        this.selectedRating = this.selectedRating === n ? null : n;
+      },
+      toggleHeart(room) {
+        const target = this.rooms.find((r) => r.comId === room.comId);
+        if (target) target.isFavorite = !target.isFavorite;
+      },
+    },
+  }
+}
 
-        this.totalCounts = this.tabs.reduce((acc, tab) => {
-          acc[tab.value] = this.rooms.filter((r) => r.category === tab.value).length;
-          return acc;
-        }, {});
-      } catch (error) {
-        console.error("API 실패", error);
-      }
-    },
-    setActiveTab(tab) { this.activeTab = tab; },
-    toggleSortModal() { this.showSortModal = !this.showSortModal; },
-    closeSortModal() { this.showSortModal = false; },
-    applySort(option) {
-      this.currentSort = option;
-      this.showSortModal = false;
-      const getPrice = (r) => parseInt(r.price.replace(/[₩,]/g, ""));
-      if (option === "저가순") this.rooms.sort((a, b) => getPrice(a) - getPrice(b));
-      else if (option === "고가순") this.rooms.sort((a, b) => getPrice(b) - getPrice(a));
-      else if (option === "리뷰 많은순") this.rooms.sort((a, b) => b.reviewCount - a.reviewCount);
-    },
-    getVisibleRooms(category) {
-      return this.rooms.filter((r) => r.category === category).slice(0, this.visibleCount[category]);
-    },
-    hasMoreRooms(category) {
-      return (this.rooms.filter((r) => r.category === category).length > this.visibleCount[category]);
-    },
-    showMoreResults(category) { this.visibleCount[category] += 4; },
-
-    // ==================== 👇 [추가] 모달 및 인원수 관련 메소드 👇 ====================
-    openPeopleModal() {
-      this.showPeopleModal = true;
-    },
-    closePeopleModal() {
-      this.showPeopleModal = false;
-    },
-    increase(type) {
-      if (type === "room") this.roomsCount++;
-      if (type === "guest") this.guestsCount++;
-    },
-    decrease(type) {
-      if (type === "room" && this.roomsCount > 1) this.roomsCount--;
-      if (type === "guest" && this.guestsCount > 1) this.guestsCount--;
-    },
-    applyPeople() {
-      this.closePeopleModal();
-    },
-    // ==========================================================================
-
-    setRating(n) { this.selectedRating = this.selectedRating === n ? null : n; },
-    toggleHeart(room) {
-      const target = this.rooms.find((r) => r.comId === room.comId);
-      if (target) target.isFavorite = !target.isFavorite;
-    },
-  },
-};
 </script>
 
 <style>

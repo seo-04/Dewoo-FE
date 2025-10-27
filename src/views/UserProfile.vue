@@ -1,102 +1,153 @@
 <template>
   <CommonLayout>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <div class="main-container">
 
-  <div class="main-container">
-
-    <section class="profile-section">
-      <div class="cover-image-container">
-        <img :src="user.coverImage" :alt="`${user.name}'s cover photo`" class="cover-image"/>
-        <button class="upload-cover-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          Upload new cover
-        </button>
-      </div>
-      <div class="profile-info-container">
-        <div class="profile-image-wrapper">
-          <img :src="user.profileImage" :alt="`${user.name}'s profile picture`" class="profile-image"/>
+      <section class="profile-section">
+        <div class="cover-image-container">
+          <img
+              v-for="(imageSrc, index) in coverImages"
+              :key="index"
+              :src="imageSrc"
+              alt="Cover photo"
+              class="cover-image"
+              :class="{ active: index === currentCoverIndex }"
+          />
         </div>
-        <h1 class="user-name">{{ user.name }}</h1>
-        <p class="user-email">{{ user.email }}</p>
-      </div>
-    </section>
+        <div class="profile-info-container">
+          <div class="profile-image-wrapper">
+            <img :src="user.profileImage" :alt="`${user.name}'s profile picture`" class="profile-image"/>
 
-    <div class="main-content">
-      <nav class="tabs">
-        <a href="#" class="tab" :class="{ active: activeTab === 'account' }"
-           @click.prevent="activeTab = 'account'">계정</a>
-        <a href="#" class="tab" :class="{ active: activeTab === 'history' }"
-           @click.prevent="activeTab = 'history'">내역</a>
-        <a href="#" class="tab" :class="{ active: activeTab === 'payment' }"
-           @click.prevent="activeTab = 'payment'">결제수단</a>
-      </nav>
-
-      <div v-if="activeTab === 'account'" class="tab-content active" id="account-tab">
-        <h1 class="content-title">Account</h1>
-        <div v-for="field in accountFields" :key="field.key" class="info-group">
-          <label class="info-label">{{ field.label }}</label>
-          <div class="info-value-wrapper">
-            <template v-if="editingField !== field.key">
-              <span class="info-value">{{ user[field.key] }}</span>
-              <button v-if="field.key !== 'password' && field.key !== 'email' && field.key !== 'dob'" @click="startEditing(field.key)" class="change-btn">
-                <img src="../assets/img/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change
-              </button>
-            </template>
-            <template v-else>
-              <input :type="field.type || 'text'" v-model="tempUser[field.key]" class="edit-input" @keyup.enter="saveChanges(field.key)" @keyup.esc="cancelEdit">
-              <div class="edit-actions">
-                <button @click="saveChanges(field.key)" class="save-btn">Save</button>
-                <button @click="cancelEdit" class="cancel-btn">Cancel</button>
-              </div>
-            </template>
+            <input type="file"
+                   ref="profileImageInput"
+                   @change="handleProfileImageUpload"
+                   style="display: none;"
+                   accept="image/*">
+            <button class="edit-profile-btn" @click="triggerProfileImageUpload">
+              <i class="fa-solid fa-pen"></i>
+            </button>
           </div>
+          <h1 class="user-name">{{ user.name }}</h1>
+          <p class="user-email">{{ user.email }}</p>
         </div>
-      </div>
+      </section>
 
-      <div v-if="activeTab === 'history'" class="tab-content active" id="history-tab">
-        <div class="booking-header">
-          <h2 class="content-title">예약 내역</h2>
-          <div class="filter-wrapper" ref="filterWrapper">
-            <div class="filter-options" @click="isFilterOpen = !isFilterOpen" :class="{ expanded: isFilterOpen }">
-              <span>{{ selectedFilter }}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div v-if="isFilterOpen" class="filter-dropdown show">
-              <div class="dropdown-item" @click="selectFilter('upcoming')">Upcoming</div>
-              <div class="dropdown-item" @click="selectFilter('latest')">최신순</div>
-              <div class="dropdown-item" @click="selectFilter('oldest')">오래된순</div>
-            </div>
-          </div>
-        </div>
-        <div class="room-section">
-          <img src="../assets/img/bed.png" alt="" style="position: relative; top: 1px">
-          객실
-        </div>
-        <div class="booking-list">
-          <div v-if="filteredBookings.length === 0">
-            <p style="text-align:center; color: #888;">예약 내역이 없습니다.</p>
-          </div>
-          <div v-else v-for="booking in filteredBookings" :key="booking.id" class="booking-item">
-            <div class="booking-card">
-              <div class="card-left">
-                <div class="hotel-logo-container"><img :src="booking.roomImageSrc" alt="Hotel Logo" class="hotel-logo">
+      <div class="main-content">
+        <nav class="tabs">
+          <a href="#" class="tab" :class="{ active: activeTab === 'account' }"
+             @click.prevent="activeTab = 'account'">계정</a>
+          <a href="#" class="tab" :class="{ active: activeTab === 'history' }"
+             @click.prevent="activeTab = 'history'">내역</a>
+          <a href="#" class="tab" :class="{ active: activeTab === 'payment' }"
+             @click.prevent="activeTab = 'payment'">결제수단</a>
+        </nav>
+
+        <div v-if="activeTab === 'account'" class="tab-content active" id="account-tab">
+          <h1 class="content-title">Account</h1>
+          <div v-for="field in accountFields" :key="field.key" class="info-group">
+            <label class="info-label">{{ field.label }}</label>
+            <div class="info-value-wrapper">
+              <template v-if="editingField !== field.key">
+                <span class="info-value">{{ user[field.key] }}</span>
+                <button v-if="field.key !== 'password' && field.key !== 'email' && field.key !== 'dob'" @click="startEditing(field.key)" class="change-btn">
+                  <img src="../assets/img/Edit.svg" alt="Edit" class="edit-icon" style="position: relative; top: -1px">Change
+                </button>
+              </template>
+              <template v-else>
+                <input :type="field.type || 'text'" v-model="tempUser[field.key]" class="edit-input" @keyup.enter="saveChanges(field.key)" @keyup.esc="cancelEdit">
+                <div class="edit-actions">
+                  <button @click="saveChanges(field.key)" class="save-btn">Save</button>
+                  <button @click="cancelEdit" class="cancel-btn">Cancel</button>
                 </div>
-                <div class="checkin-checkout-dates">
-                  <div class="date-info-group">
-                    <span class="date-label">Check-In</span>
-                    <span class="date-value">{{ booking.checkInDisplay }}</span>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="activeTab === 'history'" class="tab-content active" id="history-tab">
+          <div class="booking-header">
+            <h2 class="content-title">예약 내역</h2>
+            <div class="filter-wrapper" ref="filterWrapper">
+              <div class="filter-options" @click="isFilterOpen = !isFilterOpen" :class="{ expanded: isFilterOpen }">
+                <span>{{ selectedFilter }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div v-if="isFilterOpen" class="filter-dropdown show">
+                <div class="dropdown-item" @click="selectFilter('upcoming')">Upcoming</div>
+                <div class="dropdown-item" @click="selectFilter('latest')">최신순</div>
+                <div class="dropdown-item" @click="selectFilter('oldest')">오래된순</div>
+              </div>
+            </div>
+          </div>
+          <div class="room-section">
+            <img src="../assets/img/bed.png" alt="" style="position: relative; top: 1px">
+            객실
+          </div>
+          <div class="booking-list">
+            <div v-if="filteredBookings.length === 0">
+              <p style="text-align:center; color: #888;">예약 내역이 없습니다.</p>
+            </div>
+            <div v-else v-for="booking in filteredBookings" :key="booking.id" class="booking-item">
+              <div class="booking-card">
+                <div class="card-left">
+                  <div class="hotel-logo-container"><img :src="booking.roomImageSrc" alt="Hotel Logo" class="profile-hotel-logo">
                   </div>
-                  <div class="dash-separator"></div>
-                  <div class="date-info-group">
-                    <span class="date-label">Check Out</span>
-                    <span class="date-value">{{ booking.checkOutDisplay }}</span>
+                  <div class="checkin-checkout-dates">
+                    <div class="date-section-wrapper">
+                      <div class="date-info-group">
+                        <span class="date-label">Check-In</span>
+                        <span class="date-value">{{ booking.checkInDisplay }}</span>
+                      </div>
+                      <div class="dash-separator"></div>
+                      <div class="date-info-group">
+                        <span class="date-label">Check Out</span>
+                        <span class="date-value">{{ booking.checkOutDisplay }}</span>
+                      </div>
+                    </div>
+                    <div class="profile-history-divider"></div>
+
+                    <div class="checkIO-container">
+
+                      <div class="checkIO">
+
+                        <div class="checkIO-time">
+                          <div class="profile-icon-wrapper">
+                            <i class="fa-solid fa-clock"></i>
+                          </div>
+                          <div class =checkIO-details>
+                            <span class="checkIO-label"> 체크인 </span>
+                            <span class="checkIO-value"> 12:00pm </span>
+                          </div>
+                        </div>
+
+                        <div class="checkIO-time">
+                          <div class="profile-icon-wrapper">
+                            <i class="fa-solid fa-clock"></i>
+                          </div>
+                          <div class =checkIO-details>
+                            <span class="checkIO-label"> 체크아웃 </span>
+                            <span class="checkIO-value"> 11:00am </span>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <div class="checkIO">
+                        <div class="checkIO-time">
+                          <div class="profile-icon-wrapper">
+                            <i class="fa-solid fa-door-open "></i>
+                          </div>
+                          <div class =checkIO-details>
+                            <span class="checkIO-label"> 방번호 </span>
+                            <span class="checkIO-value"> On arrival </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -179,13 +230,25 @@
         </button>
       </div>
     </div>
-  </div>
   </CommonLayout>
 </template>
+
 <script setup>
 import CommonLayout from '../components/common/CommonLayout.vue';
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import axios from '../util/axios.js'; // 우리가 설정한 axios 인스턴스
+
+// --- ⭐️ Cover Image Slider Logic START ⭐️ ---
+// public/img/cover/ 경로에 이미지 4장이 있다고 가정합니다.
+const coverImages = ref([
+  '/cover/animal_trip1.jpg',
+  '/cover/animal_trip2.jpg',
+  '/cover/animal_trip3.jpg',
+  '/cover/animal_trip4.jpg'
+]);
+const currentCoverIndex = ref(0);
+// let coverInterval = null; // ⭐️ [삭제] 타이머 변수 삭제
+// --- ⭐️ Cover Image Slider Logic END ⭐️ ---
 
 const activeTab = ref('account');
 
@@ -198,7 +261,7 @@ const user = reactive({
   password: '••••••••••',
   address: '',
   dob: '',
-  coverImage: 'https://picsum.photos/seed/cover/1000/250',
+  // ⭐️ [제거] coverImage 속성 제거
   profileImage: 'https://picsum.photos/seed/profile/120/120'
 });
 
@@ -214,7 +277,30 @@ const accountFields = ref([
   { key: 'dob', label: 'Date of birth' }
 ]);
 
+// ⭐️ [제거] 커버 이미지 업로드 로직 전체 삭제
+
+// ⭐️ [유지] 프로필 이미지 업로드 로직
+const profileImageInput = ref(null);
+
+function triggerProfileImageUpload(){
+  profileImageInput.value.click();
+}
+
+function handleProfileImageUpload(event){
+  const file = event.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      user.profileImage = e.target.result; // 미리보기 업데이트
+    };
+    reader.readAsDataURL(file);
+    // TODO: 실제 서버에 업로드하는 로직 추가
+  }
+}
+
+// ⭐️ [수정] onMounted 훅 (기존 2개로 나뉘어 있던 것을 1개로 병합)
 onMounted(async () => {
+  // 1. 사용자 정보 불러오기
   try {
     const response = await axios.get('/api/user/profile');
     const userData = response.data;
@@ -230,7 +316,14 @@ onMounted(async () => {
     console.error('사용자 정보를 불러오는 데 실패했습니다:', error);
     alert('사용자 정보를 불러오는 중 오류가 발생했습니다.');
   }
+
+  // 2. ⭐️ [수정] 페이지 로드 시 랜덤 커버 이미지 설정
+  currentCoverIndex.value = Math.floor(Math.random() * coverImages.value.length);
+
+  // 3. ⭐️ [이동] 외부 클릭 리스너 등록
+  document.addEventListener('click', handleClickOutside);
 });
+
 
 function startEditing(fieldKey) {
   Object.assign(tempUser, user);
@@ -258,9 +351,6 @@ async function saveChanges(fieldKey) {
     const payload = {};
     payload[backendFieldMap[fieldKey] || fieldKey] = tempUser[fieldKey];
 
-    // ⭐ 핵심 수정:
-    // 1. axios.put -> axios.patch 로 변경
-    // 2. '/api/user/update' -> '/api/user' 로 변경
     await axios.patch('/api/user', payload);
 
     user[fieldKey] = tempUser[fieldKey];
@@ -383,9 +473,18 @@ const handleClickOutside = (event) => {
   }
 };
 
-onMounted(() => { document.addEventListener('click', handleClickOutside); });
-onBeforeUnmount(() => { document.removeEventListener('click', handleClickOutside); });
+// ⭐️ [수정] onBeforeUnmount 훅
+onBeforeUnmount(() => {
+  // 1. 외부 클릭 리스너 제거
+  document.removeEventListener('click', handleClickOutside);
 
+  // 2. ⭐️ [삭제] 슬라이더 타이머 정리 로직 삭제
+  /*
+  if (coverInterval) {
+    clearInterval(coverInterval);
+  }
+  */
+});
 </script>
 
 <style scoped>
