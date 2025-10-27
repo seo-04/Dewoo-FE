@@ -20,7 +20,7 @@
           <div class="nav-item-container"
                @mouseenter="hoveredTab = 'wishlist'"
                @mouseleave="hoveredTab = null"
-               @click="activeTab = 'wishlist'"
+               @click="navigateTo('/favorite'); activeTab = 'wishlist';"
                :class="{ active: activeTab === 'wishlist' || hoveredTab === 'wishlist' }">
             <div class="tab">
               <i class="fa-solid fa-heart" style="position: relative; right: 3px"></i>
