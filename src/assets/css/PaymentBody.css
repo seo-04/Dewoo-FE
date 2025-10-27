@@ -83,6 +83,9 @@
     margin-left: 50px;
     position: relative;
     top: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
 .Reservation_date{
@@ -517,4 +520,37 @@
     color:#FF8682;
     text-align: left;
     margin-top: 70px;
+}
+
+.success-toast {
+    position: fixed; /* 화면 전체 기준 */
+    top: 50%;
+    left: 50%;       /* 가운데 정렬 (1/2) */
+    transform: translate(-50%, -50%); /* 가운데 정렬 (2/2) */
+    background-color: #2c3e50; /* 어두운 배경 */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    z-index: 1000; /* 다른 요소들보다 위에 표시 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Vue 트랜지션용 페이드 효과 */
+.toast-fade-enter-active,
+.toast-fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.toast-fade-enter-from,
+.toast-fade-leave-to {
+    opacity: 0;
+}
+
+.card-input-error {
+    color: red;
+    font-size: 12px;
+    text-align: left; /* .card_input 내부 정렬에 맞춤 */
+    margin-top: 5px; /* 입력칸과의 간격 */
+    height: 15px; /* 에러 메시지가 없을 때도 공간을 차지하게 하려면 height를, 아니면 빼도 됩니다. */
 }

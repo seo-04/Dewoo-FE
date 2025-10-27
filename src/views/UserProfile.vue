@@ -489,20 +489,4 @@ onBeforeUnmount(() => {
 
 <style scoped>
 @import "../assets/css/UserProfile.css";
-
-/* ⭐️ [추가] 커버 이미지 슬라이더 CSS ⭐️ */
-.cover-image-container .cover-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 이미지가 찌그러지지 않고 꽉 차도록 */
-  opacity: 0;
-  z-index: 1; /* 이미지 쌓임 순서 */
-}
-
-.cover-image-container .cover-image.active {
-  opacity: 0.7;
-}
 </style>
