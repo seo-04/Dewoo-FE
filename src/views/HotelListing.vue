@@ -121,9 +121,19 @@
                   </div>
                   <div class="review_container">
                     <div class="star_icon">
-                      <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
+                      <template v-for="n in 5" :key="n">
+                        <i
+                            v-if="n <= Math.round(room.star)"
+                            class="fa-solid fa-star filled"
+                        ></i>
+                        <i
+                            v-else
+                            class="fa-regular fa-star empty"
+                        ></i>
+                      </template>
                       <p>{{ room.star }} Star Hotel</p>
                     </div>
+
                     <div class="AMinities_box">
                       <i class="fa-solid fa-mug-saucer"></i>
                       <p>Amenities</p>
