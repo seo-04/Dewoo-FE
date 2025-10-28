@@ -33,8 +33,10 @@ services:
     container_name: boot_container
     ports:
       - 18888:8085
+    volumes:
+      - /Users/jwo/image:/Users/jwo/image
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=local
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb_container:3306/hotels_db
       - SPRING_DATASOURCE_USERNAME=hotels_user
       - SPRING_DATASOURCE_PASSWORD=hotels12345

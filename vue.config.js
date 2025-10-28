@@ -9,7 +9,15 @@ module.exports = defineConfig({
       // '/api'로 시작하는 모든 요청은 target 주소로 전달됨
       '/api': {
         target: 'http://localhost:18888',
-        changeOrigin: true, // cross-origin 허용
+        changeOrigin: true,
+      },
+      '/images': {
+        target: 'http://localhost:18888',
+        changeOrigin: true,
+      },
+      '/hotel-images': {
+        target: 'http://localhost:18888',
+        changeOrigin: true,
       }
     }
   }

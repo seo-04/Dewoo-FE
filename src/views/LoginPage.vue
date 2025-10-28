@@ -135,11 +135,15 @@ export default {
 
         if (response.data && response.data.code === 'SUCCESS') {
 
-          // 💡💡💡 최종 수정된 부분: 'data' -> 'result' 💡💡💡
-          const token = response.data.result;
+          const loginData = response.data.result;
 
-          if (token && typeof token === 'string') {
-            localStorage.setItem('token', token);
+          if (loginData && loginData.token && loginData.userId) {
+
+            // [✅ 수정] 토큰과 userId를 각각 저장합니다.
+            localStorage.setItem('token', loginData.token);
+            localStorage.setItem('userId', loginData.userId); // ⬅️ 이 부분이 핵심입니다!
+
+            console.log('성공! localStorage에 토큰과 userId를 저장했습니다.');
             console.log('성공! localStorage에 토큰을 저장했습니다.');
             alert("로그인 성공!");
             this.$router.push('/profile');

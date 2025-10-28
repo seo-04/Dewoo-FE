@@ -27,7 +27,7 @@ const router = createRouter({
         { path: '/paymentMethod', name:"PaymentMethod", component: PaymentMethod },
         { path: '/signUp', name:"SignUp", component: SignUp},
         { path: '/findPassword', name:"FindPassword", component: FindPassword},
-        { path: '/accommodation', name:"HotelAccommodation", component: HotelAccommodation },
+        { path: '/accommodation/:comId', name:"HotelAccommodation", component: HotelAccommodation },
         {
             path: '/authenticate/:userEmail',
             name: 'Authenticate',
