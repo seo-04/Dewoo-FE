@@ -418,7 +418,6 @@ export default {
   gap: 10px; /* 아이콘 사이 간격 */
 }
 
-/* [✅ 신규] 개별 아이콘 공통 스타일 */
 .review-action-icon {
   color: #aaa;
   cursor: pointer;
