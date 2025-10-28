@@ -37,7 +37,7 @@
                :class="{ active: activeTab === 'profile' || hoveredTab === 'profile' }">
 
             <div class="window"
-                 style="display: flex; align-items: center; gap: 7px; position: relative; top: 3px;"
+                 style="display: flex; align-items: center; gap: 7px; position: relative; top: 6px;"
                  @click.stop="toggleProfileDropdown">
               <div class="circle">
                 <div class="mini-circle">
@@ -216,7 +216,7 @@ export default {
 
 <style scoped lang="scss">
 /* 스타일은 변경되지 않았으므로 그대로 사용하시면 됩니다. */
-@import "@/assets/css/Header.scss";
+@use "@/assets/css/Header.scss";
 
 /* ▼▼▼ 아래는 추가/수정된 스타일입니다 ▼▼▼ */
 .item {
