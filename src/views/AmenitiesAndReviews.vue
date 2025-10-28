@@ -241,11 +241,35 @@ export default {
     /**
      * [✅ 신규] 리뷰 신고 메서드 (임시)
      */
-    reportReview(reviewId) {
-      // 🚨 실제 벡엔드 API 구현이 필요합니다.
-      alert(`리뷰 ID ${reviewId} 신고됨!`);
+    async reportReview(reviewId) {
+      if (!confirm("이 리뷰를 정말 신고하시겠습니까?")) return;
       console.log(`Reporting review ID: ${reviewId}`);
-      // (실제 구현 시 - 이전 답변 참고)
+
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert("신고 권한이 없습니다. 로그인이 필요합니다.");
+          return;
+        }
+
+        // 🚨 '/api/accommodation/review/${reviewId}/report' 부분은
+        // 실제 백엔드 API 엔드포인트로 수정해야 합니다. (POST 또는 PUT 등)
+        const response = await axios.post(`/api/accommodation/review/${reviewId}/report`, {}, { // 신고는 보통 POST 요청을 사용합니다.
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.data.code === 'SUCCESS') {
+          console.log('Review reported successfully.');
+          alert('리뷰가 성공적으로 신고되었습니다.');
+          // (선택 사항) 신고 후 상태 변경을 부모 컴포넌트에 알릴 수 있습니다.
+          // this.$emit('review-reported', reviewId);
+        } else {
+          throw new Error(response.data.message || "리뷰 신고에 실패했습니다.");
+        }
+      } catch (err) {
+        console.error("리뷰 신고 실패:", err);
+        alert(`리뷰 신고 오류: ${err.response?.data?.message || err.message}`);
+      }
     }
 
   }, // <--- methods 닫는 괄호

@@ -18,6 +18,10 @@ module.exports = defineConfig({
       '/hotel-images': {
         target: 'http://localhost:18888',
         changeOrigin: true,
+      },
+      '/user-images': {
+        target: 'http://localhost:18888',
+        changeOrigin: true,
       }
     }
   }

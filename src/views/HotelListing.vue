@@ -418,7 +418,6 @@ export default {
         if (target) target.isFavorite = !target.isFavorite;
       },
     },
-  }
 }
 
 </script>
