@@ -14,7 +14,7 @@
         <li :class="{ active: activeTab === 'places'}"
             @click="activeTab = 'places'">
           <p>Places</p>
-          <span>{{flightCount}} marked</span>
+          <span>{{placeCount}} marked</span>
         </li>
       </ul>
 
@@ -81,7 +81,7 @@ export default {
         console.log('API Response:', response);
         //API 응답 성공시
         if (response.data && response.data.code === 'SUCCESS') {
-          const rawList = response.data.data;
+          const rawList = response.data.result;
           console.log('Row List Data:', rawList);
           if (Array.isArray(rawList)) {
             this.placeList = rawList.map(wishItem => {

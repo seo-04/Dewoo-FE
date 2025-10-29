@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-left">
-      <img src={{accommodation.image}} alt="" style="width: 440px; height: 273.5px; "/>
+      <img :src="info.imageURL" alt="" style="width: 440px; height: 273.5px; "/>
     </div>
 
     <div class="card-right">
