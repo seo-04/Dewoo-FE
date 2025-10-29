@@ -39,7 +39,9 @@
             <div class="window"
                  style="display: flex; align-items: center; gap: 7px; position: relative; top: 6px;"
                  @click.stop="toggleProfileDropdown">
-              <div class="circle">
+
+              <img v-if="profileImageUrl" :src="profileImageUrl" alt="profile" class="header-profile-image-sm">
+              <div v-else class="circle">
                 <div class="mini-circle">
                   <div class="check_box"></div>
                 </div>
@@ -51,7 +53,9 @@
             <transition name="fade">
               <div v-if="activeTab === 'profile'" class="profile-dropdown">
                 <div class="dropdown-profile">
-                  <div class="profile-avatar"></div>
+
+                  <img v-if="profileImageUrl" :src="profileImageUrl" alt="avatar" class="profile-avatar">
+                  <div v-else class="profile-avatar"></div>
                   <div class="profile-info">
                     <span class="profile-name">{{ userName }}</span>
                     <span class="profile-status">Online</span>
@@ -93,7 +97,9 @@
     <transition name="fade">
       <div v-if="isDropdownVisible" class="profile-dropdown" ref="dropdownMenu">
         <div class="dropdown-profile">
-          <div class="profile-avatar"></div>
+
+          <img v-if="profileImageUrl" :src="profileImageUrl" alt="avatar" class="profile-avatar">
+          <div v-else class="profile-avatar"></div>
           <div class="profile-info">
             <span class="profile-name">{{ userName }}</span>
             <span class="profile-status">Online</span>
@@ -141,6 +147,7 @@ export default {
       isDropdownVisible: false,
       isLoggedIn: false,
       userName: 'Guest', // 로그인하지 않았을 때 기본값
+      profileImageUrl: null, // ⭐️ [추가] 프로필 이미지 URL
     };
   },
 
@@ -162,6 +169,7 @@ export default {
       // 2. 컴포넌트의 로그인 상태를 업데이트합니다.
       this.isLoggedIn = false;
       this.userName = 'Guest'; // 사용자 이름을 기본값으로 변경
+      this.profileImageUrl = null; // ⭐️ [추가] 로그아웃 시 이미지 초기화
       // 3. Vue Router를 사용하여 로그인 페이지('/')로 이동합니다.
       this.$router.push('/');
     },
@@ -200,8 +208,9 @@ export default {
       this.isLoggedIn = true;
       try {
         const response = await axios.get('/api/user/profile');
-        if (response.data && response.data.username) {
+        if (response.data) { // ⭐️ [수정] null 체크
           this.userName = response.data.username;
+          this.profileImageUrl = response.data.imageUrl; // ⭐️ [추가] 이미지 URL 저장
         }
       } catch (error) {
         console.error("헤더에서 사용자 정보를 가져오는데 실패했습니다:", error);
@@ -222,6 +231,18 @@ export default {
 .item {
   position: relative;
 }
+
+/* ⭐️ [추가] 헤더의 작은 프로필 이미지 ⭐️ */
+.header-profile-image-sm {
+  width: 50px; /* .circle 크기에 맞춰 조절 */
+  height: 50px; /* .circle 크기에 맞춰 조절 */
+  border-radius: 50%;
+  object-fit: cover; /* 이미지가 찌그러지지 않게 */
+  border: 1px solid #eee;
+  position: relative;
+  top: -6px; /* 아이콘과 정렬 맞춤 */
+}
+
 .window {
   position: relative;
   cursor: pointer;
@@ -255,12 +276,16 @@ export default {
   padding: 10px 20px;
   gap: 15px;
 }
+
+/* ⭐️ [수정] <img> 태그가 이 클래스를 사용할 것을 대비해 object-fit 추가 ⭐️ */
 .profile-avatar {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background-color: #d9d9d9;
+  object-fit: cover; /* ⭐️ 추가 */
 }
+
 .profile-info {
   display: flex;
   flex-direction: column;
