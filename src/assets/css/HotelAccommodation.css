@@ -312,6 +312,7 @@ header {
 /* Overview Section */
 .overview-section {
     margin-bottom: 30px;
+    text-align: left;
 }
 
 .overview-details {
@@ -323,6 +324,7 @@ header {
 .overview-texts {
     margin-top: 30px;
     font-size: 14px;
+    text-align: left;
 }
 
 .rating-box {

@@ -146,7 +146,7 @@ export default {
             console.log('성공! localStorage에 토큰과 userId를 저장했습니다.');
             console.log('성공! localStorage에 토큰을 저장했습니다.');
             alert("로그인 성공!");
-            this.$router.push('/profile');
+            this.$router.push('/hotellisting');
           } else {
             console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', token);
             alert("로그인에 실패했습니다. (토큰 없음)");
