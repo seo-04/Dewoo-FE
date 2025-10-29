@@ -45,7 +45,7 @@
           </div>
 
           <div class="snsbox">
-            <a href="http://localhost:8085/oauth2/authorization/google" class="google sns-button">
+            <a href="http://localhost:18888/oauth2/authorization/google" class="google sns-button">
               <img
                 width="20"
                 height="20"
@@ -54,7 +54,7 @@
               />
             </a>
 
-            <a href="http://localhost:8085/oauth2/authorization/kakao" class="kakao sns-button">
+            <a href="http://localhost:18888/oauth2/authorization/kakao" class="kakao sns-button">
               <img
                 width="20"
                 height="20"
@@ -63,7 +63,7 @@
               />
             </a>
 
-            <a href="http://localhost:8085/oauth2/authorization/naver" class="naver sns-button">
+            <a href="http://localhost:18888/oauth2/authorization/naver" class="naver sns-button">
               <img
                 width="20"
                 height="20"
