@@ -11,10 +11,12 @@ services:
   mariadb_container:
     container_name: mariadb_container
     image: mariadb
+    command:
+      - --innodb-use-native-aio=0
     ports:
       - 13306:3306
     volumes:
-      - ./mariadb_data:/var/lib/mysql
+      - mariadb_volume:/var/lib/mysql
     environment:
       - TZ= Asia/Seoul
       - MARIADB_ROOT_PASSWORD=1234
@@ -33,6 +35,7 @@ services:
     container_name: boot_container
     ports:
       - 18888:8085
+    platform: linux/amd64
     volumes:
       - /Users/jwo/image:/Users/jwo/image
     environment:
@@ -54,3 +57,6 @@ services:
 networks:
   a_network:
     driver: bridge
+
+volumes:
+  mariadb_volume:

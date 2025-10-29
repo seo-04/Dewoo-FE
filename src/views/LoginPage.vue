@@ -45,7 +45,7 @@
           </div>
 
           <div class="snsbox">
-            <a href="http://localhost:18888/oauth2/authorization/google" class="google sns-button">
+            <a :href="`${apiUrl}/oauth2/authorization/google`" class="google sns-button">
               <img
                 width="20"
                 height="20"
@@ -54,7 +54,7 @@
               />
             </a>
 
-            <a href="http://localhost:18888/oauth2/authorization/kakao" class="kakao sns-button">
+            <a :href="`${apiUrl}/oauth2/authorization/kakao`" class="kakao sns-button">
               <img
                 width="20"
                 height="20"
@@ -63,7 +63,7 @@
               />
             </a>
 
-            <a href="http://localhost:18888/oauth2/authorization/naver" class="naver sns-button">
+            <a :href="`${apiUrl}/oauth2/authorization/naver`" class="naver sns-button">
               <img
                 width="20"
                 height="20"
@@ -107,6 +107,7 @@ export default {
       showPassword: false,
       currentSlide: 0,
       slideInterval: null,
+      apiUrl: process.env.VUE_APP_API_URL // [수정됨] 환경 변수 추가
     };
   },
   mounted() {
@@ -140,7 +141,7 @@ export default {
           if (loginData && loginData.token && loginData.userId) {
 
             // [✅ 수정] 토큰과 userId를 각각 저장합니다.
-            localStorage.setItem('token', loginData.token);
+            localStorage.setItem('jwtToken', loginData.token);
             localStorage.setItem('userId', loginData.userId); // ⬅️ 이 부분이 핵심입니다!
 
             console.log('성공! localStorage에 토큰과 userId를 저장했습니다.');
@@ -148,7 +149,7 @@ export default {
             alert("로그인 성공!");
             this.$router.push('/hotellisting');
           } else {
-            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', token);
+            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', loginData); // token -> loginData로 수정
             alert("로그인에 실패했습니다. (토큰 없음)");
           }
         } else {

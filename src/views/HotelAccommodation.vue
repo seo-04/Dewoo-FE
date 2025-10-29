@@ -73,30 +73,42 @@
       <div class="rooms-section">
         <div class="room-list">
           <h2 class="section-title-acc">잔여 객실</h2>
-          <div class="room-item" v-for="room in accommodation.rooms" :key="room.accId">
-            <div class="room-details">
-              <img :src="getRoomPlaceholderImage(room.accId)" alt="Room Image" class="room-image" />
-              <div class="room-info">
-                <div class="room-type">{{ room.roomType.roomTypeName }}</div>
+          <div v-if="accommodation && accommodation.rooms">
+            <div class="room-item" v-for="room in accommodation.rooms" :key="room.accId">
+              <div class="room-details">
+                <img v-if="room && room.roomType && room.roomType.parlorImage"
+                     :src="`/parlorimage/${room.roomType.parlorImage}`"
+                     :alt="`${room.roomType.roomTypeName || 'Room'} Image`"
+                     class="room-image" />
+                <div v-else class="room-image placeholder-image">
+                  <span>이미지 없음</span>
+                </div>
+
+                <div class="room-info">
+                  <div class="room-type">{{ (room.roomType && room.roomType.roomTypeName) ? room.roomType.roomTypeName : '알 수 없는 객실' }}</div>
+                </div>
+              </div>
+              <div class="room-price-container">
+                <div class="room-price">
+                  <template v-if="room.discountedPrice && room.discountedPrice < room.price">
+              <span class="original-price" style="text-decoration: line-through; color: grey; font-size: 0.9em; margin-right: 5px;">
+                ₩{{ room.price.toLocaleString() }}
+              </span>
+                    <span class="price-value" style="color: red;">
+                ₩{{ room.discountedPrice.toLocaleString() }}
+              </span>
+                  </template>
+                  <template v-else>
+                    <span class="price-value">₩{{ room.price.toLocaleString() }}</span>
+                  </template>
+                  <span class="price-unit">/night</span>
+                </div>
+                <button class="book-now-button">Book now</button>
               </div>
             </div>
-            <div class="room-price-container">
-              <div class="room-price">
-                <template v-if="room.discountedPrice && room.discountedPrice < room.price">
-                  <span class="original-price" style="text-decoration: line-through; color: grey; font-size: 0.9em; margin-right: 5px;">
-                    ₩{{ room.price.toLocaleString() }}
-                  </span>
-                  <span class="price-value" style="color: red;">
-                    ₩{{ room.discountedPrice.toLocaleString() }}
-                  </span>
-                </template>
-                <template v-else>
-                  <span class="price-value">₩{{ room.price.toLocaleString() }}</span>
-                </template>
-                <span class="price-unit">/night</span>
-              </div>
-              <button class="book-now-button">Book now</button>
-            </div>
+          </div>
+          <div v-else>
+            객실 정보를 불러오는 중입니다...
           </div>
         </div>
       </div>
