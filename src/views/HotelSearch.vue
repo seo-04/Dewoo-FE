@@ -161,7 +161,7 @@
       </div>
     </section>
 
-    <!-- 여행 더보기 섹션 (기존 코드) -->
+    <!-- 여행 더보기 섹션 -->
     <section class="tour_container">
       <h3>여행 더보기</h3>
       <p>
@@ -270,7 +270,7 @@ export default {
     applyPeople() {
       if (this.guests < 2) {
         alert("최소 2명 이상 선택해주세요.");
-        return;
+        return; // 1명일 경우 모달 닫히지 않게 함
       }
       this.closePeopleModal();
     },
