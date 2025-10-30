@@ -45,7 +45,7 @@
         <section class="price-area">
           <span class="price-guide1">starting from</span>
           <span class="favorite-price">
-            <strong>${{ info.price }}</strong>
+            <strong>₩{{ formatPrice(info.price) }}</strong>
             /night
           </span>
           <span class="price-guide2">excl. tax</span>
@@ -68,6 +68,12 @@ export default {
     info: {
       type: Object,
       default: null,
+    },
+  },
+  methods: {
+    formatPrice(price) {
+      if (price === undefined || price === null) return '0';
+      return Number(price).toLocaleString('ko-KR');
     },
   },
 };
@@ -129,7 +135,7 @@ img{ width: 10px; height: 14px}
         flex-direction: column;
         gap: 11px;
         & .title {
-          font-size: 20;
+          font-size: 20px;
           font-weight: 700;
         }
         & .location {
