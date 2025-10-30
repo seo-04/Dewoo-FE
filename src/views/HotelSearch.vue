@@ -112,11 +112,34 @@
       <p>특가상품으로 진행하는 여행을 예약해보세요.</p>
 
       <div class="travel_box">
-        <div class="slider">
+        <div class="slide_track">
           <div
               class="card"
               v-for="(item, i) in travelItems.slice(0, 5)"
-              :key="item.comId || i"
+              :key="'original-' + (item.comId || i)"
+          >
+            <img
+                :src="require('@/assets/img/construction.jpg')"
+                :alt="`${item.city} ${item.comtitle}`"
+            />
+            <div class="card_text">
+              <h4>{{ item.city }} - {{ item.comtitle }}</h4>
+              <p class="setting">특특특가 혜택 진행 중</p>
+              <p>
+                {{ formatPrice(item.price) }}원
+                <span v-if="item.discount_rate > 0">
+                  ({{ item.discount_rate }}% {{ discountedPrice(item) }}원)
+                </span>
+              </p>
+              <button>Book a Hotel</button>
+            </div>
+          </div>
+
+          <!-- 카드 복제하여 무한 캐러셀 -->
+          <div
+              class="card"
+              v-for="(item, i) in travelItems.slice(0, 5)"
+              :key="'clone-' + (item.comId || i)"
           >
             <img
                 :src="require('@/assets/img/construction.jpg')"
@@ -138,7 +161,7 @@
       </div>
     </section>
 
-    <!-- 여행 더보기 -->
+    <!-- 여행 더보기 섹션 (기존 코드) -->
     <section class="tour_container">
       <h3>여행 더보기</h3>
       <p>
@@ -209,7 +232,6 @@ export default {
       try {
         const response = await axios.get("/api/accommodation");
         const list = response.data.result?.accommodations?.content || [];
-
         this.travelItems = list.map((item) => ({
           comId: item.comId,
           comtitle: item.comTitle,
@@ -221,11 +243,9 @@ export default {
         console.error("숙소 데이터 로드 실패", error);
       }
     },
-
     formatPrice(value) {
       return new Intl.NumberFormat("ko-KR").format(value);
     },
-
     discountedPrice(item) {
       const price = Number(item.price) || 0;
       const discount = Number(item.discount_rate) || 0;
@@ -233,7 +253,6 @@ export default {
           Math.round(price * (1 - discount / 100))
       );
     },
-
     openPeopleModal() {
       this.showPeopleModal = true;
     },
@@ -249,10 +268,12 @@ export default {
       if (type === "guest" && this.guests > 1) this.guests--;
     },
     applyPeople() {
+      if (this.guests < 2) {
+        alert("최소 2명 이상 선택해주세요.");
+        return;
+      }
       this.closePeopleModal();
     },
-
-    //
     async handleSearch() {
       if (!this.destination) {
         alert("목적지를 입력해주세요.");
@@ -270,13 +291,16 @@ export default {
         alert("최소 2명 이상 선택해주세요.");
         return;
       }
+
       try {
         const response = await axios.get("/api/accommodation");
         const list = response.data.result?.accommodations?.content || [];
 
         const keyword = this.destination.trim();
-        const found = list.find((item) =>
-            item.comAddress.includes(keyword) || item.comTitle.includes(keyword)
+        const found = list.find(
+            (item) =>
+                item.comAddress.includes(keyword) ||
+                item.comTitle.includes(keyword)
         );
 
         if (!found) {
@@ -284,7 +308,6 @@ export default {
           return;
         }
 
-        // 숙소 존재 시 HotelListing.vue로 이동
         this.$router.push({
           name: "HotelListing",
           query: {
@@ -303,7 +326,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-@import "@/assets/css/HotelSearch.css";
-</style>
