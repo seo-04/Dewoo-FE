@@ -24,7 +24,7 @@ const router = createRouter({
             name: 'Password_Setting',
             component: PasswordSetting
         },
-        { path: '/paymentMethod', name:"PaymentMethod", component: PaymentMethod },
+          { path: '/paymentMethod', name:"PaymentMethod", component: PaymentMethod },
         { path: '/signUp', name:"SignUp", component: SignUp},
         { path: '/findPassword', name:"FindPassword", component: FindPassword},
         { path: '/accommodation', name:"HotelAccommodation", component: HotelAccommodation },
@@ -37,7 +37,6 @@ const router = createRouter({
         { path: '/hotellisting', name:"HotelListing", component: HotelListing},
         { path: '/payment', name: "PaymentBody", component: PaymentBody},
         { path: '/profile', name: "UserProfile", component: UserProfile},
-        { path: '/payment', name: "PaymentBody", component: PaymentBody},
         { path: '/payment/success', name: "PaymentSuccess", component: PaymentSuccess},
         { path: '/payment/fail', name: "PaymentFail", component: PaymentFail},
         { path: '/favorite', name:"FavoritePage", component: FavoritePage}
