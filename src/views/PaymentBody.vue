@@ -7,7 +7,7 @@
         </div>
       </transition>
 
-      <div class="channel">{{ paymentAccommodation.location }} &nbsp; &gt; <span
+      <div class="channel">{{paymentAccommodation.location}} &nbsp; &gt; <span
         style="font-size: 20px; color: black"> &nbsp; {{ comTitle }} </span></div>
       <div class="payment-body">
 
@@ -252,7 +252,6 @@
   import CommonLayout from '../components/common/CommonLayout.vue';
 
   // ----- (4) API 데이터를 저장할 ref 변수 선언 -----
-  const location = ref('');
   const comTitle = ref('');
   const roomType = ref({}); // 객실 정보 (이름, 가격 등)
   const paymentAccommodation = ref({}); // 숙소 정보 (주소, 이름 등)
@@ -391,7 +390,6 @@
     const accId = route.query.accId;
     checkIn.value = route.query.checkIn || '날짜 없음';
     checkOut.value = route.query.checkOut || '날짜 없음';
-    location.value = route.query.location || '지역 없음';
 
     // 2. URL에서 가져온 ID로 API 호출
     if (accId) {
