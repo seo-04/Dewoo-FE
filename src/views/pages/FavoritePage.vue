@@ -169,6 +169,18 @@ export default {
     text-align: left;
   }
 
+  .empty-list-message {
+    padding: 64px 0; /* 위아래로 넉넉한 여백을 줍니다 */
+    text-align: center; /* 텍스트를 수평 가운데 정렬합니다 */
+    & p {
+      font-size: 50px;
+      color: #888; /* 글씨 색을 약간 연하게 (선택 사항) */
+      font-weight: 500;
+      text-align: center; /* 텍스트를 수평 가운데 정렬합니다 */
+      opacity: 0.3
+    }
+  }
+
   & .favorite-tabs {
     margin-top: 24px;
     display: flex;
