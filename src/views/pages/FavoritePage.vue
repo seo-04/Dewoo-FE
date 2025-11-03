@@ -30,7 +30,7 @@
       >
         <p>즐겨찾기에 추가된 항목이 없습니다.</p>
       </div>
-      <FavoriteList v-else :list="currentList" />
+      <FavoriteList v-else :list="currentList" @unlike="handleUnlike" />
 
     </div>
   </CommonLayout>
@@ -131,8 +131,16 @@ export default {
         this.isLoading = false; // 로딩 상태 종료 (성공/실패 무관)
       }
     },
-    // 만약 Flights 찜 목록 API가 있다면 여기에 추가
-    // async fetchFlightFavorites() { ... }
+    async handleUnlike(fno){
+      try {
+        //백엔드에게 delete 요청
+        await bTeamApi.delete(`/api/wish/${fno}`);
+        //delete 요청이 성공하면 화면 목록에서도 삭제
+        this.placeList = this.placeList.filter(item => item.fno !== fno);
+      } catch (error){
+        console.error('찜 삭제 중 오류 발생:', error);
+      }
+    },
   },
   mounted() {
     // Places 찜 목록을 불러오는 함수 호출

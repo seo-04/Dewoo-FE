@@ -53,10 +53,10 @@
       </div>
 
       <div class="card-right-bottom">
-        <button class="like-btn">
+        <button class="like-btn" @click="onUnlikeClick">
           <img src="../../../src/assets/img/icon/blackheart.png" alt="" style="border-radius: 0; width: 16.25px; height: 15px" />
         </button>
-        <button class="go-price-btn">View Price</button>
+        <button class="go-price-btn" @click="gotoDetailPage">View Price</button>
       </div>
     </div>
   </div>
@@ -74,6 +74,14 @@ export default {
     formatPrice(price) {
       if (price === undefined || price === null) return '0';
       return Number(price).toLocaleString('ko-KR');
+    },
+    //나중에 api를 상세 페이지로 쏠 때 쓸거임
+    gotoDetailPage() {
+      this.$router.push(`/accommodation`);
+    },
+    //찜하기 누르면 빠지게
+    onUnlikeClick(){
+      this.$emit('unlike', this.info.fno);
     },
   },
 };
@@ -206,6 +214,9 @@ img{ width: 10px; height: 14px}
         height: 48px;
         border: 1px solid rgba(141, 211, 187, 1);
         justify-items: center;
+        flex-shrink: 0;
+        border-radius: 5px;
+        cursor: pointer;
       }
 
       & .go-price-btn {
