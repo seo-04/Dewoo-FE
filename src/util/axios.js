@@ -8,7 +8,7 @@ export const bTeamApi = axios.create({
 
 bTeamApi.interceptors.request.use(
     config => {
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("jwtToken")
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
