@@ -42,9 +42,7 @@ const router = createRouter({
         { path: '/payment', name: "PaymentBody", component: PaymentBody},
         { path: '/payment/success', name: "PaymentSuccess", component: PaymentSuccess},
         { path: '/payment/fail', name: "PaymentFail", component: PaymentFail},
-        { path: '/favorite', name:"FavoritePage", component: FavoritePage}
-
-        { path: '/payment/fail', name: "PaymentFail", component: PaymentFail},
+        { path: '/favorite', name:"FavoritePage", component: FavoritePage},
         {
             path: '/signup/additional-info',
             name: 'SocialSignUp',
