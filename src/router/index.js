@@ -13,13 +13,14 @@ import PaymentBody from '../views/PaymentBody.vue'
 import PaymentSuccess from '../views/PaymentSuccess.vue'
 import PaymentFail from '../views/PaymentFail.vue'
 import UserProfile from '../views/UserProfile.vue'
+import FavoritePage from '../views/pages/FavoritePage.vue'
 import SocialSignUp from '../views/SocialSignUp.vue'
 
 
 const router = createRouter({
     history: createWebHistory(),
     routes : [
-        { path: '/', name: 'Home', component: LoginPage, meta: { layout: 'login' } },
+        { path: '/', name: 'Home', component: HotelSearch},
         {
             path: '/password-setting/:userEmail/:verificationCode',
             name: 'Password_Setting',
@@ -34,13 +35,14 @@ const router = createRouter({
             name: 'Authenticate',
             component: Authenticate
         },
-        { path: '/hotelsearch', name:"HotelSearch", component: HotelSearch},
+        { path: '/login', name:"loginPage", component: LoginPage, meta: { layout: 'login' } },
         { path: '/hotellisting', name:"HotelListing", component: HotelListing},
         { path: '/payment', name: "PaymentBody", component: PaymentBody},
         { path: '/profile', name: "UserProfile", component: UserProfile},
         { path: '/payment', name: "PaymentBody", component: PaymentBody},
         { path: '/payment/success', name: "PaymentSuccess", component: PaymentSuccess},
         { path: '/payment/fail', name: "PaymentFail", component: PaymentFail},
+        { path: '/favorite', name:"FavoritePage", component: FavoritePage},
         {
             path: '/signup/additional-info',
             name: 'SocialSignUp',
