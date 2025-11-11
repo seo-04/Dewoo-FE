@@ -164,30 +164,31 @@
 
           </div>
         </div>
-        <!--    <div class="Reservation_sign">-->
-        <!--      <span style="font-size: 20px; font-weight: bold; display: block; padding: 15px 0">Login or Sign up to book</span>-->
-        <!--      <input class="Reservation_phoneNumber" placeholder="Phone Number" v-model="phoneNumber">-->
-        <!--      <span style="font-size: 14px; display: block; padding: 15px 0">예약확인 문자/전화를 위해 전화번호를 남겨주세요</span>-->
-        <!--      <button class="continue" :disabled="!isContinueButtonEnabled">continue</button>-->
-        <!--      <div class="boundary_line_1">-->
-        <!--        <p>Or</p>-->
-        <!--      </div>-->
-        <!--      <div class="social-login-buttons">-->
-        <!--        <div class="social-button-box">-->
-        <!--          <img src="@/assets/login_facebook.png" alt="">-->
-        <!--        </div>-->
-        <!--        <div class="social-button-box">-->
-        <!--          <img src="@/assets/login_google.png" alt="">-->
-        <!--        </div>-->
-        <!--        <div class="social-button-box">-->
-        <!--          <img src="@/assets/login_apple.png" alt="">-->
-        <!--        </div>-->
-        <!--      </div>-->
-        <!--      <div class="continue-with-email">-->
-        <!--        <img src="@/assets/email_icon.png" alt="">-->
-        <!--        <span>Continue with email</span>-->
-        <!--      </div>-->
-        <!--    </div>-->
+
+<!--            <div class="Reservation_sign">-->
+<!--              <span style="font-size: 20px; font-weight: bold; display: block; padding: 15px 0">Login or Sign up to book</span>-->
+<!--              <input class="Reservation_phoneNumber" placeholder="Phone Number" v-model="phoneNumber">-->
+<!--              <span style="font-size: 14px; display: block; padding: 15px 0">예약확인 문자/전화를 위해 전화번호를 남겨주세요</span>-->
+<!--              <button class="continue" :disabled="!isContinueButtonEnabled">continue</button>-->
+<!--              <div class="boundary_line_1">-->
+<!--                <p>Or</p>-->
+<!--              </div>-->
+<!--              <div class="social-login-buttons">-->
+<!--                <div class="social-button-box">-->
+<!--                  <img src="@/assets/login_facebook.png" alt="">-->
+<!--                </div>-->
+<!--                <div class="social-button-box">-->
+<!--                  <img src="@/assets/login_google.png" alt="">-->
+<!--                </div>-->
+<!--                <div class="social-button-box">-->
+<!--                  <img src="@/assets/login_apple.png" alt="">-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="continue-with-email">-->
+<!--                <img src="@/assets/email_icon.png" alt="">-->
+<!--                <span>Continue with email</span>-->
+<!--              </div>-->
+<!--            </div>-->
 
         <div class="payment-small">
           <div class="payment-small-body">

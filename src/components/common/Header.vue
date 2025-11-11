@@ -46,7 +46,7 @@
                   <div class="check_box"></div>
                 </div>
               </div>
-              <span>{{ userName }}</span>
+              <span style="font-weight: bold">{{ userName }}</span>
 
             </div>
 
@@ -165,7 +165,7 @@ export default {
     logout() {
       console.log("로그아웃 처리");
       // 1. 로컬 스토리지에서 토큰을 제거합니다.
-      localStorage.removeItem('token');
+      localStorage.removeItem('jwtToken');
       // 2. 컴포넌트의 로그인 상태를 업데이트합니다.
       this.isLoggedIn = false;
       this.userName = 'Guest'; // 사용자 이름을 기본값으로 변경
@@ -203,7 +203,7 @@ export default {
   },
   async mounted() {
     // 참고: 기존 코드에 있던 handleClickOutside 리스너가 중복으로 보여서 하나로 정리했습니다.
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('jwtToken');
     if (token) {
       this.isLoggedIn = true;
       try {
