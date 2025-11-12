@@ -236,7 +236,7 @@
 <script setup>
 import CommonLayout from '../components/common/CommonLayout.vue';
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
-import axios from '../util/axios.js'; // ⭐️ 우리가 설정한 axios 인스턴스
+import axios from '../util/axios.js'; // 우리가 설정한 axios 인스턴스
 
 // --- ⭐️ Cover Image Slider Logic START ⭐️ ---
 // public/img/cover/ 경로에 이미지 4장이 있다고 가정합니다.
@@ -247,6 +247,7 @@ const coverImages = ref([
   '/cover/animal_trip4.jpg'
 ]);
 const currentCoverIndex = ref(0);
+// let coverInterval = null; // ⭐️ [삭제] 타이머 변수 삭제
 // --- ⭐️ Cover Image Slider Logic END ⭐️ ---
 
 const activeTab = ref('account');
@@ -260,6 +261,7 @@ const user = reactive({
   password: '••••••••••',
   address: '',
   dob: '',
+  // ⭐️ [제거] coverImage 속성 제거
   profileImage: 'https://picsum.photos/seed/profile/120/120'
 });
 
@@ -275,55 +277,28 @@ const accountFields = ref([
   { key: 'dob', label: 'Date of birth' }
 ]);
 
-// ⭐️ 프로필 이미지 업로드 로직
+// ⭐️ [제거] 커버 이미지 업로드 로직 전체 삭제
+
+// ⭐️ [유지] 프로필 이미지 업로드 로직
 const profileImageInput = ref(null);
 
 function triggerProfileImageUpload(){
   profileImageInput.value.click();
 }
 
-// ⭐️ [수정된 함수] 백엔드 업로드 로직 추가
-async function handleProfileImageUpload(event){
+function handleProfileImageUpload(event){
   const file = event.target.files[0];
-  if(!file){
-    return;
-  }
-
-  // 1. (기존 로직) 즉시 미리보기 보여주기
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    user.profileImage = e.target.result; // 미리보기 업데이트
-  };
-  reader.readAsDataURL(file);
-
-  // 2. (⭐️ 신규 추가) 서버에 실제 업로드
-  const formData = new FormData();
-  // 'ApiUserController'에서 @RequestParam("image")로 설정했으므로 키(key)는 "image"여야 합니다.
-  formData.append('image', file);
-
-  try {
-    // 3. (⭐️ 신규 추가) 백엔드 API 호출
-    // axios가 JWT 토큰을 헤더에 자동으로 포함하여 전송합니다.
-    const response = await axios.post('/api/user/profile-image', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    // 4. (⭐️ 신규 추가) 서버로부터 받은 실제 이미지 경로(webPath)로
-    //    미리보기 URL을 덮어씁니다.
-    // ApiUserController는 response.data.result에 이미지 URL을 담아 반환합니다.
-    user.profileImage = response.data.result;
-    alert('프로필 이미지가 성공적으로 변경되었습니다.');
-
-  } catch (error) {
-    console.error('프로필 이미지 업로드 실패:', error);
-    alert('이미지 업로드 중 오류가 발생했습니다.');
-    // TODO: 업로드 실패 시, 이전에 보여준 미리보기를 원래 이미지로 되돌리는 로직 추가 (선택)
+  if(file){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      user.profileImage = e.target.result; // 미리보기 업데이트
+    };
+    reader.readAsDataURL(file);
+    // TODO: 실제 서버에 업로드하는 로직 추가
   }
 }
 
-// ⭐️ onMounted 훅 (기존 2개로 나뉘어 있던 것을 1개로 병합)
+// ⭐️ [수정] onMounted 훅 (기존 2개로 나뉘어 있던 것을 1개로 병합)
 onMounted(async () => {
   // 1. 사용자 정보 불러오기
   try {

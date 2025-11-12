@@ -45,7 +45,7 @@
           </div>
 
           <div class="snsbox">
-            <a :href="`${apiUrl}/oauth2/authorization/google`" class="google sns-button">
+            <a href="http://localhost:8085/oauth2/authorization/google" class="google sns-button">
               <img
                 width="20"
                 height="20"
@@ -54,7 +54,7 @@
               />
             </a>
 
-            <a :href="`${apiUrl}/oauth2/authorization/kakao`" class="kakao sns-button">
+            <a href="http://localhost:8085/oauth2/authorization/kakao" class="kakao sns-button">
               <img
                 width="20"
                 height="20"
@@ -63,7 +63,7 @@
               />
             </a>
 
-            <a :href="`${apiUrl}/oauth2/authorization/naver`" class="naver sns-button">
+            <a href="http://localhost:8085/oauth2/authorization/naver" class="naver sns-button">
               <img
                 width="20"
                 height="20"
@@ -107,7 +107,6 @@ export default {
       showPassword: false,
       currentSlide: 0,
       slideInterval: null,
-      apiUrl: process.env.VUE_APP_API_URL // [수정됨] 환경 변수 추가
     };
   },
   mounted() {
@@ -136,20 +135,16 @@ export default {
 
         if (response.data && response.data.code === 'SUCCESS') {
 
-          const loginData = response.data.result;
+          // 💡💡💡 최종 수정된 부분: 'data' -> 'result' 💡💡💡
+          const token = response.data.result;
 
-          if (loginData && loginData.token && loginData.userId) {
-
-            // [✅ 수정] 토큰과 userId를 각각 저장합니다.
-            localStorage.setItem('jwtToken', loginData.token);
-            localStorage.setItem('userId', loginData.userId); // ⬅️ 이 부분이 핵심입니다!
-
-            console.log('성공! localStorage에 토큰과 userId를 저장했습니다.');
+          if (token && typeof token === 'string') {
+            localStorage.setItem('token', token);
             console.log('성공! localStorage에 토큰을 저장했습니다.');
             alert("로그인 성공!");
-            this.$router.push('/hotellisting');
+            this.$router.push('/profile');
           } else {
-            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', loginData); // token -> loginData로 수정
+            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', token);
             alert("로그인에 실패했습니다. (토큰 없음)");
           }
         } else {

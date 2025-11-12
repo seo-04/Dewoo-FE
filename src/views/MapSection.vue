@@ -12,7 +12,7 @@
           :src="mapSrc"
       ></iframe>
       <div class="hotel-address">
-        <i class="fa-solid fa-location-dot"></i> {{address}}
+        <i class="fa-solid fa-location-dot"></i> Gümüşsuyu Mah. İnönü Cad. No:8, İstanbul 34437
       </div>
       <a :href="googleMapsLink" target="_blank" class="view-on-google-maps">구글 맵에서 보기</a>
     </div>

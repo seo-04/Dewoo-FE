@@ -1,35 +1,19 @@
 hr {
     border: none;
     border-top: 1px solid #ddd;
-    margin: 70px 0;
+    margin: 50px 0;
 }
 
 .accommodation-container {
     font-family: Arial, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 5px;
+    padding: 20px;
 }
 
 .section-title {
-    font-size: 2em;
-    margin-bottom: 25px;
-    font-weight: 600;
-    color: #333;
-    padding-bottom: 10px;
-    border-bottom: 3px solid #8dd3bb;
-    display: inline-block;
-}
-
-.section-title-acc {
-    font-size: 2em;
-    margin-bottom: 25px;
-    font-weight: 600;
-    color: #333;
-    padding-bottom: 10px;
-    border-bottom: 3px solid #8dd3bb;
-    display: inline-block;
-    margin-left : 25px;
+    font-size: 1.8em;
+    margin-bottom: 15px;
 }
 
 /* 헤더 && 네비게이터 */
@@ -237,10 +221,8 @@ header {
 }
 
 .per-night {
-    font-size: 1.2em;  /* 폰트 크기 증가 (기존 0.9em) */
+    font-size: 0.9em;
     color: #e55a50;
-    font-weight: 600;  /* 폰트 굵게 */
-    margin-left: 4px;
 }
 
 .action-buttons {
@@ -270,7 +252,7 @@ header {
 /* 호텔 이미지 영역 */
 .hotel-images-section {
     display: grid;
-    grid-template-columns: 3fr 2.5fr; /* 2:1 비율을 3:2 비율 (60% : 40%)로 수정 */
+    grid-template-columns: 2fr 1fr;
     gap: 10px;
     margin-bottom: 30px;
 }
@@ -312,7 +294,6 @@ header {
 /* Overview Section */
 .overview-section {
     margin-bottom: 30px;
-    text-align: left;
 }
 
 .overview-details {
@@ -321,10 +302,8 @@ header {
     margin-top: 50px;
 }
 
-.overview-texts {
+.overview-text {
     margin-top: 30px;
-    font-size: 14px;
-    text-align: left;
 }
 
 .rating-box {
@@ -385,17 +364,16 @@ header {
     color: #333;
 }
 /* Room Section */
-.rooms-section {
+.room-section {
     margin-top: 30px;
-    text-align: left;
 }
 
 .room-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 24px 10px;
     border: 1px solid #ddd;
+    padding: 15px;
     margin-bottom: 10px;
     border-radius: 10px;
 }
@@ -407,8 +385,8 @@ header {
 }
 
 .room-image {
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 80px;
     object-fit: cover;
     border-radius: 5px;
 }
@@ -416,30 +394,13 @@ header {
 .room-price-container {
     display: flex;
     align-items: center;
-    gap: 30px;
-    margin-right:0px;
+    gap: 10px;
 }
 
-.room-info .room-type {
-    font-weight: 600;
-    font-size: 1.1em;
-    color: #2c3e50;
-}
-.room-price {
-    display: flex;
-    align-items: baseline;
-    color: #333;
-    font-weight: bold;
+.price-value {
     font-size: 1.2em;
+    font-weight: bold;
 }
-
-.room-price .price-unit {
-    font-size: 0.85em;
-    color: #777;
-    margin-left: 4px;
-    font-weight: 400;
-}
-
 
 /* Footer */
 footer {
@@ -522,129 +483,4 @@ footer {
     position: relative;
     top: 13px;
     gap: 10px;
-}
-
-/* --- 이미지 모달 스타일 --- */
-
-.image-modal-overlay {
-    position: fixed; /* 화면 전체를 덮도록 고정 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* 어두운 배경 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000; /* 다른 요소들보다 위에 표시 */
-}
-
-.image-modal-content {
-    background-color: white;
-    padding: 20px 30px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 1200px;
-    height: 85vh; /* 화면 높이의 85% */
-    overflow-y: auto; /* 이미지가 많으면 스크롤 */
-    position: relative;
-}
-
-.modal-close-button {
-    position: absolute;
-    top: 10px;
-    right: 25px;
-    font-size: 2.8em;
-    font-weight: bold;
-    color: #777;
-    background: none;
-    border: none;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.modal-close-button:hover {
-    color: #000;
-}
-
-.image-modal-content h3 {
-    font-size: 1.8em;
-    margin-top: 10px;
-    margin-bottom: 25px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 15px;
-    color: #333;
-}
-
-.modal-image-grid {
-    display: grid;
-    /* 3개의 컬럼, 최소 250px */
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-}
-
-.modal-image-grid img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.modal-image-grid img:hover {
-    transform: scale(1.03);
-}
-
-/* --- [✅ 이 코드를 HotelAccommodation.css 파일 맨 끝에 추가] --- */
-
-/* --- 라이트박스(단일 이미지) 스타일 --- */
-
-.lightbox-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.92); /* 어두운 배경 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 3000; /* 그리드 모달(z-index: 2000)보다 위에 표시 */
-}
-
-.lightbox-close-button {
-    position: absolute;
-    top: 20px;
-    right: 40px;
-    font-size: 3.5em;
-    font-weight: 300;
-    color: #fff;
-    background: none;
-    border: none;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.lightbox-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    height: 90%;
-}
-
-.lightbox-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* 이미지가 잘리지 않고 비율에 맞게 보임 */
-    border-radius: 5px;
-}
-
-/* --- 클릭 가능한 이미지 커서 변경 --- */
-
-.main-image img,
-.thumbnail-images img,
-.modal-image-grid img {
-    cursor: pointer; /* 클릭 가능하다는 것을 표시 */
 }
