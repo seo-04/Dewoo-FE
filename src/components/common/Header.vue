@@ -164,8 +164,9 @@ export default {
      */
     logout() {
       console.log("로그아웃 처리");
-      // 1. 로컬 스토리지에서 토큰을 제거합니다.
+      // 1. 로컬 스토리지에서 토큰과 userId를 제거합니다.
       localStorage.removeItem('token');
+      localStorage.removeItem('userId'); // 💡 수정: AmenitiesAndReviews.vue에서 사용하므로 추가
       // 2. 컴포넌트의 로그인 상태를 업데이트합니다.
       this.isLoggedIn = false;
       this.userName = 'Guest'; // 사용자 이름을 기본값으로 변경
@@ -208,14 +209,20 @@ export default {
       this.isLoggedIn = true;
       try {
         const response = await axios.get('/api/user/profile');
-        if (response.data) { // ⭐️ [수정] null 체크
-          this.userName = response.data.username;
-          this.profileImageUrl = response.data.imageUrl; // ⭐️ [추가] 이미지 URL 저장
+        // 💡 수정: 백엔드 API 응답 구조를 예측하여 response.data.result를 사용하도록 수정
+        const userData = response.data?.result;
+
+        if (userData) { // ⭐️ [수정] null 체크
+          this.userName = userData.username;
+          this.profileImageUrl = userData.imageUrl; // ⭐️ [추가] 이미지 URL 저장
+          // 💡 추가: AmenitiesAndReviews.vue에서 사용하는 userId를 localStorage에 저장
+          localStorage.setItem('userId', userData.userId);
         }
       } catch (error) {
         console.error("헤더에서 사용자 정보를 가져오는데 실패했습니다:", error);
         // 토큰이 유효하지 않을 경우 로그아웃 처리
         localStorage.removeItem('token');
+        localStorage.removeItem('userId'); // 💡 추가: 안전하게 제거
         this.isLoggedIn = false;
       }
     }

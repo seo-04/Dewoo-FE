@@ -22,6 +22,10 @@ module.exports = defineConfig({
       '/user-images': {
         target: 'http://localhost:18888',
         changeOrigin: true,
+      },
+      '/parlorimage': {
+        target: 'http://localhost:18888',
+        changeOrigin: true,
       }
     }
   }
