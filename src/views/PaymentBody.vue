@@ -17,7 +17,8 @@
             <div class="Reservation_Info">
               <div class="roomInfo">
                 <span class="room">{{ roomType.roomTypeName }}</span>
-                <span class="roomPrice">₩{{ formatPrice(paymentAccommodation.price) }}/night</span>
+                <span class="roomPrice">₩{{ formatPrice(paymentAccommodation.price*nightCount) }}~<span class="nightCount">/{{nightCount}}일</span>
+                </span>
               </div>
               <div class="hotel-link">
                 <div style="display: flex; justify-content: center;">
@@ -219,15 +220,15 @@
               <div style="font-size: 16px; font-weight: bold; text-align: left; margin-bottom: 5px">Price Details</div>
               <div class="price-type">
                 <span>Base Fare</span>
-                <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.price) }}</span>
+                <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.price * nightCount)}} </span>
               </div>
               <div class="price-type">
                 <span>Discount</span>
-                <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.discount) }}</span>
+                <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.discount * nightCount) }}</span>
               </div>
               <div class="price-type">
                 <span>Taxes</span>
-                <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.price * 0.1) }}</span>
+                <span class="detail-amount">₩{{ formatPrice(paymentAccommodation.price * 0.1 * nightCount) }}</span>
               </div>
               <div class="price-type">
                 <span>Service Fee</span>
@@ -259,6 +260,19 @@
   const checkIn = ref('');
   const checkOut = ref('');
   // (가격 정보 등 추가 ref)
+
+  //숙박일수 계산
+  const nightCount = computed(() => {
+    if (!checkIn.value || !checkOut.value) return 0;
+
+    const checkInDate = new Date(checkIn.value);
+    const checkOutDate = new Date(checkOut.value);
+
+    const diffTime = checkOutDate - checkInDate;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffTime > 0 ? diffDays : 0;
+  })
 
   // ▼▼▼ [ 1. 토스트 알림용 ref 추가 ] ▼▼▼
   const showSuccessToast = ref(false); // 토스트 표시 여부
@@ -673,8 +687,8 @@
 
   // TotalPrice 계산 속성 (숫자로 반환)
   const TotalPrice = computed(() => {
-    const basePrice = Number(paymentAccommodation.value.price) || 0;
-    const discount = Number(paymentAccommodation.value.discount) || 0;
+    const basePrice = Number(paymentAccommodation.value.price*nightCount.value) || 0;
+    const discount = Number(paymentAccommodation.value.discount*nightCount.value) || 0;
     const tax = basePrice * 0.1;
     const serviceFee = 5000;
     return basePrice - discount + tax + serviceFee;
