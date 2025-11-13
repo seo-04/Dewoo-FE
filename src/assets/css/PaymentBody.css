@@ -186,20 +186,20 @@
     transform: translate(-50%, -50%) scale(1);
 }
 
-.boundary_line{
+.small_boundary_line{
     display: flex;
     align-items: center;
     color: #c3c7c3;
     font-size: 18px;
     margin: 6px 0px;
 }
-.boundary_line::before,
-.boundary_line::after{
+.small_boundary_line::before,
+.small_boundary_line::after{
     content: "";
     flex-grow: 1;
     background: gray;
     height: 1px;
-    margin: 10px 0px;
+    margin: 20px 0;
 }
 
 .hotel-details{

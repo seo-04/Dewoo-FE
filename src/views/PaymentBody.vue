@@ -209,12 +209,12 @@
                 </div>
               </div>
             </div>
-            <div class="boundary_line">
+            <div class="small_boundary_line">
             </div>
             <div class="reservation-protect">
               Your booking is protected by <span style="font-weight: bold">golobe</span>
             </div>
-            <div class="boundary_line">
+            <div class="small_boundary_line">
             </div>
             <div class="price-details">
               <div style="font-size: 16px; font-weight: bold; text-align: left; margin-bottom: 5px">Price Details</div>
@@ -235,7 +235,7 @@
                 <span class="detail-amount">₩5,000</span>
               </div>
             </div>
-            <div class="boundary_line">
+            <div class="small_boundary_line">
             </div>
             <div class="price-type">
               <span class="price-type">Total</span>

@@ -41,7 +41,8 @@
                  @click.stop="toggleProfileDropdown">
 
               <img v-if="profileImageUrl" :src="profileImageUrl" alt="profile" class="header-profile-image-sm">
-              <div v-else class="circle">
+              <div v-else class="circle" style="justify-content: center; align-items: center">
+                <img src="../../assets/img/icon/user_icon.png" alt="Guest" class="guest-header-profile-image-sm">
                 <div class="mini-circle">
                   <div class="check_box"></div>
                 </div>
@@ -55,7 +56,7 @@
                 <div class="dropdown-profile">
 
                   <img v-if="profileImageUrl" :src="profileImageUrl" alt="avatar" class="profile-avatar">
-                  <div v-else class="profile-avatar"></div>
+                  <div v-else class="profile-avatar "></div>
                   <div class="profile-info">
                     <span class="profile-name">{{ userName }}</span>
                     <span class="profile-status">Online</span>
@@ -146,40 +147,50 @@ export default {
       activeDropdownTab: 'account',
       isDropdownVisible: false,
       isLoggedIn: false,
-      userName: 'Guest', // 로그인하지 않았을 때 기본값
-      profileImageUrl: null, // ⭐️ [추가] 프로필 이미지 URL
+      userName: 'Guest',
+      profileImageUrl: null,
     };
   },
 
   methods: {
+    // 🖼️ [이미지 경로 보정 함수]
+    getFullImageUrl(imagePath) {
+      if (!imagePath) return null;
+      if (imagePath.startsWith('http')) return imagePath;
+
+      let path = imagePath;
+      if (!path.startsWith('/user-images/')) {
+        path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
+      }
+      return `http://localhost:8085${path}`;
+    },
+
+    // ⚡️ [추가] 이미지를 강제로 새로고침하는 함수
+    // URL 뒤에 현재 시간(?t=...)을 붙여서 브라우저가 새 이미지로 인식하게 만듭니다.
+    refreshProfileImage(newPath) {
+      const fullUrl = this.getFullImageUrl(newPath);
+      if (fullUrl) {
+        this.profileImageUrl = `${fullUrl}?t=${Date.now()}`;
+      }
+    },
+
     toggleProfileDropdown() {
       this.activeTab = this.activeTab === 'profile' ? null : 'profile';
     },
     setActiveDropdownTab(tabName) {
       this.activeDropdownTab = tabName;
     },
-    /**
-     * 💡 변경점 2: 로그아웃 로직 구현
-     * 로컬 스토리지 토큰 삭제 및 로그인 페이지로 리디렉션
-     */
     logout() {
       console.log("로그아웃 처리");
-      // 1. 로컬 스토리지에서 토큰을 제거합니다.
       localStorage.removeItem('jwtToken');
-      // 2. 컴포넌트의 로그인 상태를 업데이트합니다.
       this.isLoggedIn = false;
-      this.userName = 'Guest'; // 사용자 이름을 기본값으로 변경
-      this.profileImageUrl = null; // ⭐️ [추가] 로그아웃 시 이미지 초기화
-      // 3. Vue Router를 사용하여 로그인 페이지('/')로 이동합니다.
+      this.userName = 'Guest';
+      this.profileImageUrl = null;
       this.$router.push('/');
     },
-    /**
-     * 💡 변경점 3: 페이지 이동을 위한 메소드 추가
-     * @param {string} path - 이동할 경로
-     */
     navigateTo(path) {
-      this.activeTab = null; // 드롭다운 메뉴를 닫습니다.
-      this.$router.push(path); // 지정된 경로로 이동합니다.
+      this.activeTab = null;
+      this.$router.push(path);
     },
     handleOutsideClick(event) {
       if (this.$refs.profileWrapper && !this.$refs.profileWrapper.contains(event.target)) {
@@ -187,6 +198,11 @@ export default {
           this.activeTab = null;
         }
       }
+    },
+    // [추가] 이벤트 핸들러 (메모리 누수 방지를 위해 분리)
+    handleProfileUpdateEvent(event) {
+      // event.detail에 새로운 이미지 경로가 들어옵니다.
+      this.refreshProfileImage(event.detail);
     }
   },
   watch: {
@@ -200,22 +216,26 @@ export default {
   },
   beforeUnmount() {
     document.removeEventListener('click', this.handleOutsideClick);
+    // [추가] 컴포넌트가 사라질 때 리스너 제거
+    window.removeEventListener('profile-image-updated', this.handleProfileUpdateEvent);
   },
   async mounted() {
-    // 참고: 기존 코드에 있던 handleClickOutside 리스너가 중복으로 보여서 하나로 정리했습니다.
+    // ⭐️ [추가] 프로필 이미지 업데이트 이벤트 리스너 등록
+    window.addEventListener('profile-image-updated', this.handleProfileUpdateEvent);
+
     const token = localStorage.getItem('jwtToken');
     if (token) {
       this.isLoggedIn = true;
       try {
         const response = await axios.get('/api/user/profile');
-        if (response.data) { // ⭐️ [수정] null 체크
+        if (response.data) {
           this.userName = response.data.username;
-          this.profileImageUrl = response.data.imageUrl; // ⭐️ [추가] 이미지 URL 저장
+          // 초기 로딩 시에도 캐시 방지를 위해 타임스탬프 추가 가능
+          this.refreshProfileImage(response.data.imageUrl);
         }
       } catch (error) {
         console.error("헤더에서 사용자 정보를 가져오는데 실패했습니다:", error);
-        // 토큰이 유효하지 않을 경우 로그아웃 처리
-        localStorage.removeItem('token');
+        localStorage.removeItem('jwtToken');
         this.isLoggedIn = false;
       }
     }
@@ -240,7 +260,6 @@ export default {
   object-fit: cover; /* 이미지가 찌그러지지 않게 */
   border: 1px solid #eee;
   position: relative;
-  top: -6px; /* 아이콘과 정렬 맞춤 */
 }
 
 .window {
@@ -344,5 +363,13 @@ export default {
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+.guest-header-profile-image-sm{
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  border:none;
 }
 </style>
