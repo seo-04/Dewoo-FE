@@ -77,7 +77,7 @@
             <div class="room-item" v-for="room in accommodation.rooms" :key="room.accId">
               <div class="room-details">
                 <img v-if="room && room.roomType && room.roomType.parlorImage"
-                     :src="`/parlorimage/${room.roomType.parlorImage}`"
+                     :src="`/api/parlor/images/file/${room.roomType.parlorImage}`"
                      :alt="`${room.roomType.roomTypeName || 'Room'} Image`"
                      class="room-image" />
                 <div v-else class="room-image placeholder-image">

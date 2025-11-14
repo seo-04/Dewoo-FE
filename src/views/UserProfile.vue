@@ -6,23 +6,30 @@
       <section class="profile-section">
         <div class="cover-image-container">
           <img
-              v-for="(imageSrc, index) in coverImages"
-              :key="index"
-              :src="imageSrc"
-              alt="Cover photo"
-              class="cover-image"
-              :class="{ active: index === currentCoverIndex }"
+            v-for="(imageSrc, index) in coverImages"
+            :key="index"
+            :src="imageSrc"
+            alt="Cover photo"
+            class="cover-image"
+            :class="{ active: index === currentCoverIndex }"
           />
         </div>
         <div class="profile-info-container">
           <div class="profile-image-wrapper">
-            <img :src="user.profileImage" :alt="`${user.name}'s profile picture`" class="profile-image"/>
-
-            <input type="file"
-                   ref="profileImageInput"
-                   @change="handleProfileImageUpload"
-                   style="display: none;"
-                   accept="image/*">
+            <img
+              v-if="user.profileImage"
+              :src="user.profileImage"
+              :alt="`${user.name}'s profile picture`"
+              class="profile-image"
+            />
+            <img
+              v-else
+              src="@/assets/img/icon/user_icon.png"
+              alt="Guest"
+              class="profile-image"
+              style="object-fit: cover;"
+            >
+            <input type="file" ref="profileImageInput" @change="handleProfileImageUpload" style="display: none;" accept="image/*">
             <button class="edit-profile-btn" @click="triggerProfileImageUpload">
               <i class="fa-solid fa-pen"></i>
             </button>
@@ -34,15 +41,12 @@
 
       <div class="main-content">
         <nav class="tabs">
-          <a href="#" class="tab" :class="{ active: activeTab === 'account' }"
-             @click.prevent="activeTab = 'account'">계정</a>
-          <a href="#" class="tab" :class="{ active: activeTab === 'history' }"
-             @click.prevent="activeTab = 'history'">내역</a>
-          <a href="#" class="tab" :class="{ active: activeTab === 'payment' }"
-             @click.prevent="activeTab = 'payment'">결제수단</a>
+          <a href="#" class="tab" :class="{ active: activeTab === 'account' }" @click.prevent="activeTab = 'account'">계정</a>
+          <a href="#" class="tab" :class="{ active: activeTab === 'history' }" @click.prevent="activeTab = 'history'">내역</a>
+          <a href="#" class="tab" :class="{ active: activeTab === 'payment' }" @click.prevent="activeTab = 'payment'">결제수단</a>
         </nav>
 
-        <div v-if="activeTab === 'account'" class="tab-content active" id="account-tab">
+        <div v-if="activeTab === 'account'" class="tab-content active-force" id="account-tab">
           <h1 class="content-title">Account</h1>
           <div v-for="field in accountFields" :key="field.key" class="info-group">
             <label class="info-label">{{ field.label }}</label>
@@ -64,16 +68,13 @@
           </div>
         </div>
 
-        <div v-if="activeTab === 'history'" class="tab-content active" id="history-tab">
+        <div v-if="activeTab === 'history'" class="tab-content active-force" id="history-tab">
           <div class="booking-header">
             <h2 class="content-title">예약 내역</h2>
             <div class="filter-wrapper" ref="filterWrapper">
               <div class="filter-options" @click="isFilterOpen = !isFilterOpen" :class="{ expanded: isFilterOpen }">
-                <span>{{ selectedFilter }}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+                <span>{{ filterLabel[selectedFilter] }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </div>
               <div v-if="isFilterOpen" class="filter-dropdown show">
                 <div class="dropdown-item" @click="selectFilter('upcoming')">Upcoming</div>
@@ -82,406 +83,309 @@
               </div>
             </div>
           </div>
+
           <div class="room-section">
             <img src="../assets/img/bed.png" alt="" style="position: relative; top: 1px">
             객실
           </div>
-          <div class="booking-list">
-            <div v-if="filteredBookings.length === 0">
-              <p style="text-align:center; color: #888;">예약 내역이 없습니다.</p>
-            </div>
-            <div v-else v-for="booking in filteredBookings" :key="booking.id" class="booking-item">
-              <div class="booking-card">
-                <div class="card-left">
-                  <div class="hotel-logo-container"><img :src="booking.roomImageSrc" alt="Hotel Logo" class="profile-hotel-logo">
-                  </div>
-                  <div class="checkin-checkout-dates">
-                    <div class="date-section-wrapper">
-                      <div class="date-info-group">
-                        <span class="date-label">Check-In</span>
-                        <span class="date-value">{{ booking.checkInDisplay }}</span>
-                      </div>
-                      <div class="dash-separator"></div>
-                      <div class="date-info-group">
-                        <span class="date-label">Check Out</span>
-                        <span class="date-value">{{ booking.checkOutDisplay }}</span>
-                      </div>
-                    </div>
-                    <div class="profile-history-divider"></div>
 
-                    <div class="checkIO-container">
+          <div class="booking-list-container">
+            <div v-if="isLoading" style="text-align: center; padding: 20px;">Loading...</div>
+            <ReservationList
+              v-else
+              :list="filteredReservations"
+              @cancel="handleCancelReservation"
+            />
+          </div>
+        </div>
 
-                      <div class="checkIO">
+        <div v-if="activeTab === 'payment'" class="tab-content active-force" id="payment-tab">
+          <div class="content-title-1" style= "font-size: 32px; text-align: left">결제수단</div>
 
-                        <div class="checkIO-time">
-                          <div class="profile-icon-wrapper">
-                            <i class="fa-solid fa-clock"></i>
-                          </div>
-                          <div class =checkIO-details>
-                            <span class="checkIO-label"> 체크인 </span>
-                            <span class="checkIO-value"> 12:00pm </span>
-                          </div>
-                        </div>
-
-                        <div class="checkIO-time">
-                          <div class="profile-icon-wrapper">
-                            <i class="fa-solid fa-clock"></i>
-                          </div>
-                          <div class =checkIO-details>
-                            <span class="checkIO-label"> 체크아웃 </span>
-                            <span class="checkIO-value"> 11:00am </span>
-                          </div>
-                        </div>
-
-                      </div>
-
-                      <div class="checkIO">
-                        <div class="checkIO-time">
-                          <div class="profile-icon-wrapper">
-                            <i class="fa-solid fa-door-open "></i>
-                          </div>
-                          <div class =checkIO-details>
-                            <span class="checkIO-label"> 방번호 </span>
-                            <span class="checkIO-value"> On arrival </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
+          <div class="card-container" ref="slider" @mousedown="handleMouseDown" @mouseleave="handleMouseLeave" @mouseup="handleMouseUp" @mousemove="handleMouseMove">
+            <div v-for="card in cards" :key="card.id" class="existing-card">
+              <div style="text-align: left">
+                <span style="font-size: 24px; font-weight: bold;">**** **** ****</span><br>
+                <span style="font-size: 32px; font-weight: bold;">{{ card.lastFour }}</span>
+              </div>
+              <img src="../assets/img/trash.png" @click="deleteCard(card.id)" alt="Delete Card" class="delete-card-btn" style="cursor: pointer; width: 21px; height: 18px">
+              <div style="display: flex; justify-content: space-between; align-content: center;">
+                <div style="text-align: left">
+                  <span>valid thru</span><br>
+                  <span style="font-size: 20px; font-weight: bold;">{{ card.expDate }}</span>
+                </div>
+                <div style="align-content: center">
+                  <img src="../assets/img/visa.png" height="33" width="52" alt=""/>
                 </div>
               </div>
             </div>
+
+            <div class="add-card" @click="openModal">
+              <img style="position: absolute; z-index: 1; transform: translate(-50%, -50%); top: 50%; left: 50%" src="../assets/img/circle.png" alt="">
+              <img style="position: absolute; z-index: 2; transform: translate(-50%, -50%); top: 50%; left: 50%" src="../assets/img/plus.png" alt="">
+            </div>
           </div>
         </div>
       </div>
 
-      <div v-if="activeTab === 'payment'" class="tab-content active" id="payment-tab">
-        <div class="content-title" style= "font-size: 32px; text-align: left">결제수단</div>
-        <div class="card-container" ref="slider" @mousedown="handleMouseDown" @mouseleave="handleMouseLeave"
-             @mouseup="handleMouseUp" @mousemove="handleMouseMove">
-          <div v-for="card in cards" :key="card.id" class="existing-card">
-            <div style="text-align: left">
-              <span style="font-size: 24px; font-weight: bold;">**** **** ****</span><br>
-              <span style="font-size: 32px; font-weight: bold;">{{ card.lastFour }}</span>
-            </div>
-            <img src="../assets/img/trash.png" @click="deleteCard(card.id)" alt="Delete Card" class="delete-card-btn"
-                 style="cursor: pointer; width: 21px; height: 18px">
-            <div style="display: flex; justify-content: space-between; align-content: center;">
-              <div>
-                <span>valid thru</span><br>
-                <span style="font-size: 20px; font-weight: bold;">{{ card.expDate }}</span>
-              </div>
-              <div style="align-content: center">
-                <img src="../assets/img/visa.png" height="33" width="52" alt=""/>
-              </div>
-            </div>
-          </div>
-          <div class="add-card" @click="openModal">
-            <img style="position: absolute; z-index: 1; transform: translate(-50%, -50%); top: 50%; left: 50%" src="../assets/img/circle.png" alt="">
-            <img style="position: absolute; z-index: 2; transform: translate(-50%, -50%); top: 50%; left: 50%" src="../assets/img/plus.png" alt="">
-          </div>
-        </div>
-      </div>
-    </div>
+      <div v-if="isModalOpen" class="modal-overlay show" @click.self="closeModal">
+        <div class="modal-content">
+          <div class="card_all">
+            <p style="font-size: 40px; font-weight: bold; margin-bottom: 20px">카드 추가</p>
 
-    <div v-if="isModalOpen" class="modal-overlay show" @click.self="closeModal">
-      <div class="modal-content">
-        <div class="card_all">
-          <p style="font-size: 40px; font-weight: bold; margin-bottom: 20px">카드 추가</p>
-          <div class="card_input">
-            <label for="cardNumber">Card Number</label>
-            <input type="text" id="cardNumber" v-model="newCard.number" placeholder="1234 5678 9101 1121">
-          </div>
-          <div class="form-row">
-            <div class="card_input half-width">
-              <label for="expDate">Exp. Date</label>
-              <input type="text" id="expDate" v-model="newCard.expDate" placeholder="MM/YY">
+            <div class="card_input">
+              <label>Card Number</label>
+              <input type="text" v-model="newCard.number" placeholder="1234 5678 9101 1121">
             </div>
-            <div class="card_input half-width">
-              <label for="CVC">CVC</label>
-              <input type="text" id="CVC" v-model="newCard.cvc" placeholder="123">
+
+            <div class="form-row" style="display: flex; gap: 15px;">
+              <div class="card_input half-width" style="flex: 1;">
+                <label>Exp. Date</label>
+                <input type="text" v-model="newCard.expDate" placeholder="MM/YY">
+                <div v-if="expDateError" class="card-input-error" style="color: red; font-size: 12px; margin-top: 5px;">
+                  {{ expDateError }}
+                </div>
+              </div>
+              <div class="card_input half-width" style="flex: 1;">
+                <label>CVC</label>
+                <input type="text" v-model="newCard.cvc" placeholder="123">
+              </div>
             </div>
-          </div>
-          <div class="card_input">
-            <label for="nameOnCard">Name on Card</label>
-            <input type="text" id="nameOnCard" v-model="newCard.name" placeholder="John Doe">
-          </div>
-          <div class="card_input">
-            <label for="country-select">Country or Region</label>
-            <div class="select-wrapper">
-              <select id="country-select" v-model="selectedCountry">
-                <option v-for="country in countries" :key="country.code" :value="country.name">
-                  {{ country.name }}
-                </option>
-              </select>
+
+            <div class="card_input">
+              <label>Name on Card</label>
+              <input type="text" v-model="newCard.name" placeholder="John Doe">
             </div>
-          </div>
-          <div class="card_input">
-            <div class="checkbox-container">
-              <input type="checkbox" id="save-info-checkbox" v-model="newCard.saveInfo">
-              <label for="save-info-checkbox">정보 저장하기</label>
+
+            <div class="card_input">
+              <label>Country or Region</label>
+              <div class="select-wrapper">
+                <select v-model="selectedCountry" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option v-for="country in countries" :key="country.code" :value="country.name">
+                    {{ country.name }}
+                  </option>
+                </select>
+              </div>
             </div>
+
+            <button @click="addCard" style="width: 100%; height: 48px; background-color: #8dd3bb; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px;">
+              Add Card
+            </button>
           </div>
         </div>
-        <button @click="addCard"
-                style="width: 512px; height: 48px; font-weight: bold; background-color: #8dd3bb; border-radius: 5px; font-size: 14px; border: none;">
-          Add Card
-        </button>
       </div>
+
     </div>
   </CommonLayout>
 </template>
 
 <script setup>
 import CommonLayout from '../components/common/CommonLayout.vue';
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue';
-import axios from '../util/axios.js'; // ⭐️ 우리가 설정한 axios 인스턴스
+import ReservationList from '../components/reservation/ReservationList.vue';
+import { ref, reactive, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import axios from '../util/axios.js';
 
-// --- ⭐️ Cover Image Slider Logic START ⭐️ ---
-// public/img/cover/ 경로에 이미지 4장이 있다고 가정합니다.
-const coverImages = ref([
-  '/cover/animal_trip1.jpg',
-  '/cover/animal_trip2.jpg',
-  '/cover/animal_trip3.jpg',
-  '/cover/animal_trip4.jpg'
-]);
+// --- Cover Image ---
+const coverImages = ref(['/cover/animal_trip1.jpg', '/cover/animal_trip2.jpg', '/cover/animal_trip3.jpg', '/cover/animal_trip4.jpg']);
 const currentCoverIndex = ref(0);
-// --- ⭐️ Cover Image Slider Logic END ⭐️ ---
 
+// --- Tab State ---
 const activeTab = ref('account');
 
-// --- 계정 탭 관련 로직 ---
-
+// --- Account (User Profile) ---
 const user = reactive({
-  name: '',
-  email: '',
-  phone: '',
-  password: '••••••••••',
-  address: '',
-  dob: '',
-  profileImage: 'https://picsum.photos/seed/profile/120/120'
+  name: '', email: '', phone: '', password: '••••••••••', address: '', dob: '',
+  profileImage: null
 });
-
 const editingField = ref(null);
 const tempUser = reactive({});
-
 const accountFields = ref([
-  { key: 'name', label: 'Name' },
-  { key: 'email', label: 'Email', type: 'email' },
-  { key: 'password', label: 'Password', type: 'password' },
-  { key: 'phone', label: 'Phone Number', type: 'tel' },
-  { key: 'address', label: 'Address' },
-  { key: 'dob', label: 'Date of birth' }
+  { key: 'name', label: 'Name' }, { key: 'email', label: 'Email', type: 'email' },
+  { key: 'password', label: 'Password', type: 'password' }, { key: 'phone', label: 'Phone Number', type: 'tel' },
+  { key: 'address', label: 'Address' }, { key: 'dob', label: 'Date of birth' }
 ]);
 
-// ⭐️ 프로필 이미지 업로드 로직
-const profileImageInput = ref(null);
+// 🖼️ [이미지 경로 보정 함수]
+function getFullImageUrl(imagePath) {
+  if (!imagePath) return null;
+  if (imagePath.startsWith('http')) return imagePath;
 
-function triggerProfileImageUpload(){
-  profileImageInput.value.click();
+  let path = imagePath;
+  if (!path.startsWith('/user-images/')) {
+    path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
+  }
+  return `http://localhost:8085${path}`;
 }
 
-// ⭐️ [수정된 함수] 백엔드 업로드 로직 추가
-async function handleProfileImageUpload(event){
+// --- 프로필 이미지 업로드 로직 ---
+const profileImageInput = ref(null);
+function triggerProfileImageUpload() { profileImageInput.value.click(); }
+
+async function handleProfileImageUpload(event) {
   const file = event.target.files[0];
-  if(!file){
-    return;
-  }
-
-  // 1. (기존 로직) 즉시 미리보기 보여주기
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    user.profileImage = e.target.result; // 미리보기 업데이트
-  };
-  reader.readAsDataURL(file);
-
-  // 2. (⭐️ 신규 추가) 서버에 실제 업로드
+  if (!file) return;
   const formData = new FormData();
-  // 'ApiUserController'에서 @RequestParam("image")로 설정했으므로 키(key)는 "image"여야 합니다.
   formData.append('image', file);
 
   try {
-    // 3. (⭐️ 신규 추가) 백엔드 API 호출
-    // axios가 JWT 토큰을 헤더에 자동으로 포함하여 전송합니다.
-    const response = await axios.post('/api/user/profile-image', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    // 4. (⭐️ 신규 추가) 서버로부터 받은 실제 이미지 경로(webPath)로
-    //    미리보기 URL을 덮어씁니다.
-    // ApiUserController는 response.data.result에 이미지 URL을 담아 반환합니다.
-    user.profileImage = response.data.result;
-    alert('프로필 이미지가 성공적으로 변경되었습니다.');
-
+    const res = await axios.post('/api/user/profile-image', formData, { headers: {'Content-Type': 'multipart/form-data'} });
+    user.profileImage = getFullImageUrl(res.data.result) + `?t=${Date.now()}`;
+    window.dispatchEvent(new CustomEvent('profile-image-updated', { detail: res.data.result }));
+    alert('프로필 이미지가 변경되었습니다.');
   } catch (error) {
-    console.error('프로필 이미지 업로드 실패:', error);
-    alert('이미지 업로드 중 오류가 발생했습니다.');
-    // TODO: 업로드 실패 시, 이전에 보여준 미리보기를 원래 이미지로 되돌리는 로직 추가 (선택)
+    console.error("이미지 업로드 실패:", error);
+    alert("이미지 업로드 중 오류가 발생했습니다.");
   }
 }
 
-// ⭐️ onMounted 훅 (기존 2개로 나뉘어 있던 것을 1개로 병합)
-onMounted(async () => {
-  // 1. 사용자 정보 불러오기
-  try {
-    const response = await axios.get('/api/user/profile');
-    const userData = response.data;
+function startEditing(key) { Object.assign(tempUser, user); editingField.value = key; }
+async function saveChanges(key) { editingField.value = null; }
+function cancelEdit() { editingField.value = null; }
 
-    user.name = userData.username;
-    user.email = userData.userEmail;
-    user.phone = userData.userPhone;
-    user.address = userData.userAddress;
-    user.dob = userData.userBirth;
-    user.profileImage = userData.imageUrl || 'https://picsum.photos/seed/profile/120/120';
-
-  } catch (error) {
-    console.error('사용자 정보를 불러오는 데 실패했습니다:', error);
-    alert('사용자 정보를 불러오는 중 오류가 발생했습니다.');
-  }
-
-  // 2. ⭐️ [수정] 페이지 로드 시 랜덤 커버 이미지 설정
-  currentCoverIndex.value = Math.floor(Math.random() * coverImages.value.length);
-
-  // 3. ⭐️ [이동] 외부 클릭 리스너 등록
-  document.addEventListener('click', handleClickOutside);
-});
-
-
-function startEditing(fieldKey) {
-  Object.assign(tempUser, user);
-  editingField.value = fieldKey;
-}
-
-async function saveChanges(fieldKey) {
-  if (fieldKey === 'email') {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(tempUser.email)) {
-      alert('올바른 이메일 형식을 입력해주세요.');
-      return;
-    }
-  }
-
-  try {
-    const backendFieldMap = {
-      name: 'username',
-      email: 'userEmail',
-      phone: 'userPhone',
-      address: 'userAddress',
-      dob: 'userBirth'
-    };
-
-    const payload = {};
-    payload[backendFieldMap[fieldKey] || fieldKey] = tempUser[fieldKey];
-
-    await axios.patch('/api/user', payload);
-
-    user[fieldKey] = tempUser[fieldKey];
-    editingField.value = null;
-    alert('정보가 성공적으로 수정되었습니다.');
-
-  } catch (error) {
-    console.error('정보 수정에 실패했습니다:', error);
-    alert('정보 수정 중 오류가 발생했습니다.');
-  }
-}
-
-function cancelEdit() {
-  editingField.value = null;
-}
-
-// --- 내역 탭 관련 로직 ---
-const allBookings = ref([
-  { id: 1, roomImageSrc: "https://picsum.photos/seed/room1/80/80", checkInDate: "2025-12-08", checkInDisplay: "Thur, Dec 8", checkOutDate: "2025-12-09", checkOutDisplay: "Fri, Dec 9" },
-  { id: 2, roomImageSrc: "https://picsum.photos/seed/room2/80/80", checkInDate: "2026-01-15", checkInDisplay: "Mon, Jan 15", checkOutDate: "2026-01-18", checkOutDisplay: "Thur, Jan 18" },
-  { id: 3, roomImageSrc: "https://picsum.photos/seed/room3/80/80", checkInDate: "2025-09-20", checkInDisplay: "Mon, Nov 20", checkOutDate: "2025-09-22", checkOutDisplay: "Wed, Nov 22" },
-]);
+// --- History / Reservation Logic ---
+const allReservations = ref([]);
+const isLoading = ref(false);
 const selectedFilter = ref('upcoming');
 const isFilterOpen = ref(false);
 const filterWrapper = ref(null);
+const filterLabel = { upcoming: 'Upcoming', latest: '최신순', oldest: '오래된순' };
 
-const filteredBookings = computed(() => {
-  const todayStr = new Date().toISOString().split('T')[0];
-  switch (selectedFilter.value) {
-    case 'upcoming': return allBookings.value.filter(b => b.checkInDate >= todayStr);
-    case 'latest': return [...allBookings.value].sort((a, b) => new Date(b.checkInDate) - new Date(a.checkInDate));
-    case 'oldest': return [...allBookings.value].sort((a, b) => new Date(a.checkInDate) - new Date(b.checkInDate));
-    default: return [];
-  }
-});
-
-function selectFilter(filter) {
-  selectedFilter.value = filter;
-  isFilterOpen.value = false;
+async function fetchReservations() {
+  isLoading.value = true;
+  try {
+    const response = await axios.get('/api/reservation');
+    allReservations.value = response.data.result || [];
+  } catch (error) { console.error("예약 내역 조회 실패:", error); allReservations.value = []; }
+  finally { isLoading.value = false; }
 }
 
-// =================== 결제수단 관련 로직 START ===================
+const filteredReservations = computed(() => {
+  const todayStr = new Date().toISOString().split('T')[0];
+  let list = [...allReservations.value];
+  if (selectedFilter.value === 'upcoming') return list.filter(r => r.checkIn >= todayStr);
+  else if (selectedFilter.value === 'latest') return list.sort((a, b) => new Date(b.checkIn) - new Date(a.checkIn));
+  else if (selectedFilter.value === 'oldest') return list.sort((a, b) => new Date(a.checkIn) - new Date(b.checkIn));
+  return list;
+});
+function selectFilter(filter) { selectedFilter.value = filter; isFilterOpen.value = false; }
+function handleCancelReservation(id) { console.log("취소:", id); }
+
+
+// --- Payment Logic (카드 관련 로직 통합) ---
 const cards = ref([]);
 const isModalOpen = ref(false);
 const newCard = ref({ number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false });
-const selectedCountry = ref('United States');
+const expDateError = ref('');
+const selectedCountry = ref('South Korea');
 const countries = ref([
-  { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' }, { code: 'KR', name: 'South Korea' }, { code: 'JP', name: 'Japan' }, { code: 'GB', name: 'United Kingdom' },
+  { code: 'KR', name: 'South Korea' },
+  { code: 'US', name: 'United States' },
+  { code: 'JP', name: 'Japan' },
+  { code: 'CN', name: 'China' }
 ]);
-
 const slider = ref(null);
 const isDown = ref(false);
 const startX = ref(0);
 const scrollLeft = ref(0);
 
-function openModal() { isModalOpen.value = true; }
-function closeModal() {
-  isModalOpen.value = false;
-  newCard.value = {number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false};
+// 1. 카드 목록 조회
+async function fetchCards() {
+  const token = localStorage.getItem('jwtToken'); // 토큰 키 통일 (jwtToken)
+  if (!token) return;
+
+  try {
+    const response = await axios.get('/api/card', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.data.code === 'SUCCESS') {
+      cards.value = response.data.result.map(card => ({
+        id: card.cardId,
+        lastFour: card.cardNumber.slice(-4),
+        expDate: card.expDate,
+      }));
+    }
+  } catch (error) { console.error('카드 목록 로딩 실패:', error); }
 }
 
-function addCard() {
-  if (newCard.value.number.length < 19) {
-    alert('올바른 카드 번호를 입력하세요.');
-    return;
+// 2. 유효기간 검증
+function validateExpDate() {
+  const value = newCard.value.expDate;
+  if (!value || value.trim().length === 0) {
+    expDateError.value = '유효기간을 입력해주세요.';
+    return false;
   }
-  const cardToAdd = { id: Date.now(), lastFour: newCard.value.number.slice(-4), expDate: newCard.value.expDate };
-  cards.value.unshift(cardToAdd);
-  if (!newCard.value.saveInfo) { closeModal(); } else { isModalOpen.value = false; }
+  if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(value)) {
+    expDateError.value = '*유효기간 형식(MM/YY)을 확인해주세요.';
+    return false;
+  }
+  expDateError.value = '';
+  return true;
 }
 
-function deleteCard(cardId) {
-  if (confirm("정말 이 카드를 삭제하시겠습니까?")) {
-    cards.value = cards.value.filter(card => card.id !== cardId);
+// 3. 카드 추가
+async function addCard() {
+  if (!validateExpDate()) return;
+  const token = localStorage.getItem('jwtToken');
+
+  if (newCard.value.number.length < 19) { alert('올바른 카드 번호를 입력하세요.'); return; }
+  if (!newCard.value.cvc || newCard.value.cvc.length < 3) { alert('CVC 번호를 3자리 입력하세요.'); return; }
+  if (!newCard.value.name.trim()) { alert('카드 소유자 이름을 입력하세요.'); return; }
+
+  const cardData = {
+    cardNumber: newCard.value.number.replace(/\s/g, ''),
+    expDate: newCard.value.expDate,
+    cvc: parseInt(newCard.value.cvc),
+    name: newCard.value.name,
+    country: selectedCountry.value,
+  };
+
+  try {
+    const response = await axios.post('/api/card', cardData, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    if (response.data.code === 'SUCCESS') {
+      alert('카드가 성공적으로 등록되었습니다.');
+      closeModal();
+      await fetchCards(); // 목록 갱신
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    console.error('카드 등록 실패:', error);
+    alert('카드 등록 중 오류가 발생했습니다.');
   }
 }
 
-function handleMouseDown(e) {
-  isDown.value = true;
-  slider.value.style.cursor = 'grabbing';
-  startX.value = e.pageX - slider.value.offsetLeft;
-  scrollLeft.value = slider.value.scrollLeft;
-}
-function handleMouseLeave() {
-  isDown.value = false;
-  if(slider.value) slider.value.style.cursor = 'grab';
-}
-function handleMouseUp() {
-  isDown.value = false;
-  if(slider.value) slider.value.style.cursor = 'grab';
-}
-function handleMouseMove(e) {
-  if (!isDown.value) return;
-  e.preventDefault();
-  const x = e.pageX - slider.value.offsetLeft;
-  const walk = (x - startX.value) * 2;
-  slider.value.scrollLeft = scrollLeft.value - walk;
+// 4. 카드 삭제
+async function deleteCard(cardId) {
+  const token = localStorage.getItem('jwtToken');
+  if (confirm('정말 이 카드를 삭제하시겠습니까?')) {
+    try {
+      const response = await axios.delete(`/api/card/${cardId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.data.code === 'SUCCESS') {
+        cards.value = cards.value.filter(card => card.id !== cardId);
+        alert('카드가 삭제되었습니다.');
+      }
+    } catch (error) {
+      console.error('카드 삭제 실패:', error);
+      alert('카드 삭제에 실패했습니다.');
+    }
+  }
 }
 
+// --- 입력값 포맷팅 Watcher ---
 watch(() => newCard.value.number, (newValue) => {
   const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 16);
   newCard.value.number = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
 });
 watch(() => newCard.value.expDate, (newValue) => {
-  const cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
-  newCard.value.expDate = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
+  let cleaned = newValue.replace(/[^\d]/g, '').slice(0, 4);
+  const formatted = cleaned.length > 2 ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}` : cleaned;
+  if(newValue !== formatted) newCard.value.expDate = formatted;
+  if(formatted.length === 5) validateExpDate();
+  else if (expDateError.value) expDateError.value = '';
 });
 watch(() => newCard.value.cvc, (newValue) => {
   newCard.value.cvc = newValue.replace(/[^\d]/g, '').slice(0, 3);
@@ -489,29 +393,81 @@ watch(() => newCard.value.cvc, (newValue) => {
 watch(() => newCard.value.name, (newValue) => {
   newCard.value.name = newValue.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
 });
-// =================== 결제수단 관련 로직 END =====================
 
-// --- 공통 라이프사이클 훅 ---
+// --- 드래그 스크롤 ---
+function openModal() { isModalOpen.value = true; }
+function closeModal() { isModalOpen.value = false; newCard.value = { number: '', expDate: '', cvc: '', name: '', country: 'us', saveInfo: false }; }
+function handleMouseDown(e) { isDown.value = true; slider.value.style.cursor = 'grabbing'; startX.value = e.pageX - slider.value.offsetLeft; scrollLeft.value = slider.value.scrollLeft; }
+function handleMouseLeave() { isDown.value = false; if(slider.value) slider.value.style.cursor = 'grab'; }
+function handleMouseUp() { isDown.value = false; if(slider.value) slider.value.style.cursor = 'grab'; }
+function handleMouseMove(e) { if (!isDown.value) return; e.preventDefault(); const x = e.pageX - slider.value.offsetLeft; const walk = (x - startX.value) * 2; slider.value.scrollLeft = scrollLeft.value - walk; }
+
+
+// --- Lifecycle Hooks ---
 const handleClickOutside = (event) => {
   if (filterWrapper.value && !filterWrapper.value.contains(event.target)) {
     isFilterOpen.value = false;
   }
 };
 
-// ⭐️ [수정] onBeforeUnmount 훅
-onBeforeUnmount(() => {
-  // 1. 외부 클릭 리스너 제거
-  document.removeEventListener('click', handleClickOutside);
+onMounted(async () => {
+  // 1. 프로필 정보 가져오기
+  try {
+    const res = await axios.get('/api/user/profile');
+    const d = res.data;
+    user.name = d.username;
+    user.email = d.userEmail;
+    user.phone = d.userPhone;
+    user.address = d.userAddress;
+    user.dob = d.userBirth;
+    if (d.imageUrl) user.profileImage = getFullImageUrl(d.imageUrl);
+  } catch (e) { console.error(e); }
 
-  // 2. ⭐️ [삭제] 슬라이더 타이머 정리 로직 삭제
-  /*
-  if (coverInterval) {
-    clearInterval(coverInterval);
-  }
-  */
+  // 2. 예약 내역 및 카드 목록 가져오기
+  fetchReservations();
+  fetchCards(); // [추가됨]
+
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 </script>
 
 <style scoped>
 @import "../assets/css/UserProfile.css";
+
+/* 탭 강제 표시 */
+.tab-content {
+  display: block !important;
+}
+.tabs {
+  position: relative;
+  z-index: 10;
+}
+
+/* 카드 등록 모달 스타일 보강 */
+.card_all {
+  padding: 10px;
+}
+.card_input {
+  margin-bottom: 15px;
+  text-align: left;
+}
+.card_input label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+.card_input input, .select-wrapper select {
+  width: 100%;
+  height: 48px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
 </style>
