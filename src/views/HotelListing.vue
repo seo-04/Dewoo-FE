@@ -502,5 +502,4 @@ export default {
 <style>
 @import "@/assets/css/HotelListing.css";
 
-
 </style>
