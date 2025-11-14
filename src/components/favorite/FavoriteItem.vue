@@ -46,6 +46,7 @@
           <span class="price-guide1">starting from</span>
             <span class="favorite-roomPrice">₩{{ formatPrice(info.price)}}~<span class="favorite-nightCount">/1일</span>
             </span>
+
           <span class="price-guide2">excl. tax</span>
         </section>
       </div>
@@ -116,8 +117,6 @@ img{ width: 10px; height: 14px}
     flex-direction: column;
     height: 273.5px;
     gap: 40px;
-
-
 
     & .card-right-upper{
       padding: 24px 24px 0 24px;
@@ -243,5 +242,6 @@ img{ width: 10px; height: 14px}
 .favorite-nightCount{
   font-size: 19px;
 }
+
 
 </style>
