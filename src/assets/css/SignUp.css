@@ -227,26 +227,24 @@ p {
 }
 
 /* 동의 체크박스 */
-
-/* 동의 체크박스 */
 .checkbox {
     display: flex;
     align-items: center;
     font-size: 12px;
     margin: 5px 0;
-    /* 추가: gap 속성으로 체크박스와 텍스트 사이 간격 조정 */
     gap: 5px;
 }
-.checkbox label {
-    display: flex; /* 추가: label 내부 요소를 정렬하기 위해 flexbox 사용 */
-    align-items: center;
-    gap: 5px; /* 추가: 체크박스와 텍스트 사이 간격 조정 */
-}
 
+.checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
 
 /* 버튼 */
 .loginbox {
-    width: 100%;
+    width: 100px;
     height: 40px;
     border-radius: 5px;
     border: none;

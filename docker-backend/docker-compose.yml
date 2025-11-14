@@ -28,9 +28,7 @@ services:
   #    restart: always
 
   boot-app:
-
     image: seojw173/back_image:1.0.3
-
     # image: jhh0101/back_image
     container_name: boot_container
     ports:

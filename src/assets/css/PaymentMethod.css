@@ -30,13 +30,17 @@
 
 h4 {
     font-size: 25px;
-    margin-bottom: 10px;
+
 }
 
 p {
     color: gray;
     font-size: 12px;
     /* margin-bottom: 20px; */
+}
+
+.left h4, p{
+    display: flex;
 }
 
 .description {
@@ -110,12 +114,52 @@ p {
 /*    pointer-events: none; !* 아이콘 눌러도 select 열림 *!*/
 /*}*/
 
-.select-wrapper {
+.select-wrapper-local {
     position: relative;
+    display: block;
+}
+
+.log_input input,
+.row-input input,
+.cardbox input,
+.namebox input,
+.county select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    transition: all 0.25s ease-in-out;
+}
+
+/* hover 시 효과 */
+.log_input input:hover,
+.row-input input:hover,
+.cardbox input:hover,
+.namebox input:hover,
+.county select:hover {
+    border-color: #8DD3BB;
+    box-shadow: 0 0 8px rgba(141, 211, 187, 0.4);
+    transform: scale(1.02);
+}
+
+/* focus 시 효과 */
+.log_input input:focus,
+.row-input input:focus,
+.cardbox input:focus,
+.namebox input:focus,
+.county select:focus {
+    outline: none;
+    border-color: #8DD3BB;
+    box-shadow: 0 0 10px rgba(141, 211, 187, 0.6);
+    transform: scale(1.02);
 }
 
 /* 체크박스 */
 .check_box2 {
+    display: flex;
     font-size: 12px;
     margin: 10px 0;
 }

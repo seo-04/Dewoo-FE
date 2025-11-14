@@ -1,41 +1,10 @@
 <template>
-  <div>
-    <!-- 헤더 -->
-    <header>
-      <nav class="nav-container">
-        <!-- 왼쪽 -->
-        <nav class="header_tabs">
-          <div class="nav-left">
-            <div class="tab active">
-              <i class="fa-solid fa-bed"></i>
-              hotel
-            </div>
-          </div>
-        </nav>
-
-        <!-- 오른쪽 -->
-        <div class="item">
-          <div class="flex vertical-center">
-            <i class="fa-solid fa-heart"></i>
-            <span>찜하기</span>
-            |
-            <div class="circle">
-              <div class="mini-circle">
-                <div class="check"></div>
-              </div>
-            </div>
-            <span>Tomhoon</span>
-          </div>
-        </div>
-      </nav>
-    </header>
-
+  <CommonLayout>
     <!-- Hero 섹션 -->
     <section class="hero">
       <div class="image">
         <img src="@/assets/img/header.jpg" alt="메인" />
       </div>
-
       <div class="hero_content">
         <div class="box">
           <h2>플러스 호텔 및 다양한<br />숙소를 확인하세요!</h2>
@@ -48,7 +17,7 @@
 
       <!-- 검색 박스 -->
       <div class="search_box">
-        <h3 class="search_title">Where are you staying?</h3>
+        <h3 class="search_title">어디에서 숙박하시나요?</h3>
 
         <div class="search_inputs">
           <div class="input-group">
@@ -63,14 +32,23 @@
 
           <div class="input-group">
             <label for="checkin">Check-in</label>
-            <input type="date" id="checkin" v-model="checkin" />
+            <input
+                type="date"
+                id="checkin"
+                v-model="checkin"
+                :min="todayDate"
+            />
           </div>
 
           <div class="input-group">
             <label for="checkout">Check-out</label>
-            <input type="date" id="checkout" v-model="checkout" />
+            <input
+                type="date"
+                id="checkout"
+                v-model="checkout"
+                :min="checkin || todayDate"
+            />
           </div>
-
 
           <!-- Rooms & Guests -->
           <div class="input-group dropdown-container">
@@ -83,19 +61,22 @@
           <button class="search_icon" @click="handleSearch">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
-
         </div>
       </div>
     </section>
 
     <!-- Rooms & Guests 모달 -->
     <transition name="slide-up">
-      <div v-if="showPeopleModal" class="people_modal" @click.self="closePeopleModal">
+      <div
+          v-if="showPeopleModal"
+          class="people_modal"
+          @click.self="closePeopleModal"
+      >
         <div class="people_content">
-          <h3>방 개수와 인원수 선택</h3>
+          <h3>객실과 인원을 선택하세요</h3>
 
           <div class="counter">
-            <span>Rooms</span>
+            <span>객실 수</span>
             <div class="controls">
               <button @click="decrease('room')">-</button>
               <span>{{ rooms }}</span>
@@ -104,7 +85,7 @@
           </div>
 
           <div class="counter">
-            <span>Guests</span>
+            <span>인원 수</span>
             <div class="controls">
               <button @click="decrease('guest')">-</button>
               <span>{{ guests }}</span>
@@ -114,12 +95,12 @@
 
           <div class="warning" v-if="guests < 2">
             <i class="fa-solid fa-circle-exclamation"></i>
-            <p>최소 2명이상 선택해주세요.</p>
+            <p>최소 2명 이상 선택해주세요.</p>
           </div>
 
           <div class="modal-actions">
-            <button @click="closePeopleModal" class="close_btn">Close</button>
-            <button @click="applyPeople" class="apply_btn">Check</button>
+            <button @click="closePeopleModal" class="close_btn">닫기</button>
+            <button @click="applyPeople" class="apply_btn">확인</button>
           </div>
         </div>
       </div>
@@ -131,13 +112,48 @@
       <p>특가상품으로 진행하는 여행을 예약해보세요.</p>
 
       <div class="travel_box">
-        <div class="slider">
-          <div class="card" v-for="(item, i) in travelItems" :key="i">
-            <img :src="require(`@/assets/img/${item.image}`)" :alt="item.city" />
+        <div class="slide_track">
+          <div
+              class="card"
+              v-for="(item, i) in travelItems.slice(0, 6)"
+              :key="'original-' + (item.comId || i)"
+          >
+            <img
+                :src="require('@/assets/img/construction.jpg')"
+                :alt="`${item.city} ${item.comtitle}`"
+            />
             <div class="card_text">
-              <h4>{{ item.city }}</h4>
-              <p class="setting">{{ item.desc }}</p>
-              <p>{{ item.price }}</p>
+              <h4>{{ item.city }} - {{ item.comtitle }}</h4>
+              <p class="setting">특특특가 혜택 진행 중</p>
+              <p>
+                {{ formatPrice(item.price) }}원
+                <span v-if="item.discount_rate > 0">
+                  ({{ item.discount_rate }}% {{ discountedPrice(item) }}원)
+                </span>
+              </p>
+              <button>Book a Hotel</button>
+            </div>
+          </div>
+
+          <!-- 카드 복제하여 무한 캐러셀 -->
+          <div
+              class="card"
+              v-for="(item, i) in travelItems.slice(0, 5)"
+              :key="'clone-' + (item.comId || i)"
+          >
+            <img
+                :src="require('@/assets/img/construction.jpg')"
+                :alt="`${item.city} ${item.comtitle}`"
+            />
+            <div class="card_text">
+              <h4>{{ item.city }} - {{ item.comtitle }}</h4>
+              <p class="setting">특특특가 혜택 진행 중</p>
+              <p>
+                {{ formatPrice(item.price) }}원
+                <span v-if="item.discount_rate > 0">
+                  ({{ item.discount_rate }}% {{ discountedPrice(item) }}원)
+                </span>
+              </p>
               <button>Book a Hotel</button>
             </div>
           </div>
@@ -145,13 +161,13 @@
       </div>
     </section>
 
-    <!-- 여행 더보기 -->
+    <!-- 여행 더보기 섹션 -->
     <section class="tour_container">
       <h3>여행 더보기</h3>
       <p>
-        Going somewhere to celebrate this season? Whether you’re going home or somewhere to roam,
-        we’ve got the travel tools to get you to your destination.
+        이번 시즌 어디로 떠나시나요? 특별한 여행을 위한 다양한 숙소를 찾아보세요.
       </p>
+
       <div class="tour_box">
         <div class="tour_images">
           <div class="one_block">
@@ -172,92 +188,25 @@
             </div>
           </div>
           <p>
-            오래된 시간의 숨결이 머무는 도시, 말라카(Melaka).<br>
-            말레이시아의 작은 보석 같은 이 도시는 동서양 문화가 만나는 관문이자, 세계문화유산으로<br>
-            지정된 매혹적인 여행지입니다. 단 하루만 머물러도 그 깊은 매력에 빠지고,<br>
-            며칠을 살아보면 다시 찾고 싶은 마음이 샘솟는 곳. 이제 저희 여행사가 준비한 특별한 말라카 투어상품과 함께 그 여정을 시작해 보세요.
+            오래된 시간의 숨결이 머무는 도시, 말라카(Melaka).<br />
+            세계문화유산으로 지정된 매혹적인 여행지입니다.<br />
+            저희 여행사가 준비한 특별한 말라카 투어상품과 함께 그 여정을 시작해보세요.
           </p>
-          <button>Book Flight</button>
+          <button class="book">항공권 예약</button>
         </div>
       </div>
     </section>
-
-    <!-- footer -->
-    <footer>
-      <section class="subscription-box">
-        <div class="subscription-content">
-          <h1>구독서비스<br /> 신청해보세요</h1>
-          <p>The Travel</p>
-          <p>구독하고 무료, 최신 여행 정보를 받아보세요</p>
-          <div class="subscription-form-container">
-            <input type="email" placeholder="Your email address" />
-            <button type="submit">Subscribe</button>
-          </div>
-        </div>
-        <div class="subscription-image">
-          <img src="@/assets/img/letter-box.png" height="330" width="400" alt="" />
-        </div>
-      </section>
-
-      <!-- footer-bottom -->
-      <div class="footer-bottom">
-        <div class="footer-letter">
-          <span>
-            <i class="fa-brands fa-facebook"></i>
-            <i class="fa-brands fa-twitter"></i>
-            <i class="fa-brands fa-youtube"></i>
-            <i class="fa-brands fa-instagram"></i>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">Our Destinations</span>
-          <span class="footer-span-details">
-            <span>Canada</span>
-            <span>Alaska</span>
-            <span>France</span>
-            <span>Iceland</span>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">Our Activities</span>
-          <span class="footer-span-details">
-            <span>Northern Lights</span>
-            <span>Cruising & sailing</span>
-            <span>Multi-activities</span>
-            <span>Kayaing</span>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">Travel Blogs</span>
-          <span class="footer-span-details">
-            <span>Bali Travel Guide</span>
-            <span>Sri Lanka Travel Guide</span>
-            <span>Peru Travel Guide</span>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">About Us</span>
-          <span class="footer-span-details">
-            <span>Our Story</span>
-            <span>Work with us</span>
-          </span>
-        </div>
-        <div class="footer-letter">
-          <span class="footer-span">Contact Us</span>
-          <span class="footer-span-details">
-            <span>Email</span>
-            <span>Support</span>
-          </span>
-        </div>
-      </div>
-    </footer>
-  </div>
+  </CommonLayout>
 </template>
 
 <script>
 import "@/assets/css/HotelSearch.css";
+import CommonLayout from "@/components/common/CommonLayout.vue";
+import axios from "axios";
+
 export default {
   name: "HotelSearch",
+  components: { CommonLayout },
   data() {
     return {
       destination: "",
@@ -266,20 +215,44 @@ export default {
       rooms: 1,
       guests: 2,
       showPeopleModal: false,
-      travelItems: [
-        { city: "멜버른", desc: "Amazing journey", price: "₩130,000", image: "melbourne.jpg" },
-        { city: "파리", desc: "A Paris Adventure", price: "₩150,000", image: "paris.jpg" },
-        { city: "런던", desc: "London eye adventure", price: "₩130,000", image: "london.jpg" },
-        { city: "콜롬비아", desc: "Amazing streets", price: "₩130,000", image: "colombia.jpg" },
-        { city: "도쿄", desc: "Amazing Country", price: "₩200,000", image: "Tokyo.jpg" },
-        { city: "뉴욕", desc: "Amazing Country", price: "₩400,000", image: "New_York.jpg" },
-        { city: "시드니", desc: "Amazing Country", price: "₩300,000", image: "Sydney.jpg" },
-        { city: "두바이", desc: "Amazing Country", price: "₩220,000", image: "Dubai.jpg" },
-        { city: "타이베이", desc: "Amazing Country", price: "₩140,000", image: "Taipei.jpg" },
-      ],
+      travelItems: [],
     };
   },
+  computed: {
+    todayDate() {
+      const today = new Date();
+      return today.toISOString().split("T")[0];
+    },
+  },
+  async mounted() {
+    await this.fetchTravelItems();
+  },
   methods: {
+    async fetchTravelItems() {
+      try {
+        const response = await axios.get("/api/accommodation");
+        const list = response.data.result?.accommodations?.content || [];
+        this.travelItems = list.map((item) => ({
+          comId: item.comId,
+          comtitle: item.comTitle,
+          city: item.comAddress,
+          price: item.price,
+          discount_rate: item.discount_rate || 0,
+        }));
+      } catch (error) {
+        console.error("숙소 데이터 로드 실패", error);
+      }
+    },
+    formatPrice(value) {
+      return new Intl.NumberFormat("ko-KR").format(value);
+    },
+    discountedPrice(item) {
+      const price = Number(item.price) || 0;
+      const discount = Number(item.discount_rate) || 0;
+      return new Intl.NumberFormat("ko-KR").format(
+          Math.round(price * (1 - discount / 100))
+      );
+    },
     openPeopleModal() {
       this.showPeopleModal = true;
     },
@@ -292,12 +265,16 @@ export default {
     },
     decrease(type) {
       if (type === "room" && this.rooms > 1) this.rooms--;
-      if (type === "guest" && this.guests > 0) this.guests--;
+      if (type === "guest" && this.guests > 1) this.guests--;
     },
     applyPeople() {
+      if (this.guests < 2) {
+        alert("최소 2명 이상 선택해주세요.");
+        return; // 1명일 경우 모달 닫히지 않게 함
+      }
       this.closePeopleModal();
     },
-    handleSearch() {
+    async handleSearch() {
       if (!this.destination) {
         alert("목적지를 입력해주세요.");
         return;
@@ -310,48 +287,42 @@ export default {
         alert("체크아웃 날짜를 선택해주세요.");
         return;
       }
-      if (this.guests < 1) {
-        alert("최소 1명 이상 선택해주세요.");
+      if (this.guests < 2) {
+        alert("최소 2명 이상 선택해주세요.");
         return;
       }
 
-      // 모든 값이 입력되면 HotelListing.vue로 이동
-      this.$router.push({
-        name: "HotelListing",
-        query: {
-          destination: this.destination,
-          checkin: this.checkin,
-          checkout: this.checkout,
-          rooms: this.rooms,
-          guests: this.guests,
-        },
-      });
+      try {
+        const response = await axios.get("/api/accommodation");
+        const list = response.data.result?.accommodations?.content || [];
+
+        const keyword = this.destination.trim();
+        const found = list.find(
+            (item) =>
+                item.comAddress.includes(keyword) ||
+                item.comTitle.includes(keyword)
+        );
+
+        if (!found) {
+          alert("해당하는 숙소가 없습니다.");
+          return;
+        }
+
+        this.$router.push({
+          name: "HotelListing",
+          query: {
+            destination: this.destination,
+            checkin: this.checkin,
+            checkout: this.checkout,
+            rooms: this.rooms,
+            guests: this.guests,
+          },
+        });
+      } catch (error) {
+        console.error("숙소 검색 중 오류 발생:", error);
+        alert("숙소 정보를 불러오는 중 오류가 발생했습니다.");
+      }
     },
-
-
   },
 };
 </script>
-<style>
-@import "@/assets/css/HotelSearch.css";
-.search-container h1 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  text-align: center;
-  color: #333;
-}
-
-.form-group label {
-  margin-bottom: 5px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #444;
-}
-
-.form-group input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
-</style>
