@@ -140,7 +140,7 @@ export default {
           //
           // if (loginData && loginData.token && loginData.userId) {
           // [✅ 수정] 백엔드가 result 자체를 토큰으로 주므로, 바로 token 변수에 저장
-          const token = response.data.result;
+          const token = response.data.result.token;
 
           // [✅ 수정] token이 문자열인지 확인
           if (token && typeof token === 'string') {
@@ -156,7 +156,7 @@ export default {
             alert("로그인 성공!");
             this.$router.push('/hotellisting');
           } else {
-            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', loginData); // token -> loginData로 수정
+            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', token); // token -> loginData로 수정
             alert("로그인에 실패했습니다. (토큰 없음)");
           }
         } else {
