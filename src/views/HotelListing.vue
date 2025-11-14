@@ -3,11 +3,11 @@
     <div>
       <div class="tab_menu">
         <div
-          v-for="tab in tabs"
-          :key="tab.value"
-          class="tab_item"
-          :class="{ active: activeTab === tab.value }"
-          @click="setActiveTab(tab.value)"
+            v-for="tab in tabs"
+            :key="tab.value"
+            class="tab_item"
+            :class="{ active: activeTab === tab.value }"
+            @click="setActiveTab(tab.value)"
         >
           <h4>{{ tab.label }}</h4>
           <p>{{ showingText(tab.value) }}</p>
@@ -22,11 +22,11 @@
             <p>Price</p>
 
             <vue-slider
-              v-model="priceRange"
-              :min="0"
-              :max="1000000"
-              :step="10000"
-              :enable-cross="false"
+                v-model="priceRange"
+                :min="0"
+                :max="3000000"
+                :step="10000"
+                :enable-cross="false"
             ></vue-slider>
 
             <div class="price_labels">
@@ -36,14 +36,14 @@
             </div>
           </div>
 
-           <div class="filter_section">
+          <div class="filter_section">
             <p>Rating</p>
             <div class="rating_buttons">
               <button
-                v-for="n in 5"
-                :key="n"
-                @click="setRating(n)"
-                :class="{ active: selectedRating === n }"
+                  v-for="n in 5"
+                  :key="n"
+                  @click="setRating(n)"
+                  :class="{ active: selectedRating === n }"
               >
                 {{ n - 1 }}+
               </button>
@@ -82,16 +82,16 @@
 
           <transition name="slide-up">
             <div
-              v-if="showSortModal"
-              class="sort_modal"
-              @click.self="closeSortModal"
+                v-if="showSortModal"
+                class="sort_modal"
+                @click.self="closeSortModal"
             >
               <div class="sort_content">
                 <ol
-                  v-for="option in sortOptions"
-                  :key="option"
-                  :class="{ active: option === currentSort }"
-                  @click="applySort(option)"
+                    v-for="option in sortOptions"
+                    :key="option"
+                    :class="{ active: option === currentSort }"
+                    @click="applySort(option)"
                 >
                   {{ option }}
                 </ol>
@@ -100,15 +100,15 @@
           </transition>
 
           <div
-            class="room_list"
-            v-for="tab in tabs"
-            :key="tab.value"
-            v-show="activeTab === tab.value"
+              class="room_list"
+              v-for="tab in tabs"
+              :key="tab.value"
+              v-show="activeTab === tab.value"
           >
             <div
-              class="room_box"
-              v-for="(room) in getVisibleRooms(tab.value)"
-              :key="room.comId"
+                class="room_box"
+                v-for="(room) in getVisibleRooms(tab.value)"
+                :key="room.comId"
             >
               <div class="image">
                 <img :src="room.image" :alt="room.comTitle + ' 사진'" />
@@ -122,9 +122,19 @@
                   </div>
                   <div class="review_container">
                     <div class="star_icon">
-                      <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
+                      <template v-for="n in 5" :key="n">
+                        <i
+                            v-if="n <= Math.round(room.star)"
+                            class="fa-solid fa-star filled"
+                        ></i>
+                        <i
+                            v-else
+                            class="fa-regular fa-star empty"
+                        ></i>
+                      </template>
                       <p>{{ room.star }} Star Hotel</p>
                     </div>
+
                     <div class="AMinities_box">
                       <i class="fa-solid fa-mug-saucer"></i>
                       <p>Amenities</p>
@@ -149,40 +159,58 @@
                 <div class="two">
                   <button class="heart" @click="toggleHeart(room)">
                     <i
-                      :class="[
-                        room.isFavorite ? 'fa-solid active-heart' : 'fa-regular',
-                        'fa-heart'
-                      ]"
+                        :class="[room.isFavorite ? 'fa-solid active-heart' : 'fa-regular', 'fa-heart']"
                     ></i>
                   </button>
-                  <button class="view" @click="goToAccommodationDetail(room.comId)">View Place</button>
+                  <button class="view">View Place</button>
                 </div>
               </div>
             </div>
+
+            <div v-if="getVisibleRooms(tab.value).length === 0" class="no-results">
+              해당하는 숙소가 없습니다.
+            </div>
+
             <div class="button_result" v-if="hasMoreRooms(tab.value)">
-              <button @click="showMoreResults(tab.value)">
-                Show more results
-              </button>
+              <button @click="showMoreResults(tab.value)">Show more results</button>
             </div>
           </div>
         </div>
       </div>
 
+      <!--  검색 -->
       <div class="search_box1">
         <div class="search_inputs2">
           <div class="input-group3">
             <label for="destination">Enter Destination</label>
-            <input type="text" id="destination" placeholder="Enter Destination" />
+            <input
+                v-model="destination"
+                type="text"
+                id="destination"
+                placeholder="Enter Destination"
+            />
           </div>
 
           <div class="input-group3">
             <label for="checkin">Check-in</label>
-            <input type="date" id="checkin" placeholder="Check-in" />
+            <input
+                v-model="checkin"
+                type="date"
+                id="checkin"
+                :min="todayDate"
+                placeholder="Check-in"
+            />
           </div>
 
           <div class="input-group3">
             <label for="checkout">Check-out</label>
-            <input type="date" id="checkout" placeholder="Check-out" />
+            <input
+                v-model="checkout"
+                type="date"
+                id="checkout"
+                :min="checkin || todayDate"
+                placeholder="Check-out"
+            />
           </div>
 
           <div class="input-group3 dropdown-container">
@@ -192,18 +220,20 @@
             </button>
           </div>
 
-          <button class="search_icon4">
+          <button class="search_icon4" @click="performSearch">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
         </div>
       </div>
+
+      <!-- 인원수 선택 모달 -->
       <transition name="slide-up">
         <div
-          v-if="showPeopleModal"
-          class="people_modal4"
-          @click.self="closePeopleModal"
-          role="dialog"
-          aria-modal="true"
+            v-if="showPeopleModal"
+            class="people_modal4"
+            @click.self="closePeopleModal"
+            role="dialog"
+            aria-modal="true"
         >
           <div class="people_content2" @click.stop>
             <h3>방 개수와 인원수 선택</h3>
@@ -245,14 +275,12 @@
 <script>
 import bTeamApi from "@/util/axios";
 import CommonLayout from "@/components/common/CommonLayout.vue";
-import VueSlider from 'vue-slider-component';
-import 'vue-slider-component/theme/antd.css';
+import VueSlider from "vue-slider-component";
+import "vue-slider-component/theme/antd.css";
 
 export default {
-  components: {
-    CommonLayout,
-    VueSlider,
-  },
+  components: { CommonLayout, VueSlider },
+
   data() {
     return {
       tabs: [
@@ -261,45 +289,44 @@ export default {
         { value: "리조트", label: "Resorts" },
       ],
       activeTab: "호텔",
+      rooms: [],
       totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
       visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
-      rooms: [],
-      priceRange: [0, 1000000],
+      priceRange: [0, 3000000],
       priceMin: 0,
-      priceMax: 1000000,
-      priceTimer: null,
+      priceMax: 3000000,
       showSortModal: false,
       sortOptions: ["저가순", "고가순", "리뷰 많은순"],
       currentSort: "선택",
-      showPeopleModal: false,
-      roomsCount: 1,
-      guestsCount: 2,
       selectedRating: null,
       selectedFreebies: [],
       selectedAmenities: [],
+      showPeopleModal: false,
+      roomsCount: 1,
+      guestsCount: 2,
+      destination: "",
+      checkin: "",
+      checkout: "",
     };
   },
 
   computed: {
-    // 8. 표시용
     formattedMinPrice() {
-      return new Intl.NumberFormat('ko-KR').format(this.priceRange[0]) + '원';
+      return new Intl.NumberFormat("ko-KR").format(this.priceRange[0]) + "원";
     },
     formattedMaxPrice() {
-      return new Intl.NumberFormat('ko-KR').format(this.priceRange[1]) + '원';
+      return new Intl.NumberFormat("ko-KR").format(this.priceRange[1]) + "원";
+    },
+    todayDate() {
+      const today = new Date();
+      return today.toISOString().split("T")[0];
     },
   },
 
   watch: {
     priceRange() {
-      if (this.priceTimer) {
-        clearTimeout(this.priceTimer);
-      }
-      this.priceTimer = setTimeout(() => {
-        this.priceMin = this.priceRange[0];
-        this.priceMax = this.priceRange[1];
-        this.setSearchFilters(); // API 호출
-      }, 300); // 0.3초 딜레이
+      clearTimeout(this.timer);
+      this.timer = setTimeout(this.setSearchFilters, 300);
     },
     selectedRating() {
       this.setSearchFilters();
@@ -307,15 +334,16 @@ export default {
     selectedFreebies: {
       handler() {
         this.setSearchFilters();
-      }, deep: true
+      },
+      deep: true,
     },
     selectedAmenities: {
       handler() {
         this.setSearchFilters();
-      }, deep: true
+      },
+      deep: true,
     },
   },
-
 
   async mounted() {
     await this.setSearchFilters();
@@ -327,25 +355,21 @@ export default {
       const total = this.totalCounts?.[tabValue] || 0;
       return `Showing ${visible} of ${total} places`;
     },
+
     async setSearchFilters() {
       try {
         const params = new URLSearchParams();
+        params.append("minPrice", this.priceRange[0]);
+        params.append("maxPrice", this.priceRange[1]);
 
-        params.append('minPrice', this.priceMin);
-        params.append('maxPrice', this.priceMax);
-
-        if (this.selectedRating) {
-          params.append('star', this.selectedRating);
-        }
+        if (this.selectedRating) params.append("star", this.selectedRating);
 
         const allAmenities = [...this.selectedFreebies, ...this.selectedAmenities];
-        if (allAmenities.length > 0) {
-          params.append('amCategory', allAmenities.join(','));
-        }
+        if (allAmenities.length > 0)
+          params.append("amCategory", allAmenities.join(","));
 
         const response = await bTeamApi.get(`/api/accommodation?${params.toString()}`);
-        const result = response.data.result;
-        const list = result.accommodations.content || [];
+        const list = response.data.result?.accommodations?.content || [];
 
         this.rooms = list.map((item) => ({
           category: item.category || "호텔",
@@ -357,10 +381,15 @@ export default {
           reviewAvg: item.reviewAvg || 0,
           reviewCount: item.reviewCount || 0,
           reviewTitle:
-            item.reviewAvg >= 4 ? "Very Good" :
-              item.reviewAvg >= 3 ? "Good" :
-                item.reviewAvg >= 2 ? "SoSo" :
-                  item.reviewAvg >= 1 ? "Bad" : "리뷰 없음",
+              item.reviewAvg >= 4
+                  ? "Very Good"
+                  : item.reviewAvg >= 3
+                      ? "Good"
+                      : item.reviewAvg >= 2
+                          ? "SoSo"
+                          : item.reviewAvg >= 1
+                              ? "Bad"
+                              : "리뷰 없음",
           image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
           isFavorite: item.isFavorite || false,
         }));
@@ -369,10 +398,38 @@ export default {
           acc[tab.value] = this.rooms.filter((r) => r.category === tab.value).length;
           return acc;
         }, {});
-      } catch (error) {
-        console.error("API 실패", error);
+      } catch (e) {
+        console.error("API 실패", e);
       }
     },
+
+    performSearch() {
+      if (!this.destination) return alert("목적지를 입력해주세요.");
+      if (!this.checkin) return alert("체크인 날짜를 선택해주세요.");
+      if (!this.checkout) return alert("체크아웃 날짜를 선택해주세요.");
+      if (this.guestsCount < 2) return alert("최소 2명 이상 선택해주세요.");
+
+      const keyword = this.destination.trim().toLowerCase();
+      const filtered = this.rooms.filter((r) =>
+          r.comTitle?.toLowerCase().includes(keyword)
+      );
+
+      if (filtered.length === 0) {
+        alert("해당하는 숙소가 없습니다.");
+        return;
+      }
+
+      this.rooms = filtered;
+      this.updateCounts();
+    },
+
+    updateCounts() {
+      this.totalCounts = this.tabs.reduce((acc, tab) => {
+        acc[tab.value] = this.rooms.filter((r) => r.category === tab.value).length;
+        return acc;
+      }, {});
+    },
+
     setActiveTab(tab) {
       this.activeTab = tab;
     },
@@ -385,22 +442,29 @@ export default {
     applySort(option) {
       this.currentSort = option;
       this.showSortModal = false;
-      const getPrice = (r) => parseInt(r.price.replace(/[₩,]/g, ""));
+      const getPrice = (r) => parseInt(String(r.price).replace(/[₩,]/g, "")) || 0;
       if (option === "저가순") this.rooms.sort((a, b) => getPrice(a) - getPrice(b));
       else if (option === "고가순") this.rooms.sort((a, b) => getPrice(b) - getPrice(a));
-      else if (option === "리뷰 많은순") this.rooms.sort((a, b) => b.reviewCount - a.reviewCount);
+      else if (option === "리뷰 많은순")
+        this.rooms.sort((a, b) => b.reviewCount - a.reviewCount);
     },
+
     getVisibleRooms(category) {
-      return this.rooms.filter((r) => r.category === category).slice(0, this.visibleCount[category]);
+      return this.rooms
+          .filter((r) => r.category === category)
+          .slice(0, this.visibleCount[category]);
     },
+
     hasMoreRooms(category) {
-      return (this.rooms.filter((r) => r.category === category).length > this.visibleCount[category]);
+      return (
+          this.rooms.filter((r) => r.category === category).length >
+          this.visibleCount[category]
+      );
     },
     showMoreResults(category) {
       this.visibleCount[category] += 4;
     },
 
-    // ==================== 👇 [추가] 모달 및 인원수 관련 메소드 👇 ====================
     openPeopleModal() {
       this.showPeopleModal = true;
     },
@@ -415,10 +479,14 @@ export default {
       if (type === "room" && this.roomsCount > 1) this.roomsCount--;
       if (type === "guest" && this.guestsCount > 1) this.guestsCount--;
     },
+
     applyPeople() {
+      if (this.guestsCount < 2) {
+        alert("최소 2명 이상 선택해주세요.");
+        return;
+      }
       this.closePeopleModal();
     },
-    // ==========================================================================
 
     setRating(n) {
       this.selectedRating = this.selectedRating === n ? null : n;
@@ -427,19 +495,11 @@ export default {
       const target = this.rooms.find((r) => r.comId === room.comId);
       if (target) target.isFavorite = !target.isFavorite;
     },
-    goToAccommodationDetail(comId) {
-      if (!comId) {
-        console.error("Accommodation ID is missing.");
-        return;
-      }
-      // Vue Router를 사용해 해당 ID의 상세 페이지로 이동
-      this.$router.push(`/accommodation/${comId}`);
-    }
   },
-}
-
+};
 </script>
 
 <style>
 @import "@/assets/css/HotelListing.css";
+
 </style>

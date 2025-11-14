@@ -173,6 +173,7 @@ p {
 }
 
 .loginbox {
+
     width: 100%;
     height: 40px;
     border-radius: 5px;
@@ -185,6 +186,7 @@ p {
 
 .signup {
     font-family: "ELandNice";
+    display: block;
     margin-top: 15px;
     color: black;
     text-align: center;
@@ -196,13 +198,6 @@ a {
     color: inherit;
 }
 
-/* sns */
-.snsbox {
-    display: flex;
-    margin-top: 15px;
-    justify-content: center;
-    gap: 10px;
-}
 
 .snsbox a {
     display: flex;
@@ -223,14 +218,6 @@ a {
 .snsbox a:hover {
     opacity: 0.9;
 }
-
-/* 이미지 로고 크기 설정 */
-.snsbox a img {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-}
-
 
 /* 경계선 */
 .boundary_line {
@@ -296,7 +283,7 @@ a {
     border-radius: 30px;
     background-color: transparent;
     margin-right: 25px;
-    margin-top: 125px;
+    margin-top: 117px;
 }
 
 /* 이미지 */
