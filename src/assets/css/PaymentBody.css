@@ -39,21 +39,22 @@
 
 .roomInfo{
     display: flex;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     margin-top: 30px;
     justify-content: space-between;
     align-items: center;
+    padding: 0 5px 0 5px;
 }
 
 .room{
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
 }
 
 .roomPrice{
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
-    color: #FF8682;
+    color: #112211;
 }
 
 .hotel-link{
@@ -185,20 +186,20 @@
     transform: translate(-50%, -50%) scale(1);
 }
 
-.boundary_line{
+.small_boundary_line{
     display: flex;
     align-items: center;
     color: #c3c7c3;
     font-size: 18px;
     margin: 6px 0px;
 }
-.boundary_line::before,
-.boundary_line::after{
+.small_boundary_line::before,
+.small_boundary_line::after{
     content: "";
     flex-grow: 1;
     background: gray;
     height: 1px;
-    margin: 10px 0px;
+    margin: 20px 0;
 }
 
 .hotel-details{
@@ -553,4 +554,8 @@
     text-align: left; /* .card_input 내부 정렬에 맞춤 */
     margin-top: 5px; /* 입력칸과의 간격 */
     height: 15px; /* 에러 메시지가 없을 때도 공간을 차지하게 하려면 height를, 아니면 빼도 됩니다. */
+}
+
+.roomPrice .nightCount{
+    font-size: 20px;
 }

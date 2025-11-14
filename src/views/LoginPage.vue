@@ -136,20 +136,27 @@ export default {
 
         if (response.data && response.data.code === 'SUCCESS') {
 
-          const loginData = response.data.result;
+          // const loginData = response.data.result;
+          //
+          // if (loginData && loginData.token && loginData.userId) {
+          // [✅ 수정] 백엔드가 result 자체를 토큰으로 주므로, 바로 token 변수에 저장
+          const token = response.data.result.token;
 
-          if (loginData && loginData.token && loginData.userId) {
+          // [✅ 수정] token이 문자열인지 확인
+          if (token && typeof token === 'string') {
+
+            localStorage.setItem('jwtToken', token);
 
             // [✅ 수정] 토큰과 userId를 각각 저장합니다.
-            localStorage.setItem('jwtToken', loginData.token);
-            localStorage.setItem('userId', loginData.userId); // ⬅️ 이 부분이 핵심입니다!
+            // localStorage.setItem('jwtToken', loginData.token);
+            // localStorage.setItem('userId', loginData.userId); // ⬅️ 이 부분이 핵심입니다!
+            // console.log('성공! localStorage에 토큰과 userId를 저장했습니다.');
 
-            console.log('성공! localStorage에 토큰과 userId를 저장했습니다.');
             console.log('성공! localStorage에 토큰을 저장했습니다.');
             alert("로그인 성공!");
             this.$router.push('/hotellisting');
           } else {
-            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', loginData); // token -> loginData로 수정
+            console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', token); // token -> loginData로 수정
             alert("로그인에 실패했습니다. (토큰 없음)");
           }
         } else {
@@ -175,5 +182,5 @@ export default {
 </script>
 
 <style scoped>
-@import '~@/assets/css/Login.css';
+@import '@/assets/css/Login.css';
 </style>
