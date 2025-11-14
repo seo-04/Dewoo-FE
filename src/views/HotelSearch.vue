@@ -115,7 +115,7 @@
         <div class="slide_track">
           <div
               class="card"
-              v-for="(item, i) in travelItems.slice(0, 5)"
+              v-for="(item, i) in travelItems.slice(0, 6)"
               :key="'original-' + (item.comId || i)"
           >
             <img
