@@ -5,6 +5,7 @@
       <div class="image">
         <img src="@/assets/img/header.jpg" alt="메인" />
       </div>
+
       <div class="hero_content">
         <div class="box">
           <h2>플러스 호텔 및 다양한<br />숙소를 확인하세요!</h2>
@@ -93,9 +94,9 @@
             </div>
           </div>
 
-          <div class="warning" v-if="guests < 2">
+          <div class="warning" v-if="guests < 1">
             <i class="fa-solid fa-circle-exclamation"></i>
-            <p>최소 2명 이상 선택해주세요.</p>
+            <p>최소 1명 이상 선택해주세요.</p>
           </div>
 
           <div class="modal-actions">
@@ -116,7 +117,7 @@
           <div
               class="card"
               v-for="(item, i) in travelItems.slice(0, 6)"
-              :key="'original-' + (item.comId || i)"
+              :key="'original-' + i"
           >
             <img
                 :src="require('@/assets/img/construction.jpg')"
@@ -135,11 +136,11 @@
             </div>
           </div>
 
-          <!-- 카드 복제하여 무한 캐러셀 -->
+          <!-- 복제 카드로 슬라이드 무한 반복 -->
           <div
               class="card"
               v-for="(item, i) in travelItems.slice(0, 5)"
-              :key="'clone-' + (item.comId || i)"
+              :key="'clone-' + i"
           >
             <img
                 :src="require('@/assets/img/construction.jpg')"
@@ -161,12 +162,10 @@
       </div>
     </section>
 
-    <!-- 여행 더보기 섹션 -->
+    <!-- 여행 더보기 -->
     <section class="tour_container">
       <h3>여행 더보기</h3>
-      <p>
-        이번 시즌 어디로 떠나시나요? 특별한 여행을 위한 다양한 숙소를 찾아보세요.
-      </p>
+      <p>이번 시즌 어디로 떠나시나요? 특별한 여행을 위한 다양한 숙소를 찾아보세요.</p>
 
       <div class="tour_box">
         <div class="tour_images">
@@ -224,8 +223,8 @@ export default {
       return today.toISOString().split("T")[0];
     },
   },
-  async mounted() {
-    await this.fetchTravelItems();
+  mounted() {
+    this.fetchTravelItems();
   },
   methods: {
     async fetchTravelItems() {
@@ -243,9 +242,11 @@ export default {
         console.error("숙소 데이터 로드 실패", error);
       }
     },
+
     formatPrice(value) {
       return new Intl.NumberFormat("ko-KR").format(value);
     },
+
     discountedPrice(item) {
       const price = Number(item.price) || 0;
       const discount = Number(item.discount_rate) || 0;
@@ -253,12 +254,14 @@ export default {
           Math.round(price * (1 - discount / 100))
       );
     },
+
     openPeopleModal() {
       this.showPeopleModal = true;
     },
     closePeopleModal() {
       this.showPeopleModal = false;
     },
+
     increase(type) {
       if (type === "room") this.rooms++;
       if (type === "guest") this.guests++;
@@ -267,13 +270,15 @@ export default {
       if (type === "room" && this.rooms > 1) this.rooms--;
       if (type === "guest" && this.guests > 1) this.guests--;
     },
+
     applyPeople() {
-      if (this.guests < 2) {
-        alert("최소 2명 이상 선택해주세요.");
-        return; // 1명일 경우 모달 닫히지 않게 함
+      if (this.guests < 1) {
+        alert("최소 1명 이상 선택해주세요.");
+        return;
       }
       this.closePeopleModal();
     },
+
     async handleSearch() {
       if (!this.destination) {
         alert("목적지를 입력해주세요.");
@@ -287,41 +292,17 @@ export default {
         alert("체크아웃 날짜를 선택해주세요.");
         return;
       }
-      if (this.guests < 2) {
-        alert("최소 2명 이상 선택해주세요.");
-        return;
-      }
 
-      try {
-        const response = await axios.get("/api/accommodation");
-        const list = response.data.result?.accommodations?.content || [];
-
-        const keyword = this.destination.trim();
-        const found = list.find(
-            (item) =>
-                item.comAddress.includes(keyword) ||
-                item.comTitle.includes(keyword)
-        );
-
-        if (!found) {
-          alert("해당하는 숙소가 없습니다.");
-          return;
-        }
-
-        this.$router.push({
-          name: "HotelListing",
-          query: {
-            destination: this.destination,
-            checkin: this.checkin,
-            checkout: this.checkout,
-            rooms: this.rooms,
-            guests: this.guests,
-          },
-        });
-      } catch (error) {
-        console.error("숙소 검색 중 오류 발생:", error);
-        alert("숙소 정보를 불러오는 중 오류가 발생했습니다.");
-      }
+      this.$router.push({
+        name: "HotelListing",
+        query: {
+          destination: this.destination,
+          checkin: this.checkin,
+          checkout: this.checkout,
+          rooms: this.rooms,
+          guests: this.guests,
+        },
+      });
     },
   },
 };
