@@ -543,9 +543,9 @@ footer {
     background-color: white;
     padding: 20px 30px;
     border-radius: 10px;
-    width: 80%;
-    max-width: 1200px;
-    height: 85vh; /* 화면 높이의 85% */
+    width: 60%;
+    max-width: 1000px;
+    height: 87vh; /* 화면 높이의 85% */
     overflow-y: auto; /* 이미지가 많으면 스크롤 */
     position: relative;
 }
