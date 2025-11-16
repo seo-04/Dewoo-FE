@@ -287,12 +287,14 @@
 .filter_box {
     background: transparent;
     width: 250px;
-    padding: 15px 10px;
+    padding: 2px;
     font-family: 'OmuDaye';
     color: #333;
     border-right: 1px solid #eaeaea;
     position: sticky;
     top: 120px;
+    /* 넓이 고정 */
+    flex-shrink: 0;
 }
 
 /* 상단 제목 */
@@ -713,6 +715,7 @@
     display: flex;
     gap: 600px;
     align-items: center;
+    position: sticky;
 }
 
 .place p{
