@@ -37,13 +37,13 @@
 
         <div class="hotel-images-section">
           <div class="main-image">
-            <img :src="'/hotel-images/' + accommodation.mainImage" alt="메인 호텔 이미지" @click="openLightbox(accommodation.mainImage)" />
+            <img :src="'/api/accommodation/images/file/' + accommodation.mainImage" alt="메인 호텔 이미지" @click="openLightbox(accommodation.mainImage)" />
           </div>
           <div class="thumbnail-images">
             <img
               v-for="(image, index) in accommodation.subImage.slice(0, 4)"
               :key="index"
-              :src="'/hotel-images/' + image"
+              :src="'/api/accommodation/images/file/' + image"
               :alt="`호텔 썸네일 ${index + 1}`"
               @click="openLightbox(image)"
             />
@@ -54,7 +54,7 @@
         <div v-if="showLightbox" class="lightbox-overlay" @click.self="closeLightbox">
           <button class="lightbox-close-button" @click="closeLightbox">&times;</button>
           <div class="lightbox-content">
-            <img :src="'/hotel-images/' + currentLightboxImage" class="lightbox-image" alt="Enlarged image" />
+            <img :src="'/api/accommodation/images/file/' + currentLightboxImage" class="lightbox-image" alt="Enlarged image" />
           </div>
         </div>
 
@@ -138,7 +138,7 @@
         <div class="modal-image-grid">
           <img v-for="(image, index) in allImages"
                :key="index"
-               :src="'/hotel-images/' + image"
+               :src="'/api/accommodation/images/file/' + image"
                :alt="`Image ${index + 1}`"
                @click="openLightbox(image)" />
         </div>
