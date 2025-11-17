@@ -1,9 +1,11 @@
 <template>
   <CommonLayout>
+    <!-- Hero 섹션 -->
     <section class="hero">
       <div class="image">
         <img src="@/assets/img/header.jpg" alt="메인" />
       </div>
+
       <div class="hero_content">
         <div class="box">
           <h2>플러스 호텔 및 다양한<br />숙소를 확인하세요!</h2>
@@ -14,6 +16,7 @@
         </div>
       </div>
 
+      <!-- 검색 박스 -->
       <div class="search_box">
         <h3 class="search_title">어디에서 숙박하시나요?</h3>
 
@@ -21,33 +24,34 @@
           <div class="input-group">
             <label for="destination">Enter Destination</label>
             <input
-              type="text"
-              id="destination"
-              v-model="destination"
-              placeholder="Enter Destination"
+                type="text"
+                id="destination"
+                v-model="destination"
+                placeholder="Enter Destination"
             />
           </div>
 
           <div class="input-group">
             <label for="checkin">Check-in</label>
             <input
-              type="date"
-              id="checkin"
-              v-model="checkin"
-              :min="todayDate"
+                type="date"
+                id="checkin"
+                v-model="checkin"
+                :min="todayDate"
             />
           </div>
 
           <div class="input-group">
             <label for="checkout">Check-out</label>
             <input
-              type="date"
-              id="checkout"
-              v-model="checkout"
-              :min="checkin || todayDate"
+                type="date"
+                id="checkout"
+                v-model="checkout"
+                :min="checkin || todayDate"
             />
           </div>
 
+          <!-- Rooms & Guests -->
           <div class="input-group dropdown-container">
             <label>Rooms & Guests</label>
             <button class="number_people" @click="openPeopleModal">
@@ -62,11 +66,12 @@
       </div>
     </section>
 
+    <!-- Rooms & Guests 모달 -->
     <transition name="slide-up">
       <div
-        v-if="showPeopleModal"
-        class="people_modal"
-        @click.self="closePeopleModal"
+          v-if="showPeopleModal"
+          class="people_modal"
+          @click.self="closePeopleModal"
       >
         <div class="people_content">
           <h3>객실과 인원을 선택하세요</h3>
@@ -89,9 +94,9 @@
             </div>
           </div>
 
-          <div class="warning" v-if="guests < 2">
+          <div class="warning" v-if="guests < 1">
             <i class="fa-solid fa-circle-exclamation"></i>
-            <p>최소 2명 이상 선택해주세요.</p>
+            <p>최소 1명 이상 선택해주세요.</p>
           </div>
 
           <div class="modal-actions">
@@ -102,13 +107,65 @@
       </div>
     </transition>
 
-    <discountList />
+    <!-- 여행 섹션 -->
+    <section class="travel_container">
+      <h3>여행에 빠지다</h3>
+      <p>특가상품으로 진행하는 여행을 예약해보세요.</p>
 
+      <div class="travel_box">
+        <div class="slide_track">
+          <div
+              class="card"
+              v-for="(item, i) in travelItems.slice(0, 6)"
+              :key="'original-' + i"
+          >
+            <img
+                :src="require('@/assets/img/construction.jpg')"
+                :alt="`${item.city} ${item.comtitle}`"
+            />
+            <div class="card_text">
+              <h4>{{ item.city }} - {{ item.comtitle }}</h4>
+              <p class="setting">특특특가 혜택 진행 중</p>
+              <p>
+                {{ formatPrice(item.price) }}원
+                <span v-if="item.discount_rate > 0">
+                  ({{ item.discount_rate }}% {{ discountedPrice(item) }}원)
+                </span>
+              </p>
+              <button>Book a Hotel</button>
+            </div>
+          </div>
+
+          <!-- 복제 카드로 슬라이드 무한 반복 -->
+          <div
+              class="card"
+              v-for="(item, i) in travelItems.slice(0, 5)"
+              :key="'clone-' + i"
+          >
+            <img
+                :src="require('@/assets/img/construction.jpg')"
+                :alt="`${item.city} ${item.comtitle}`"
+            />
+            <div class="card_text">
+              <h4>{{ item.city }} - {{ item.comtitle }}</h4>
+              <p class="setting">특특특가 혜택 진행 중</p>
+              <p>
+                {{ formatPrice(item.price) }}원
+                <span v-if="item.discount_rate > 0">
+                  ({{ item.discount_rate }}% {{ discountedPrice(item) }}원)
+                </span>
+              </p>
+              <button>Book a Hotel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 여행 더보기 -->
     <section class="tour_container">
       <h3>여행 더보기</h3>
-      <p>
-        이번 시즌 어디로 떠나시나요? 특별한 여행을 위한 다양한 숙소를 찾아보세요.
-      </p>
+      <p>이번 시즌 어디로 떠나시나요? 특별한 여행을 위한 다양한 숙소를 찾아보세요.</p>
 
       <div class="tour_box">
         <div class="tour_images">
@@ -144,16 +201,11 @@
 <script>
 import "@/assets/css/HotelSearch.css";
 import CommonLayout from "@/components/common/CommonLayout.vue";
-// 경로가 맞는지 확인해주세요 (components 폴더 안에 discount 폴더가 있다고 가정)
-import discountList from "../components/discount/discountList.vue";
 import axios from "axios";
 
 export default {
   name: "HotelSearch",
-  components: {
-    CommonLayout,
-    discountList // [중요] 여기에 컴포넌트를 등록해야 화면에 나옵니다!
-  },
+  components: { CommonLayout },
   data() {
     return {
       destination: "",
@@ -162,7 +214,7 @@ export default {
       rooms: 1,
       guests: 2,
       showPeopleModal: false,
-      // travelItems: [], // [삭제] discountList로 이동했으므로 삭제
+      travelItems: [],
     };
   },
   computed: {
@@ -171,12 +223,37 @@ export default {
       return today.toISOString().split("T")[0];
     },
   },
-  // [삭제] mounted도 discountList로 이동했으므로 삭제
-  // async mounted() {
-  //   await this.fetchTravelItems();
-  // },
+  mounted() {
+    this.fetchTravelItems();
+  },
   methods: {
-    // [삭제] fetchTravelItems, formatPrice, discountedPrice 등 이동한 함수 삭제
+    async fetchTravelItems() {
+      try {
+        const response = await axios.get("/api/accommodation");
+        const list = response.data.result?.accommodations?.content || [];
+        this.travelItems = list.map((item) => ({
+          comId: item.comId,
+          comtitle: item.comTitle,
+          city: item.comAddress,
+          price: item.price,
+          discount_rate: item.discount_rate || 0,
+        }));
+      } catch (error) {
+        console.error("숙소 데이터 로드 실패", error);
+      }
+    },
+
+    formatPrice(value) {
+      return new Intl.NumberFormat("ko-KR").format(value);
+    },
+
+    discountedPrice(item) {
+      const price = Number(item.price) || 0;
+      const discount = Number(item.discount_rate) || 0;
+      return new Intl.NumberFormat("ko-KR").format(
+          Math.round(price * (1 - discount / 100))
+      );
+    },
 
     openPeopleModal() {
       this.showPeopleModal = true;
@@ -184,6 +261,7 @@ export default {
     closePeopleModal() {
       this.showPeopleModal = false;
     },
+
     increase(type) {
       if (type === "room") this.rooms++;
       if (type === "guest") this.guests++;
@@ -192,13 +270,15 @@ export default {
       if (type === "room" && this.rooms > 1) this.rooms--;
       if (type === "guest" && this.guests > 1) this.guests--;
     },
+
     applyPeople() {
-      if (this.guests < 2) {
-        alert("최소 2명 이상 선택해주세요.");
+      if (this.guests < 1) {
+        alert("최소 1명 이상 선택해주세요.");
         return;
       }
       this.closePeopleModal();
     },
+
     async handleSearch() {
       if (!this.destination) {
         alert("목적지를 입력해주세요.");
@@ -212,41 +292,17 @@ export default {
         alert("체크아웃 날짜를 선택해주세요.");
         return;
       }
-      if (this.guests < 2) {
-        alert("최소 2명 이상 선택해주세요.");
-        return;
-      }
 
-      try {
-        const response = await axios.get("/api/accommodation");
-        const list = response.data.result?.accommodations?.content || [];
-
-        const keyword = this.destination.trim();
-        const found = list.find(
-          (item) =>
-            item.comAddress.includes(keyword) ||
-            item.comTitle.includes(keyword)
-        );
-
-        if (!found) {
-          alert("해당하는 숙소가 없습니다.");
-          return;
-        }
-
-        this.$router.push({
-          name: "HotelListing",
-          query: {
-            destination: this.destination,
-            checkin: this.checkin,
-            checkout: this.checkout,
-            rooms: this.rooms,
-            guests: this.guests,
-          },
-        });
-      } catch (error) {
-        console.error("숙소 검색 중 오류 발생:", error);
-        alert("숙소 정보를 불러오는 중 오류가 발생했습니다.");
-      }
+      this.$router.push({
+        name: "HotelListing",
+        query: {
+          destination: this.destination,
+          checkin: this.checkin,
+          checkout: this.checkout,
+          rooms: this.rooms,
+          guests: this.guests,
+        },
+      });
     },
   },
 };
