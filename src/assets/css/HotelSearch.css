@@ -304,7 +304,7 @@
 
 .slide_track {
     display: flex;
-    gap: 5%;
+    gap: 1%;
     width: max-content;
     animation: slideLeft 13s linear infinite;
 }
