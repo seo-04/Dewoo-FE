@@ -8,7 +8,7 @@
           @click="activeTab = 'flights'">
 
           <p>Flights</p>
-          <span>2 marked</span>
+          <span>0 marked</span>
         </li>
         <div class="profile-history-divider"></div>
         <li :class="{ active: activeTab === 'places'}"

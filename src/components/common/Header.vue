@@ -64,12 +64,12 @@
                   </div>
                   <hr class="divider">
                   <div class="dropdown-menu">
-                    <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="navigateTo('/my-page')">
+                    <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="navigateTo('/profile')">
                       <i class="fa-solid fa-user"></i>
                       <span>계정</span>
                       <i class="fa-solid fa-chevron-right arrow"></i>
                     </div>
-                    <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="setActiveTab('payment')">
+                    <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="navigateTo('/profile')">
                       <i class="fa-solid fa-credit-card"></i>
                       <span>결제내역</span>
                       <i class="fa-solid fa-chevron-right arrow"></i>

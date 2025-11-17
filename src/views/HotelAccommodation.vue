@@ -26,7 +26,7 @@
           </div>
           <div class="price-and-actions">
             <div class="price-container">
-              <span class="price">₩{{ (accommodation.price || 0).toLocaleString() }}</span><span class="per-night">{{accommodation.price}} ₩</span></div>
+              <span class="per-night">{{(accommodation.price || 0).toLocaleString()}} ₩</span></div>
             <div class="action-buttons">
               <button class="icon-button"><i class="fa-regular fa-heart"></i></button>
               <button class="icon-button"><i class="fa-solid fa-share-nodes"></i></button>

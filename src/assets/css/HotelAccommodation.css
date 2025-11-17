@@ -237,7 +237,7 @@ header {
 }
 
 .per-night {
-    font-size: 1.2em;  /* 폰트 크기 증가 (기존 0.9em) */
+    font-size: 40px;  /* 폰트 크기 증가 (기존 0.9em) */
     color: #e55a50;
     font-weight: 600;  /* 폰트 굵게 */
     margin-left: 4px;
