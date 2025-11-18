@@ -7,7 +7,7 @@
              @mouseleave="hoveredTab = null"
              @click="navigateTo('/hotelsearch'); activeTab = 'hotel';"
              :class="{ active: activeTab === 'hotel' || hoveredTab === 'hotel' }">
-          <div class="tab">
+          <div class="header-tab">
             <i class="fa-solid fa-bed"></i>
             hotel
           </div>
@@ -22,7 +22,7 @@
                @mouseleave="hoveredTab = null"
                @click="navigateTo('/favorite'); activeTab = 'wishlist';"
                :class="{ active: activeTab === 'wishlist' || hoveredTab === 'wishlist' }">
-            <div class="tab">
+            <div class="header-tab">
               <i class="fa-solid fa-heart" style="position: relative; right: 3px"></i>
               <span style="position: relative; bottom: 1px; right: 3px">찜하기</span>
             </div>
