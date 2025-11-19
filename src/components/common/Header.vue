@@ -5,7 +5,7 @@
         <div class="nav-item-container"
              @mouseenter="hoveredTab = 'hotel'"
              @mouseleave="hoveredTab = null"
-             @click="navigateTo('/hotelsearch'); activeTab = 'hotel';"
+             @click="navigateTo('/'); activeTab = 'hotel';"
              :class="{ active: activeTab === 'hotel' || hoveredTab === 'hotel' }">
           <div class="header-tab">
             <i class="fa-solid fa-bed"></i>
@@ -145,7 +145,7 @@
         if (!path.startsWith('/user-images/')) {
           path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
         }
-        return `http://localhost:8085${path}`;
+        return `${process.env.VUE_APP_API_URL}${path}`;
       },
 
       // ⚡️ [추가] 이미지를 강제로 새로고침하는 함수

@@ -96,7 +96,7 @@ export default {
 
               if (imageUrl && !imageUrl.startsWith('http')) {
                 const baseUrl = process.env.VUE_APP_API_URL;
-                imageUrl = `${baseUrl}/api/accommodation/images/${imageUrl}`;
+                imageUrl = `${baseUrl}/api/accommodation/images/file/${imageUrl}`;
               }
               return {
                 fno: wishItem.wishId,
