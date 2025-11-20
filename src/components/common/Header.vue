@@ -48,328 +48,187 @@
                 </div>
               </div>
               <span style="font-weight: bold">{{ userName }}</span>
-
             </div>
 
             <transition name="fade">
               <div v-if="activeTab === 'profile'" class="profile-dropdown">
-                <div class="dropdown-profile">
 
-                  <img v-if="profileImageUrl" :src="profileImageUrl" alt="avatar" class="profile-avatar">
-                  <div v-else class="profile-avatar "></div>
-                  <div class="profile-info">
-                    <span class="profile-name">{{ userName }}</span>
-                    <span class="profile-status">Online</span>
+                <div v-if="isLoggedIn">
+                  <div class="dropdown-profile">
+                    <img v-if="profileImageUrl" :src="profileImageUrl" alt="avatar" class="profile-avatar">
+                    <div v-else class="profile-avatar"></div>
+                    <div class="profile-info">
+                      <span class="profile-name">{{ userName }}</span>
+                      <span class="profile-status">Online</span>
+                    </div>
+                  </div>
+                  <hr class="divider">
+                  <div class="dropdown-menu">
+                    <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="navigateTo('/my-page')">
+                      <i class="fa-solid fa-user"></i>
+                      <span>계정</span>
+                      <i class="fa-solid fa-chevron-right arrow"></i>
+                    </div>
+                    <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="setActiveTab('payment')">
+                      <i class="fa-solid fa-credit-card"></i>
+                      <span>결제내역</span>
+                      <i class="fa-solid fa-chevron-right arrow"></i>
+                    </div>
+                    <div class="menu-item" :class="{ active: activeTab === 'settings' }" @click="setActiveTab('settings')">
+                      <i class="fa-solid fa-gear"></i>
+                      <span>설정</span>
+                      <i class="fa-solid fa-chevron-right arrow"></i>
+                    </div>
+                  </div>
+                  <hr class="divider">
+                  <div class="dropdown-logout">
+                    <div class="menu-item" @click="logout">
+                      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                      <span>로그아웃</span>
+                    </div>
                   </div>
                 </div>
-                <hr class="divider">
-                <div class="dropdown-menu">
-                  <div class="menu-item" :class="{ active: activeDropdownTab === 'account' }" @click="navigateTo('/profile')">
-                    <i class="fa-solid fa-user"></i>
-                    <span>계정</span>
-                    <i class="fa-solid fa-chevron-right arrow"></i>
+
+                <div v-else>
+                  <div class="dropdown-profile">
+                    <div class="profile-avatar">
+                    <img class="guest-profile" src="../../assets/img/icon/user_icon.png" width="50px" height="50px"/>
+                    </div>
+                    <div class="profile-info">
+                      <span class="profile-name">Guest</span>
+                      <span class="profile-status">Online</span>
+                    </div>
                   </div>
-                  <div class="menu-item" :class="{ active: activeDropdownTab === 'payment' }" @click="navigateTo('/profile')">
-                    <i class="fa-solid fa-credit-card"></i>
-                    <span>결제내역</span>
-                    <i class="fa-solid fa-chevron-right arrow"></i>
-                  </div>
-                  <div class="menu-item" :class="{ active: activeDropdownTab === 'settings' }" @click="setActiveDropdownTab('settings')">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>설정</span>
-                    <i class="fa-solid fa-chevron-right arrow"></i>
-                  </div>
-                </div>
-                <hr class="divider">
-                <div class="dropdown-logout">
-                  <div class="menu-item" @click="logout">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    <span>로그아웃</span>
+                  <div class="dropdown-menu" style="padding-top: 5px; padding-bottom: 5px;">
+                    <div class="menu-item" @click="navigateTo('/login')"><i class="fa-solid fa-arrow-right-to-bracket"></i>
+                      <span>로그인</span>
+                      <i class="fa-solid fa-chevron-right arrow"></i>
+                    </div>
+                    <div class="menu-item" @click="navigateTo('/signup')"><i class="fa-solid fa-user-plus"></i>
+                      <span>회원가입</span>
+                      <i class="fa-solid fa-chevron-right arrow"></i>
+                    </div>
                   </div>
                 </div>
               </div>
             </transition>
           </div>
-
         </div>
-
       </div>
     </nav>
-    <transition name="fade">
-      <div v-if="isDropdownVisible" class="profile-dropdown" ref="dropdownMenu">
-        <div class="dropdown-profile">
 
-          <img v-if="profileImageUrl" :src="profileImageUrl" alt="avatar" class="profile-avatar">
-          <div v-else class="profile-avatar"></div>
-          <div class="profile-info">
-            <span class="profile-name">{{ userName }}</span>
-            <span class="profile-status">Online</span>
-          </div>
-        </div>
-        <hr class="divider">
-        <div class="dropdown-menu">
-          <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="navigateTo('/my-page')">
-            <i class="fa-solid fa-user"></i>
-            <span>계정</span>
-            <i class="fa-solid fa-chevron-right arrow"></i>
-          </div>
-          <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="setActiveTab('payment')">
-            <i class="fa-solid fa-credit-card"></i>
-            <span>결제내역</span>
-            <i class="fa-solid fa-chevron-right arrow"></i>
-          </div>
-          <div class="menu-item" :class="{ active: activeTab === 'settings' }" @click="setActiveTab('settings')">
-            <i class="fa-solid fa-gear"></i>
-            <span>설정</span>
-            <i class="fa-solid fa-chevron-right arrow"></i>
-          </div>
-        </div>
-        <hr class="divider">
-        <div class="dropdown-logout">
-          <div class="menu-item" @click="logout">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            <span>로그아웃</span>
-          </div>
-        </div>
-      </div>
-    </transition>
   </header>
 </template>
 
-<script>
-import axios from '@/util/axios';
+  <script>
+  import axios from '@/util/axios';
 
-export default {
-  data() {
-    return {
-      activeTab: 'hotel',
-      hoveredTab: null,
-      activeDropdownTab: 'account',
-      isDropdownVisible: false,
-      isLoggedIn: false,
-      userName: 'Guest',
-      profileImageUrl: null,
-    };
-  },
-
-  methods: {
-    // 🖼️ [이미지 경로 보정 함수]
-    getFullImageUrl(imagePath) {
-      if (!imagePath) return null;
-      if (imagePath.startsWith('http')) return imagePath;
-
-      let path = imagePath;
-      if (!path.startsWith('/user-images/')) {
-        path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
-      }
-      return `http://localhost:8085${path}`;
+  export default {
+    data() {
+      return {
+        activeTab: 'hotel',
+        hoveredTab: null,
+        activeDropdownTab: 'account',
+        isLoggedIn: false,
+        userName: 'Guest',
+        profileImageUrl: null,
+      };
     },
 
-    // ⚡️ [추가] 이미지를 강제로 새로고침하는 함수
-    // URL 뒤에 현재 시간(?t=...)을 붙여서 브라우저가 새 이미지로 인식하게 만듭니다.
-    refreshProfileImage(newPath) {
-      const fullUrl = this.getFullImageUrl(newPath);
-      if (fullUrl) {
-        this.profileImageUrl = `${fullUrl}?t=${Date.now()}`;
-      }
-    },
+    methods: {
+      // 🖼️ [이미지 경로 보정 함수]
+      getFullImageUrl(imagePath) {
+        if (!imagePath) return null;
+        if (imagePath.startsWith('http')) return imagePath;
 
-    toggleProfileDropdown() {
-      this.activeTab = this.activeTab === 'profile' ? null : 'profile';
-    },
-    setActiveDropdownTab(tabName) {
-      this.activeDropdownTab = tabName;
-    },
-    logout() {
-      console.log("로그아웃 처리");
-      localStorage.removeItem('jwtToken');
-      this.isLoggedIn = false;
-      this.userName = 'Guest';
-      this.profileImageUrl = null;
-      this.$router.push('/');
-    },
-    navigateTo(path) {
-      this.activeTab = null;
-      this.$router.push(path);
-    },
-    handleOutsideClick(event) {
-      if (this.$refs.profileWrapper && !this.$refs.profileWrapper.contains(event.target)) {
-        if (this.activeTab === 'profile') {
-          this.activeTab = null;
+        let path = imagePath;
+        if (!path.startsWith('/user-images/')) {
+          path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
         }
-      }
-    },
-    // [추가] 이벤트 핸들러 (메모리 누수 방지를 위해 분리)
-    handleProfileUpdateEvent(event) {
-      // event.detail에 새로운 이미지 경로가 들어옵니다.
-      this.refreshProfileImage(event.detail);
-    }
-  },
-  watch: {
-    activeTab(newTab, oldTab) {
-      if (newTab === 'profile') {
-        document.addEventListener('click', this.handleOutsideClick);
-      } else if (oldTab === 'profile') {
-        document.removeEventListener('click', this.handleOutsideClick);
-      }
-    }
-  },
-  beforeUnmount() {
-    document.removeEventListener('click', this.handleOutsideClick);
-    // [추가] 컴포넌트가 사라질 때 리스너 제거
-    window.removeEventListener('profile-image-updated', this.handleProfileUpdateEvent);
-  },
-  async mounted() {
-    // ⭐️ [추가] 프로필 이미지 업데이트 이벤트 리스너 등록
-    window.addEventListener('profile-image-updated', this.handleProfileUpdateEvent);
+        return `http://localhost:8085${path}`;
+      },
 
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      this.isLoggedIn = true;
-      try {
-        const response = await axios.get('/api/user/profile');
-        if (response.data) {
-          this.userName = response.data.username;
-          // 초기 로딩 시에도 캐시 방지를 위해 타임스탬프 추가 가능
-          this.refreshProfileImage(response.data.imageUrl);
+      // ⚡️ [추가] 이미지를 강제로 새로고침하는 함수
+      // URL 뒤에 현재 시간(?t=...)을 붙여서 브라우저가 새 이미지로 인식하게 만듭니다.
+      refreshProfileImage(newPath) {
+        const fullUrl = this.getFullImageUrl(newPath);
+        if (fullUrl) {
+          this.profileImageUrl = `${fullUrl}?t=${Date.now()}`;
         }
-      } catch (error) {
-        console.error("헤더에서 사용자 정보를 가져오는데 실패했습니다:", error);
+      },
+
+      toggleProfileDropdown() {
+        this.activeTab = this.activeTab === 'profile' ? null : 'profile';
+      },
+      setActiveDropdownTab(tabName) {
+        this.activeDropdownTab = tabName;
+      },
+      logout() {
+        console.log('로그아웃 처리');
         localStorage.removeItem('jwtToken');
         this.isLoggedIn = false;
+        this.userName = 'Guest';
+        this.profileImageUrl = null;
+        this.$router.push('/');
+      },
+      navigateTo(path) {
+        this.activeTab = null;
+        this.$router.push(path);
+      },
+      handleOutsideClick(event) {
+        if (this.$refs.profileWrapper && !this.$refs.profileWrapper.contains(event.target)) {
+          if (this.activeTab === 'profile') {
+            this.activeTab = null;
+          }
+        }
+      },
+      // [추가] 이벤트 핸들러 (메모리 누수 방지를 위해 분리)
+      handleProfileUpdateEvent(event) {
+        // event.detail에 새로운 이미지 경로가 들어옵니다.
+        this.refreshProfileImage(event.detail);
+      },
+    },
+    watch: {
+      activeTab(newTab, oldTab) {
+        if (newTab === 'profile') {
+          document.addEventListener('click', this.handleOutsideClick);
+        } else if (oldTab === 'profile') {
+          document.removeEventListener('click', this.handleOutsideClick);
+        }
+      },
+    },
+    beforeUnmount() {
+      document.removeEventListener('click', this.handleOutsideClick);
+      // [추가] 컴포넌트가 사라질 때 리스너 제거
+      window.removeEventListener('profile-image-updated', this.handleProfileUpdateEvent);
+    },
+    async mounted() {
+      // ⭐️ [추가] 프로필 이미지 업데이트 이벤트 리스너 등록
+      window.addEventListener('profile-image-updated', this.handleProfileUpdateEvent);
+
+      const token = localStorage.getItem('jwtToken');
+      if (token) {
+        this.isLoggedIn = true;
+        try {
+          const response = await axios.get('/api/user/profile');
+          if (response.data) {
+            this.userName = response.data.username;
+            // 초기 로딩 시에도 캐시 방지를 위해 타임스탬프 추가 가능
+            this.refreshProfileImage(response.data.imageUrl);
+          }
+        } catch (error) {
+          console.error('헤더에서 사용자 정보를 가져오는데 실패했습니다:', error);
+          localStorage.removeItem('jwtToken');
+          this.isLoggedIn = false;
+        }
       }
-    }
-  },
-};
-</script>
+    },
+  };
+  </script>
 
-<style scoped lang="scss">
-/* 스타일은 변경되지 않았으므로 그대로 사용하시면 됩니다. */
-@use "@/assets/css/Header.scss";
+  <style scoped lang="scss">
+  /* 스타일은 변경되지 않았으므로 그대로 사용하시면 됩니다. */
+  @use "@/assets/css/Header.scss";
 
-/* ▼▼▼ 아래는 추가/수정된 스타일입니다 ▼▼▼ */
-.item {
-  position: relative;
-}
 
-/* ⭐️ [추가] 헤더의 작은 프로필 이미지 ⭐️ */
-.header-profile-image-sm {
-  width: 50px; /* .circle 크기에 맞춰 조절 */
-  height: 50px; /* .circle 크기에 맞춰 조절 */
-  border-radius: 50%;
-  object-fit: cover; /* 이미지가 찌그러지지 않게 */
-  border: 1px solid #eee;
-  position: relative;
-}
-
-.window {
-  position: relative;
-  cursor: pointer;
-  padding-bottom: 5px;
-}
-.window.active-dropdown::after {
-  content: '';
-  position: absolute;
-  bottom: -21px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: #46bd7b;
-  border-radius: 8px 8px 0 0;
-}
-.profile-dropdown {
-  position: absolute;
-  top: 68px;
-  right: -1px;
-  width: 280px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid #eee;
-  z-index: 1100;
-  padding: 10px 0;
-}
-.dropdown-profile {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  gap: 15px;
-}
-
-/* ⭐️ [수정] <img> 태그가 이 클래스를 사용할 것을 대비해 object-fit 추가 ⭐️ */
-.profile-avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: #d9d9d9;
-  object-fit: cover; /* ⭐️ 추가 */
-}
-
-.profile-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.profile-name {
-  font-weight: 600;
-  font-size: 1.1em;
-}
-.profile-status {
-  font-size: 0.9em;
-  color: #666;
-}
-.divider {
-  border: none;
-  border-top: 1px solid #f0f0f0;
-  margin: 10px 0;
-}
-.dropdown-menu, .dropdown-logout {
-  padding: 0 10px;
-}
-.menu-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  gap: 15px;
-  font-size: 1em;
-  color: #333;
-  transition: background-color 0.2s ease;
-}
-.menu-item:hover {
-  background-color: #f5f5f5;
-}
-.menu-item.active {
-  background-color: #eef7f4;
-  color: #46bd7b;
-  font-weight: 600;
-}
-.menu-item i {
-  width: 20px;
-  text-align: center;
-}
-.menu-item .arrow {
-  margin-left: auto;
-  font-size: 0.8em;
-  color: #aaa;
-}
-.menu-item.active .arrow {
-  color: #46bd7b;
-}
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-.guest-header-profile-image-sm{
-  width: 80%;
-  height: 80%;
-  position: absolute;
-  right: 3px;
-  top: 3px;
-  border:none;
-}
-</style>
+  </style>

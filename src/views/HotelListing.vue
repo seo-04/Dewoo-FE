@@ -159,7 +159,9 @@
 
                 <div class="two">
                   <button class="heart" @click="toggleHeart(room)">
-                    <i :class="[room.isFavorite ? 'fa-solid active-heart' : 'fa-regular', 'fa-heart']"></i>
+                    <i
+                        :class="[room.isFavorite ? 'fa-solid active-heart' : 'fa-regular', 'fa-heart']"
+                    ></i>
                   </button>
 
                   <button class="view" @click="goToDetail(room.comId)">View Place</button>
@@ -259,6 +261,7 @@ import "vue-slider-component/theme/antd.css";
 
 export default {
   components: { CommonLayout, VueSlider },
+
   data() {
     return {
       tabs: [
@@ -285,6 +288,7 @@ export default {
       showPeopleModal: false,
     };
   },
+
   computed: {
     formattedMinPrice() {
       return new Intl.NumberFormat("ko-KR").format(this.priceRange[0]) + "원";

@@ -154,7 +154,7 @@ export default {
 
             console.log('성공! localStorage에 토큰을 저장했습니다.');
             alert("로그인 성공!");
-            this.$router.push('/hotellisting');
+            this.$router.push('/');
           } else {
             console.error('백엔드 응답에 토큰(result)이 없거나 형식이 잘못되었습니다:', token); // token -> loginData로 수정
             alert("로그인에 실패했습니다. (토큰 없음)");

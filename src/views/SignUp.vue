@@ -5,33 +5,44 @@
         <h4 class="centered-text">Sign up</h4>
         <p class="centered-text">회원가입</p>
         <div class="log_input">
-          <form @submit.prevent="handleFormSubmit">
+          <form @submit.prevent="finalSubmit">
+
             <div class="row-input">
               <input v-model="name" type="text" placeholder="Name" />
             </div>
 
             <div class="row-input email-verify-row">
-              <input v-model="email" type="email" placeholder="Email" />
+              <input
+                v-model="email"
+                type="email"
+                placeholder="Email"
+                :disabled="isEmailVerified"
+              />
               <button
                 type="button"
                 class="send-code-btn"
                 @click="sendVerificationCode"
-                :disabled="isVerificationSent"
+                :disabled="isVerificationSent || isEmailVerified"
               >
-                {{ isVerificationSent ? '재전송' : '인증번호 보내기' }}
+                {{ isVerificationSent ? '전송됨' : '인증번호 보내기' }}
               </button>
             </div>
 
-            <div class="passwordbox" v-if="isVerificationSent">
+            <div class="row-input email-verify-row" v-if="isVerificationSent">
               <input
-                :type="showCode ? 'text' : 'password'"
+                type="text"
                 v-model="verificationCode"
-                placeholder="Verification Code"
+                placeholder="인증번호 입력"
+                :disabled="isEmailVerified"
               />
-              <i
-                :class="['fa-solid', showCode ? 'fa-eye' : 'fa-eye-slash']"
-                @click="toggleCodeVisibility"
-              ></i>
+              <button
+                type="button"
+                class="send-code-btn"
+                @click="checkVerificationCode"
+                :disabled="isEmailVerified"
+              >
+                {{ isEmailVerified ? '인증완료' : '확인' }}
+              </button>
             </div>
 
             <div class="row-input">
@@ -92,8 +103,9 @@
               :class="{ disabled: !isFormValid }"
               :disabled="!isFormValid"
             >
-              {{ isVerificationSent ? '인증하고 회원가입 완료' : '회원가입 진행' }}
+              회원가입 진행
             </button>
+
           </form>
         </div>
       </div>
@@ -132,24 +144,25 @@ export default {
       password: "",
       confirmPassword: "",
       verificationCode: "",
-      isVerificationSent: false,
+
+      isVerificationSent: false, // 인증번호 발송 여부
+      isEmailVerified: false,    // [추가] 이메일 인증 완료 여부 (이게 true여야 최종 가입 가능)
+
       agree: false,
       showPassword: false,
       showConfirmPassword: false,
-      showCode: false,
       currentSlide: 0,
-      slides: [
-        require("@/assets/img/img.jpg"),
-        require("@/assets/img/img2.jpg"),
-        require("@/assets/img/img3.jpg"),
-      ],
+      slides: [0, 1, 2], // 간단히 인덱스 배열로 처리
     };
   },
   computed: {
+    // 비밀번호 유효성 검사 (정규식 + 확인란 일치 여부)
     isPasswordValid() {
       const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-={}[\]:;"'<>,.?/]).{8,}$/;
       return regex.test(this.password) && this.password === this.confirmPassword;
     },
+
+    // [핵심] 전체 폼 유효성 검사
     isFormValid() {
       const baseValid =
         this.name &&
@@ -160,7 +173,8 @@ export default {
         this.isPasswordValid &&
         this.agree;
 
-      return this.isVerificationSent ? (baseValid && this.verificationCode) : baseValid;
+      // 모든 정보 입력 + 이메일 인증 완료 상태(isEmailVerified)가 true여야 함
+      return baseValid && this.isEmailVerified;
     },
   },
   mounted() {
@@ -174,15 +188,17 @@ export default {
         this.showConfirmPassword = !this.showConfirmPassword;
       }
     },
-    toggleCodeVisibility() {
-      this.showCode = !this.showCode;
-    },
+
+    // 1. 인증번호 보내기
     async sendVerificationCode() {
-      if (!this.email || !this.isPasswordValid) {
-        alert("이메일과 유효한 비밀번호를 먼저 입력해주세요.");
+      // 기본 검사
+      if (!this.email || !this.isPasswordValid || !this.name || !this.phone) {
+        alert("이메일, 이름, 전화번호, 비밀번호를 먼저 올바르게 입력해주세요.");
         return;
       }
+
       try {
+        // 서버로 사용자 정보 전송 (인증번호 요청)
         const response = await axios.post('/api/user', {
           userEmail: this.email,
           password: this.password,
@@ -191,65 +207,67 @@ export default {
           userPhone: this.phone,
           userBirth: this.dateOfBirth,
         });
+
         if (response.data.code === 'SUCCESS') {
-          alert(response.data.message);
-          this.isVerificationSent = true;
+          alert("인증번호가 전송되었습니다. 이메일을 확인해주세요.");
+          this.isVerificationSent = true; // 입력칸 보이기
+          this.isEmailVerified = false;   // 재전송 시 인증 상태 초기화
         } else {
           alert(response.data.message);
         }
       } catch (error) {
         console.error("인증번호 전송 실패:", error);
-        if (error.response && error.response.data && error.response.data.message) {
-          alert(error.response.data.message);
-        } else {
-          alert("인증번호 전송 중 오류가 발생했습니다.");
-        }
+        const msg = error.response?.data?.message || "인증번호 전송 중 오류가 발생했습니다.";
+        alert(msg);
       }
     },
-    async handleVerify() {
+
+    // 2. [신규] 인증번호 확인하기 (중간 단계)
+    async checkVerificationCode() {
       if (!this.verificationCode) {
         alert("인증번호를 입력해주세요.");
         return;
       }
+
       try {
-        // Step 1: Verify the email with the verification code.
         const verificationResponse = await axios.post('/api/user/verify-email', {
           userEmail: this.email,
           verificationCode: this.verificationCode,
         });
 
-        // Step 2: Check if email verification was successful.
         if (verificationResponse.data.code === 'SUCCESS') {
-          alert('이메일 인증 성공! 회원가입을 완료합니다.');
-          this.$router.push('/'); // Redirect to main page after successful verification and signup.
-
+          alert('이메일 인증이 성공했습니다!');
+          this.isEmailVerified = true; // [중요] 여기서 true가 되어야 최종 버튼 활성화
         } else {
-          // Alert if the verification code was incorrect.
-          alert(verificationResponse.data.message);
+          alert(verificationResponse.data.message || "인증번호가 일치하지 않습니다.");
+          this.isEmailVerified = false;
         }
       } catch (error) {
         console.error("이메일 인증 실패:", error);
         alert("이메일 인증 중 오류가 발생했습니다.");
       }
     },
-    async handleFormSubmit() {
-      if (!this.isVerificationSent) {
-        await this.sendVerificationCode();
-      } else {
-        await this.handleVerify();
-      }
+
+    // 3. 최종 가입 완료 버튼 (단순 페이지 이동)
+    finalSubmit() {
+      // 버튼이 disabled 상태면 클릭 안 되겠지만, 안전장치로 한 번 더 검사
+      if (!this.isFormValid) return;
+
+      alert("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.");
+      this.$router.push('/login');
     },
+
+    // 슬라이드쇼 로직
     startSlideShow() {
       setInterval(() => {
-        this.nextSlide();
+        this.currentSlide = (this.currentSlide + 1) % 3;
       }, 3000);
-    },
-    nextSlide() {
-      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
     },
     showSlide(i) {
       this.currentSlide = i;
     },
+
+    // 주소 찾기 (Daum Postcode)
     searchAddress() {
       new window.daum.Postcode({
         oncomplete: (data) => {
