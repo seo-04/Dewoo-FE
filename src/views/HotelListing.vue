@@ -1,4 +1,4 @@
-호텔 리스트느 나오는데 모텔이랑, 리조트는 따로 api 가져와서 comcategory='모텔', comcategory='리조트' 나오게 해야해 호텔 냅두고 리스트랑 모텔 나오게 해줄 수 있어?  accommodation에 category가 한국어로 되어 있어 <template>
+<template>
   <CommonLayout>
     <div>
       <!-- 탭 메뉴 -->
