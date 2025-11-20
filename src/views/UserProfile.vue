@@ -214,7 +214,7 @@ function getFullImageUrl(imagePath) {
   if (!path.startsWith('/user-images/')) {
     path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
   }
-  return `http://localhost:8085${path}`;
+  return `http://mjc813b.softagape.com:8085${path}`;
 }
 
 // --- 프로필 이미지 업로드 로직 ---

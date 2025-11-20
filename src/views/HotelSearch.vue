@@ -170,14 +170,27 @@ export default {
       const today = new Date();
       return today.toISOString().split("T")[0];
     },
+    minCheckoutDate() {
+      if (this.checkin) {
+        const date = new Date(this.checkin);
+        date.setDate(date.getDate() + 1);
+        return date.toISOString().split("T")[0];
+      }
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return tomorrow.toISOString().split("T")[0];
+    }
   },
-  // [삭제] mounted도 discountList로 이동했으므로 삭제
-  // async mounted() {
-  //   await this.fetchTravelItems();
-  // },
-  methods: {
-    // [삭제] fetchTravelItems, formatPrice, discountedPrice 등 이동한 함수 삭제
+  created() {
+    // 1. 체크인을 '오늘'로 설정
+    this.checkin = this.todayDate;
 
+    // 2. 체크아웃을 '내일'로 설정 (체크인만 되어있고 체크아웃이 비어있으면 어색하므로)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    this.checkout = tomorrow.toISOString().split("T")[0];
+  },
+  methods: {
     openPeopleModal() {
       this.showPeopleModal = true;
     },
@@ -193,17 +206,17 @@ export default {
       if (type === "guest" && this.guests > 1) this.guests--;
     },
     applyPeople() {
-      if (this.guests < 2) {
-        alert("최소 2명 이상 선택해주세요.");
+      if (this.guests < 1) {
+        alert("최소 1명 이상 선택해주세요.");
         return;
       }
       this.closePeopleModal();
     },
     async handleSearch() {
-      if (!this.destination) {
-        alert("목적지를 입력해주세요.");
-        return;
-      }
+      // if (!this.destination) {
+      //   alert("목적지를 입력해주세요.");
+      //   return;
+      // }
       if (!this.checkin) {
         alert("체크인 날짜를 선택해주세요.");
         return;
@@ -216,38 +229,41 @@ export default {
         alert("최소 2명 이상 선택해주세요.");
         return;
       }
+      if (this.destination && this.destination.trim() !== "") {
+        try {
+          const response = await axios.get("/api/accommodation");
+          const list = response.data.result?.accommodations?.content || [];
 
-      try {
-        const response = await axios.get("/api/accommodation");
-        const list = response.data.result?.accommodations?.content || [];
+          const keyword = this.destination.trim();
+          const found = list.find(
+            (item) =>
+              item.comAddress.includes(keyword) ||
+              item.comTitle.includes(keyword)
+          );
 
-        const keyword = this.destination.trim();
-        const found = list.find(
-          (item) =>
-            item.comAddress.includes(keyword) ||
-            item.comTitle.includes(keyword)
-        );
-
-        if (!found) {
-          alert("해당하는 숙소가 없습니다.");
-          return;
+          if (!found) {
+            alert("해당하는 숙소가 없습니다.");
+            return;
+          }
+        } catch (error) {
+          console.error("숙소 검색 중 오류 발생:", error);
+          alert("숙소 정보를 불러오는 중 오류가 발생했습니다.");
+          return; // 에러 발생 시 이동하지 않음
         }
-
-        this.$router.push({
-          name: "HotelListing",
-          query: {
-            destination: this.destination,
-            checkin: this.checkin,
-            checkout: this.checkout,
-            rooms: this.rooms,
-            guests: this.guests,
-          },
-        });
-      } catch (error) {
-        console.error("숙소 검색 중 오류 발생:", error);
-        alert("숙소 정보를 불러오는 중 오류가 발생했습니다.");
       }
-    },
-  },
-};
+
+      // [페이지 이동] 검색어가 없으면 destination은 빈 문자열로 전달됩니다.
+      this.$router.push({
+        name: "HotelListing",
+        query: {
+          destination: this.destination,
+          checkin: this.checkin,
+          checkout: this.checkout,
+          rooms: this.rooms,
+          guests: this.guests,
+        },
+      });
+    }
+  }
+}
 </script>
