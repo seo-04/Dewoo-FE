@@ -211,9 +211,12 @@
 
       <!-- 인원수 모달 -->
       <transition name="slide-up">
-        <div v-if="showPeopleModal" class="people_modal4" @click.self="closePeopleModal">
+        <div
+            v-if="showPeopleModal"
+            class="people_modal4"
+            @click.self="closePeopleModal">
           <div class="people_content2" @click.stop>
-            <h3>방 개수와 인원수 선택</h3>
+            <h3>객실과 인원을 선택하세요</h3>
 
             <div class="counter">
               <span>Rooms</span>
@@ -431,8 +434,17 @@ export default {
       this.selectedRating = this.selectedRating === n ? null : n;
     },
     goToDetail(comId) {
-      this.$router.push(`/accommodation/${comId}`);
-    },
+      this.$router.push({
+        path: `/accommodation/${comId}`,
+        query: {
+          destination: this.destination || "",
+          checkin: this.checkin || "",
+          checkout: this.checkout || "",
+          rooms: this.roomsCount || 1,
+          guests: this.guestsCount || 2,
+        }
+      });
+    }
   },
 };
 </script>

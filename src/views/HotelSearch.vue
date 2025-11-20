@@ -77,7 +77,7 @@
           <h3>객실과 인원을 선택하세요</h3>
 
           <div class="counter">
-            <span>객실 수</span>
+            <span>Rooms</span>
             <div class="controls">
               <button @click="decrease('room')">-</button>
               <span>{{ rooms }}</span>
@@ -86,7 +86,7 @@
           </div>
 
           <div class="counter">
-            <span>인원 수</span>
+            <span>Guests</span>
             <div class="controls">
               <button @click="decrease('guest')">-</button>
               <span>{{ guests }}</span>
@@ -94,9 +94,8 @@
             </div>
           </div>
 
-          <div class="warning" v-if="guests < 1">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <p>최소 1명 이상 선택해주세요.</p>
+          <div v-if="guestsCount === 1" class="warning">
+            <p>최소 2명이상 선택해주세요.</p>
           </div>
 
           <div class="modal-actions">
@@ -213,6 +212,8 @@ export default {
       checkout: "",
       rooms: 1,
       guests: 2,
+      roomsCount: 1,
+      guestsCount: 2,
       showPeopleModal: false,
       travelItems: [],
     };
@@ -223,6 +224,19 @@ export default {
       return today.toISOString().split("T")[0];
     },
   },
+
+  created() {
+    this.guestsCount = Number(this.$route.query.guests) || 2;
+  },
+
+  watch: {
+    guestsCount() { this.updateUrl(); }
+  },
+
+  handleSearch() {
+    if (this.guestsCount < 2) return alert("최소 2명 이상 선택해주세요.");
+  },
+
   mounted() {
     this.fetchTravelItems();
   },

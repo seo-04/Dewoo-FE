@@ -234,6 +234,12 @@
     margin-top: 10px;
 }
 
+.warning i{
+    text-align: center;
+    align-items: center;
+}
+
+
 .modal-actions {
     display: flex;
     justify-content: space-between;
