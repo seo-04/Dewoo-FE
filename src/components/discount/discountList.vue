@@ -17,7 +17,6 @@
           :key="'clone-' + item.comId"
           :item="item"
         />
-
       </div>
 
       <div v-else style="text-align: center; padding: 50px;">

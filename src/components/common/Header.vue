@@ -5,9 +5,9 @@
         <div class="nav-item-container"
              @mouseenter="hoveredTab = 'hotel'"
              @mouseleave="hoveredTab = null"
-             @click="navigateTo('/hotelsearch'); activeTab = 'hotel';"
+             @click="navigateTo('/'); activeTab = 'hotel';"
              :class="{ active: activeTab === 'hotel' || hoveredTab === 'hotel' }">
-          <div class="tab">
+          <div class="header-tab">
             <i class="fa-solid fa-bed"></i>
             hotel
           </div>
@@ -22,7 +22,7 @@
                @mouseleave="hoveredTab = null"
                @click="navigateTo('/favorite'); activeTab = 'wishlist';"
                :class="{ active: activeTab === 'wishlist' || hoveredTab === 'wishlist' }">
-            <div class="tab">
+            <div class="header-tab">
               <i class="fa-solid fa-heart" style="position: relative; right: 3px"></i>
               <span style="position: relative; bottom: 1px; right: 3px">찜하기</span>
             </div>
@@ -64,12 +64,12 @@
                   </div>
                   <hr class="divider">
                   <div class="dropdown-menu">
-                    <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="navigateTo('/my-page')">
+                    <div class="menu-item" :class="{ active: activeTab === 'account' }" @click="navigateTo('/profile')">
                       <i class="fa-solid fa-user"></i>
                       <span>계정</span>
                       <i class="fa-solid fa-chevron-right arrow"></i>
                     </div>
-                    <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="setActiveTab('payment')">
+                    <div class="menu-item" :class="{ active: activeTab === 'payment' }" @click="navigateTo('/profile')">
                       <i class="fa-solid fa-credit-card"></i>
                       <span>결제내역</span>
                       <i class="fa-solid fa-chevron-right arrow"></i>
@@ -145,7 +145,7 @@
         if (!path.startsWith('/user-images/')) {
           path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
         }
-        return `http://localhost:8085${path}`;
+        return `${process.env.VUE_APP_API_URL}${path}`;
       },
 
       // ⚡️ [추가] 이미지를 강제로 새로고침하는 함수

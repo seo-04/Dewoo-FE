@@ -1,9 +1,9 @@
 version: '3.8'
 services:
   front-app:
-    image: ppyuing/front_image
+    image: angson116/front_image:1.0.4
     container_name: front_container
     ports:
-      - 18080:80
-      - 10443:443
+      - 80:80
+      - 443:443
     
