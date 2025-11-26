@@ -39,8 +39,7 @@ const router = createRouter({
         { path: '/payment/fail', name: "PaymentFail", component: PaymentFail},
         { path: '/favorite', name:"FavoritePage", component: FavoritePage, meta: { requiresAuth: true}},
         { path: '/signup/additional-info', name: 'SocialSignUp', component: SocialSignUp},
-        { path: '/accommodation', name: 'HotelAccommodationRedirect', component: HotelListing}
-
+        // { path: '/accommodation', name: 'HotelAccommodationRedirect', component: HotelListing},
     ]
 })
 // ⬇️ ‼️ 이 "문지기" 코드를 통째로 추가하세요 ‼️ ⬇️

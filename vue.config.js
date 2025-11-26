@@ -7,6 +7,22 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       // '/api'로 시작하는 모든 요청은 target 주소로 전달됨
+      // '/api': {
+      //   target: 'http://localhost:8085',
+      //   changeOrigin: true,
+      // },
+      // '/images': {
+      //   target: 'http://localhost:8085',
+      //   changeOrigin: true,
+      // },
+      // '/hotel-images': {
+      //   target: 'http://localhost:8085',
+      //   changeOrigin: true,
+      // },
+      // '/user-images': {
+      //   target 'http://localhost:8085',
+      //   changeOrigin: true,
+      // }
       '/api': {
         target: 'http://mjc813b.softagape.com:8085',
         changeOrigin: true,

@@ -140,7 +140,6 @@
       getFullImageUrl(imagePath) {
         if (!imagePath) return null;
         if (imagePath.startsWith('http')) return imagePath;
-
         let path = imagePath;
         if (!path.startsWith('/user-images/')) {
           path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;

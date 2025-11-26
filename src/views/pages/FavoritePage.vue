@@ -99,6 +99,7 @@ export default {
                 imageUrl = `${baseUrl}/api/accommodation/images/file/${imageUrl}`;
               }
               return {
+                comId: accom.comId,
                 fno: wishItem.wishId,
                 price: accom.price,
                 stars: accom.star,

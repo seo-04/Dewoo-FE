@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   front-app:
-    image: angson116/front_image:1.0.4
+    image: angson116/front_image:1.0.10
     container_name: front_container
     ports:
       - 80:80
@@ -36,7 +36,7 @@ services:
   #    restart: always
 
   boot-app:
-    image: jhh0101/back_image:1.0.7
+    image: jhh0101/back_image:1.0.18
     build:
       context: ./
       dockerfile: dockerfile

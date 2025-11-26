@@ -76,7 +76,24 @@ export default {
     },
     //나중에 api를 상세 페이지로 쏠 때 쓸거임
     gotoDetailPage() {
-      this.$router.push(`/accommodation`);
+      // 1. info 객체에서 숙소 ID(comId)를 꺼냅니다.
+      // 주의: 백엔드에서 보내주는 필드명이 'comId'인지, 'accId'인지, 'id'인지 꼭 확인하세요!
+      // 예: 만약 백엔드 DTO가 { "id": 15, "name": "호텔..." } 라면 -> this.info.id 로 써야 합니다.
+      const comId = this.info.comId;
+
+      if (comId) {
+        // 2. 해당 ID를 경로에 붙여서 이동합니다.
+        this.$router.push({
+          name: 'HotelAccommodation', // 라우터에 설정된 name과 일치해야 합니다.
+          params: { comId: comId }
+        });
+
+        // 또는 아래처럼 경로를 직접 적어도 됩니다.
+        // this.$router.push(`/accommodation/${comId}`);
+      } else {
+        console.error("숙소 ID가 없습니다. info 데이터를 확인해주세요:", this.info);
+        alert("숙소 정보를 찾을 수 없습니다.");
+      }
     },
     //찜하기 누르면 빠지게
     onUnlikeClick(){
@@ -87,22 +104,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-img{ width: 10px; height: 14px}
-
-.card-left img{
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-}
-
-.card-right-bottom::before {
-  left: 50%;
-  content: '';
-  width: 94%;
-  top: -20px;
-  position: absolute;
-  height: 1px;
-  background-color:rgb(189 195 189);
-  transform: translateX(-50%);
+/* 이미지 기본 스타일 재설정 */
+img {
+  width: auto;
+  height: auto;
 }
 
 .card {
@@ -110,67 +115,97 @@ img{ width: 10px; height: 14px}
   margin-top: 40px;
   background-color: white;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  width: 100%;       /* 카드 전체 너비 확보 */
+  overflow: hidden;  /* 내부 요소가 튀어나가는 것 방지 */
 
-  & .card-right {
-    width: 100%;
+  /* 왼쪽 이미지 영역 (고정 크기) */
+  .card-left {
+    flex-shrink: 0; /* 이미지는 절대 줄어들지 않도록 설정 */
+    width: 440px;
+    height: 273.5px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 이미지 비율 유지하며 꽉 채우기 */
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+
+  /* 오른쪽 텍스트 및 버튼 영역 (유동적 크기) */
+  .card-right {
+    flex: 1;        /* 남은 공간을 모두 차지 */
+    min-width: 0;   /* [핵심] Flex 자식 요소가 컨텐츠 크기보다 작아질 수 있도록 허용 */
     display: flex;
     flex-direction: column;
     height: 273.5px;
-    gap: 40px;
+    /* gap: 40px; -> gap 대신 flex-grow로 간격 조정 권장 */
 
-    & .card-right-upper{
-      padding: 24px 24px 0 24px;
-
-    }
-    .card-right-bottom {
-      padding: 4px 24px 0 24px;
-    }
-
-    & .card-right-upper {
+    /* 상단: 설명 + 가격 */
+    .card-right-upper {
+      flex: 1;      /* 하단 버튼을 밀어내고 남은 공간 차지 */
       display: flex;
       justify-content: space-between;
+      padding: 24px 24px 0 24px;
 
       p {
         text-align: left;
+        margin: 0; /* 불필요한 마진 제거 */
       }
 
-      & .desc-area {
+      /* 호텔 설명 영역 */
+      .desc-area {
         text-align: left;
         display: flex;
         flex-direction: column;
         gap: 11px;
-        & .title {
+
+        .title {
           font-size: 20px;
           font-weight: 700;
+          margin: 0;
         }
-        & .location {
+        .location {
           display: flex;
+          align-items: center; /* 아이콘 수직 정렬 */
           font-size: 12px;
           color: rgba(17, 34, 17, 1);
+
+          img { width: 10px; height: 14px; margin-right: 5px;}
         }
 
-        & .desc-subInfo {
+        .desc-subInfo {
           display: flex;
           gap: 32px;
           font-size: 12px;
+          padding: 0;
+          margin: 0;
+          list-style: none;
 
-          & .amenity-counts {
+          li {
+            display: flex;
+            align-items: center;
+          }
+
+          .amenity-counts {
             font-size: 12px;
             font-weight: 700;
+            margin-right: 3px;
           }
         }
 
-        & .review-summary {
+        .review-summary {
           display: flex;
           gap: 5px;
           font-size: 12px;
           align-items: center;
 
-          & .average-review {
+          .average-review {
             font-weight: 700;
           }
 
-          & .review-score {
+          .review-score {
             padding: 8px 11px;
             border: 1px solid rgba(141, 211, 187, 1);
             border-radius: 6px;
@@ -178,61 +213,73 @@ img{ width: 10px; height: 14px}
         }
       }
 
-      & .price-area {
+      /* 가격 영역 */
+      .price-area {
         display: flex;
         flex-direction: column;
-        & .price-guide1 {
+        align-items: flex-end; /* 오른쪽 정렬 */
+
+        .price-guide1 {
           text-align: left;
           font-size: 12px;
         }
-        & .price-guide2 {
+        .price-guide2 {
           text-align: right;
           font-size: 12px;
         }
-
-        & .favorite-price {
-          color: rgba(255, 134, 130, 1);
-          font-size: 14px;
-          & strong {
-            font-size: 24px;
-            font-weight: 700;
-          }
-        }
       }
     }
 
-    & .card-right-bottom {
+    /* 하단: 버튼 영역 */
+    .card-right-bottom {
       position: relative;
       display: flex;
       gap: 16px;
+      padding: 0 24px 24px 24px; /* 상단 패딩 제거 */
+      margin-top: auto; /* 위쪽 요소들과 거리를 벌려 바닥에 붙임 */
 
-      & .like-btn {
+      /* 구분선 (가상 요소) */
+      &::before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 94%;
+        height: 1px;
+        background-color: rgb(189, 195, 189);
+      }
+
+      .like-btn {
         width: 48px;
         height: 48px;
         border: 1px solid rgba(141, 211, 187, 1);
-        justify-items: center;
+        display: flex;             /* justify-items 대신 flex 사용 */
+        justify-content: center;
+        align-items: center;
         flex-shrink: 0;
         border-radius: 5px;
+        background: white;
         cursor: pointer;
+
+        img { width: 16px; height: 15px; }
       }
 
-      & .go-price-btn {
-        width: 680px;
+      .go-price-btn {
+        flex: 1; /* 버튼이 남은 공간을 가득 채우도록 설정 */
         height: 48px;
-        padding: 15px 300px;
+        /* padding: 15px 300px; -> 삭제 (고정 패딩 때문에 터짐) */
         font-size: 14px;
         font-weight: 600;
         background-color: rgba(141, 211, 187, 1);
+        border: none;
         border-radius: 5px;
         cursor: pointer;
       }
     }
-
-    & .info {
-      display: flex;
-    }
   }
 }
+
 .favorite-roomPrice{
   font-size: 27px;
   font-weight: bold;
@@ -242,6 +289,4 @@ img{ width: 10px; height: 14px}
 .favorite-nightCount{
   font-size: 19px;
 }
-
-
 </style>
