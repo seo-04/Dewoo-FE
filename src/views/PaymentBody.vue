@@ -53,6 +53,10 @@
               </div>
             </div>
 
+            <div class="payment-notice">
+              ※ 토스페이먼츠 보안 정책으로 HTTPS 환경에서만 결제가 가능합니다.
+            </div>
+
             <div class="payment-type">
               <div
                 v-for="option in paymentOptions"
@@ -194,7 +198,7 @@
         <div class="payment-small">
           <div class="payment-small-body">
             <div class="hotel-details">
-              <img src={{paymentAccommodation.mainImage}} height="120" width="121" alt="" />
+              <img :src="getImageUrl(paymentAccommodation.mainImage)" height="120" width="121" alt="" />
               <div>
                 <div style="display: block; font-size: 16px; color: #888888; text-align: left">{{ comTitle }}</div>
                 <div style="font-size: 20px; font-weight: bold; text-align: left; margin-bottom: 15px">
@@ -711,6 +715,14 @@
   const formatPrice = (price) => {
     if (price === undefined || price === null) return '0';
     return Number(price).toLocaleString('ko-KR');
+  };
+
+  // 이미지 URL 변환 함수
+  const getImageUrl = (image) => {
+    if (!image) return require('@/assets/img/Hatton_Hotel.jpg');
+    if (image.startsWith('http://') || image.startsWith('https://')) return image;
+    if (image.startsWith('/api')) return image;
+    return `/api/accommodation/images/file/${image}`;
   };
 
   // TotalPrice 계산 속성 (숫자로 반환)
