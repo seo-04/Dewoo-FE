@@ -321,17 +321,45 @@
   // --- 토스 결제 요청 ---
   const requestTossPayment = async () => {
     selectedPayment.value = 'simple';
+
+    // 필수 데이터 검증
+    if (!paymentAccommodation.value.accId) {
+      alert('숙소 정보가 없습니다. 다시 시도해주세요.');
+      return;
+    }
+    if (!checkIn.value || !checkOut.value || checkIn.value === '날짜 없음' || checkOut.value === '날짜 없음') {
+      alert('체크인/체크아웃 날짜가 필요합니다.');
+      return;
+    }
+
     try {
       await loadTossPayments();
+
+      // 결제 정보를 sessionStorage에 저장 (결제 성공 후 사용)
+      const reservationData = {
+        accId: paymentAccommodation.value.accId,
+        checkIn: checkIn.value,
+        checkOut: checkOut.value,
+        roomTypeName: roomType.value.roomTypeName,
+        comTitle: comTitle.value,
+      };
+      sessionStorage.setItem('reservationData', JSON.stringify(reservationData));
+
+      const orderId = `order_${new Date().getTime()}`;
+      const finalAmount = Math.floor(TotalPrice.value); // 소수점 버림
+
+      console.log('토스 결제 요청 - 금액:', finalAmount, '주문ID:', orderId);
+
       tossPayments.requestPayment('토스페이', {
-        amount: 265000,
-        orderId: `order_${new Date().getTime()}`,
-        orderName: 'Superior room - 1 더블베드 or 2 트윈 베드',
-        customerName: 'Tomhoon',
+        amount: finalAmount,
+        orderId: orderId,
+        orderName: `${comTitle.value} - ${roomType.value.roomTypeName}`,
+        customerName: localStorage.getItem('userName') || '고객',
         successUrl: `${window.location.origin}/payment/success`,
         failUrl: `${window.location.origin}/payment/fail`,
       }).catch(error => {
         console.error('결제 요청 실패:', error);
+        sessionStorage.removeItem('reservationData'); // 실패 시 저장된 데이터 삭제
         alert('결제 요청에 실패했습니다. 다시 시도해주세요.');
       });
     } catch (error) {
@@ -455,7 +483,7 @@
   // (line 300 근처)
   async function fetchCards() {
     // 1. 로컬 스토리지에서 토큰 가져오기
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('jwtToken');
 
     if (!token) {
       console.error('토큰이 없어 카드 목록을 가져올 수 없습니다.');
@@ -533,7 +561,7 @@
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('jwtToken');
 
     if (newCard.value.number.length < 19) {
       alert('올바른 카드 번호를 입력하세요.');
@@ -603,7 +631,7 @@
 
   // ----- (10) (수정) 카드 삭제 API 호출 -----
   async function deleteCard(cardId) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('jwtToken');
     if (confirm('정말 이 카드를 삭제하시겠습니까?')) {
       try {
 

@@ -111,7 +111,11 @@
           >
             <div class="room_box" v-for="room in getVisibleRooms(tab.value)" :key="room.comId">
               <div class="image">
-                <img :src="room.image" :alt="room.comTitle + ' 사진'" />
+                <img
+                  :src="getImageUrl(room.image)"
+                  :alt="room.comTitle + ' 사진'"
+                  @error="handleImageError($event)"
+                />
               </div>
 
               <div class="content">
@@ -340,6 +344,7 @@ export default {
         const params = new URLSearchParams();
         params.append("minPrice", this.priceRange[0]);
         params.append("maxPrice", this.priceRange[1]);
+        params.append("comCategory", this.activeTab);  // 현재 선택된 탭(카테고리) 추가
         if (this.selectedRating) params.append("star", this.selectedRating);
         const allAmenities = [...this.selectedFreebies, ...this.selectedAmenities];
         if (allAmenities.length > 0) params.append("amCategory", allAmenities.join(","));
@@ -352,7 +357,7 @@ export default {
           );
         }
         this.rooms = list.map(item => ({
-          category: item.category || "호텔",
+          category: item.category || this.activeTab,
           comId: item.comId,
           comTitle: item.comTitle,
           comAddress: item.comAddress,
@@ -365,7 +370,7 @@ export default {
                   item.reviewAvg >= 3 ? "Good" :
                       item.reviewAvg >= 2 ? "SoSo" :
                           item.reviewAvg >= 1 ? "Bad" : "리뷰 없음",
-          image: item.image || require("@/assets/img/Hatton_Hotel.jpg"),
+          image: item.image,  // getImageUrl에서 처리
           isFavorite: item.isFavorite || false,
         }));
         this.updateCounts();
@@ -391,7 +396,10 @@ export default {
       const total = this.totalCounts[tab] || 0;
       return `Showing ${visible} of ${total} places`;
     },
-    setActiveTab(tab) { this.activeTab = tab; },
+    setActiveTab(tab) {
+      this.activeTab = tab;
+      this.setSearchFilters();  // 탭 변경 시 해당 카테고리로 다시 검색
+    },
     toggleSortModal() { this.showSortModal = !this.showSortModal; },
     closeSortModal() { this.showSortModal = false; },
     applySort(option) {
@@ -432,6 +440,25 @@ export default {
     },
     goToDetail(comId) {
       this.$router.push(`/accommodation/${comId}`);
+    },
+    getImageUrl(image) {
+      // 이미지가 없으면 기본 이미지
+      if (!image) {
+        return require("@/assets/img/Hatton_Hotel.jpg");
+      }
+      // http로 시작하면 그대로 사용
+      if (image.startsWith("http")) {
+        return image;
+      }
+      // /api로 시작하면 그대로 사용
+      if (image.startsWith("/api")) {
+        return image;
+      }
+      // 그 외에는 API 경로로 변환
+      return `/api/accommodation/images/file/${image}`;
+    },
+    handleImageError(e) {
+      e.target.src = require("@/assets/img/Hatton_Hotel.jpg");
     },
   },
 };

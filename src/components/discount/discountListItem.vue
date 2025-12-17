@@ -28,13 +28,35 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      imgError: false,
+    };
+  },
   computed: {
-    // 이미지 경로 처리 (http로 시작하지 않으면 서버 경로 붙이기)
+    // 이미지 경로 처리
     imageUrl() {
-      if (this.item.image && !this.item.image.startsWith("http") && !this.item.image.startsWith("/")) {
-        return `/hotel-images/${this.item.image}`;
+      // 이미지 로드 에러가 발생했으면 기본 호텔 이미지 사용
+      if (this.imgError) {
+        return require('@/assets/img/Hatton_Hotel.jpg');
       }
-      return this.item.image || require('@/assets/img/construction.jpg');
+
+      // 이미지가 있는 경우
+      if (this.item.image) {
+        // http로 시작하면 그대로 사용
+        if (this.item.image.startsWith("http")) {
+          return this.item.image;
+        }
+        // /api로 시작하면 그대로 사용
+        if (this.item.image.startsWith("/api")) {
+          return this.item.image;
+        }
+        // 그 외에는 API 경로로 변환
+        return `/api/accommodation/images/file/${this.item.image}`;
+      }
+
+      // 이미지가 없으면 기본 호텔 이미지 사용
+      return require('@/assets/img/Hatton_Hotel.jpg');
     },
     // 할인율 계산 (백엔드에서 안 넘어올 경우를 대비해 프론트에서도 계산 가능하도록 처리)
     discountRate() {
@@ -50,7 +72,8 @@ export default {
       return new Intl.NumberFormat("ko-KR").format(value);
     },
     handleImageError(e) {
-      e.target.src = require('@/assets/img/construction.jpg');
+      this.imgError = true;
+      e.target.src = require('@/assets/img/Hatton_Hotel.jpg');
     },
     goToDetail() {
       // 부모에게 이벤트를 올리거나, 직접 라우터 이동
