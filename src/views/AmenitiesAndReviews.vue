@@ -150,7 +150,7 @@ export default {
       this.error = null; console.log(`fetchReviews page: ${page}`);
       try {
         const comId = this.$route.params.comId; if (!comId) throw new Error("ID not found.");
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('jwtToken');
 
         const response = await axios.get(`/api/accommodation/${comId}/review`, {
           params: { page: page, size: this.pageSize },
@@ -177,7 +177,7 @@ export default {
 
     // 모달 열기/닫기, 별점 설정/아이콘
     openReviewForm() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('jwtToken');
       if (!token) { this.$emit('attempt-review'); return; }
       this.newReview = { content: '', score: 0 }; this.reviewError = null; this.showReviewForm = true;
     },
@@ -193,7 +193,7 @@ export default {
       }
       this.reviewLoading = true; this.reviewError = null;
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('jwtToken');
         if (!token) { alert("로그인이 필요합니다."); this.reviewLoading = false; return; }
 
         const reviewData = {
@@ -219,7 +219,7 @@ export default {
       if (!confirm("이 리뷰를 정말 삭제하시겠습니까?")) return;
       console.log(`Deleting review ID: ${reviewId}`);
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('jwtToken');
         if (!token) { alert("삭제 권한이 없습니다."); return; }
 
         const response = await axios.delete(`/api/accommodation/review/${reviewId}`, {
@@ -242,7 +242,7 @@ export default {
       if (!confirm("이 리뷰를 정말 신고하시겠습니까?")) return;
 
       // 1. 로그인 여부는 그대로 확인합니다.
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('jwtToken');
       if (!token) {
         alert("신고 권한이 없습니다. 로그인이 필요합니다.");
         return;
