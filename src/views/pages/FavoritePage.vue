@@ -8,7 +8,7 @@
           @click="activeTab = 'flights'">
 
           <p>Flights</p>
-          <span>2 marked</span>
+          <span>0 marked</span>
         </li>
         <div class="profile-history-divider"></div>
         <li :class="{ active: activeTab === 'places'}"
@@ -96,7 +96,7 @@ export default {
 
               if (imageUrl && !imageUrl.startsWith('http')) {
                 const baseUrl = process.env.VUE_APP_API_URL;
-                imageUrl = `${baseUrl}/api/accommodation/images/${imageUrl}`;
+                imageUrl = `${baseUrl}/api/accommodation/images/file/${imageUrl}`;
               }
               return {
                 fno: wishItem.wishId,

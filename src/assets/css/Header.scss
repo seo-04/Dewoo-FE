@@ -50,7 +50,7 @@ header {
   display: flex;
 }
 
-.tab {
+.header-tab {
   position: relative;
   display: flex;
   align-items: center;
@@ -58,7 +58,6 @@ header {
   cursor: pointer;
   font-weight: 600;
   color: #222;
-  padding-bottom: 5px;
 }
 
 
@@ -503,7 +502,7 @@ footer {
 /* [추가됨] 탭 사이의 구분선 스타일 */
 .separator {
   position: relative;
-  top: 4px;
+  top: -2px;
   right: 9px;
 }
 

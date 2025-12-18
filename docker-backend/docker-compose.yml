@@ -1,4 +1,14 @@
+version: '3.8'
 services:
+  front-app:
+    image: angson116/front_image:1.0.4
+    container_name: front_container
+    ports:
+      - 80:80
+      - 443:443
+    platform: linux/amd64
+    networks:
+      - a_network
   redis:
     image: 'redis:latest'
     container_name: 'redis'
@@ -11,12 +21,10 @@ services:
   mariadb_container:
     container_name: mariadb_container
     image: mariadb
-    command:
-      - --innodb-use-native-aio=0
     ports:
       - 13306:3306
     volumes:
-      - mariadb_volume:/var/lib/mysql
+      - ../dockerdb/mariadb_data:/var/lib/mysql
     environment:
       - TZ= Asia/Seoul
       - MARIADB_ROOT_PASSWORD=1234
@@ -28,14 +36,15 @@ services:
   #    restart: always
 
   boot-app:
-    image: seojw173/back_image:1.0.3
-    # image: jhh0101/back_image
+    image: jhh0101/back_image:1.0.7
+    build:
+      context: ./
+      dockerfile: dockerfile
     container_name: boot_container
     ports:
-      - 18888:8085
-    platform: linux/amd64
+      - 8085:8085
     volumes:
-      - /Users/jwo/image:/Users/jwo/image
+      - ./uploads:/app/uploads  # 업로드 파일 영구 저장
     environment:
       - SPRING_PROFILES_ACTIVE=local
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb_container:3306/hotels_db
@@ -55,6 +64,3 @@ services:
 networks:
   a_network:
     driver: bridge
-
-volumes:
-  mariadb_volume:

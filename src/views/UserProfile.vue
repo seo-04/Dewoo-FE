@@ -41,9 +41,9 @@
 
       <div class="main-content">
         <nav class="tabs">
-          <a href="#" class="tab" :class="{ active: activeTab === 'account' }" @click.prevent="activeTab = 'account'">계정</a>
-          <a href="#" class="tab" :class="{ active: activeTab === 'history' }" @click.prevent="activeTab = 'history'">내역</a>
-          <a href="#" class="tab" :class="{ active: activeTab === 'payment' }" @click.prevent="activeTab = 'payment'">결제수단</a>
+          <a href="#" class="profile_tab" :class="{ active: activeTab === 'account' }" @click.prevent="activeTab = 'account'">계정</a>
+          <a href="#" class="profile_tab" :class="{ active: activeTab === 'history' }" @click.prevent="activeTab = 'history'">내역</a>
+          <a href="#" class="profile_tab" :class="{ active: activeTab === 'payment' }" @click.prevent="activeTab = 'payment'">결제수단</a>
         </nav>
 
         <div v-if="activeTab === 'account'" class="tab-content active-force" id="account-tab">
@@ -214,7 +214,7 @@ function getFullImageUrl(imagePath) {
   if (!path.startsWith('/user-images/')) {
     path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
   }
-  return `http://localhost:8085${path}`;
+  return `http://mjc813b.softagape.com:8085${path}`;
 }
 
 // --- 프로필 이미지 업로드 로직 ---
