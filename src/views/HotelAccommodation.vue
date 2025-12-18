@@ -25,12 +25,27 @@
             </div>
           </div>
           <div class="price-and-actions">
-            <div class="price-container">
-              <span class="price">₩{{ (accommodation.price || 0).toLocaleString() }}</span><span class="per-night">{{accommodation.price}} ₩</span></div>
+            <div class="price-container" v-if="lowestPriceRoom">
+              <template v-if="lowestPriceRoom.discountedPrice && lowestPriceRoom.discountedPrice < lowestPriceRoom.price">
+                <span class="original-price" style="text-decoration: line-through; color: grey; font-size: 0.9em; margin-right: 8px;">
+                  ₩{{ lowestPriceRoom.price.toLocaleString() }}
+                </span>
+                <span class="per-night" style="color: red; font-weight: bold;">
+                  ₩{{ lowestPriceRoom.discountedPrice.toLocaleString() }}
+                </span>
+              </template>
+              <template v-else>
+                <span class="per-night">₩{{ lowestPriceRoom.price.toLocaleString() }}</span>
+              </template>
+              <span style="font-size: 14px; color: #666;"> /night~</span>
+            </div>
+            <div class="price-container" v-else>
+              <span class="per-night">{{(accommodation.price || 0).toLocaleString()}} ₩</span>
+            </div>
             <div class="action-buttons">
               <button class="icon-button"><i class="fa-regular fa-heart"></i></button>
               <button class="icon-button"><i class="fa-solid fa-share-nodes"></i></button>
-              <button class="book-now-button">Book now</button>
+              <button class="book-now-button" @click="goToPaymentLowest">Book now</button>
             </div>
           </div>
         </div>
@@ -103,7 +118,7 @@
                   </template>
                   <span class="price-unit">/night</span>
                 </div>
-                <button class="book-now-button">Book now</button>
+                <button class="book-now-button" @click="goToPayment(room)">Book now</button>
               </div>
             </div>
           </div>
@@ -178,6 +193,24 @@ export default {
       if (!this.accommodation) return [];
       // 메인 이미지와 서브 이미지 배열을 합쳐서 반환
       return [this.accommodation.mainImage, ...this.accommodation.subImage];
+    },
+    // 최저가 객실 찾기 (할인 적용된 가격 기준)
+    lowestPriceRoom() {
+      if (!this.accommodation || !this.accommodation.rooms || this.accommodation.rooms.length === 0) {
+        return null;
+      }
+
+      return this.accommodation.rooms.reduce((lowest, room) => {
+        // 실제 결제 가격 (할인가가 있으면 할인가, 없으면 원가)
+        const currentPrice = (room.discountedPrice && room.discountedPrice < room.price)
+          ? room.discountedPrice
+          : room.price;
+        const lowestPrice = (lowest.discountedPrice && lowest.discountedPrice < lowest.price)
+          ? lowest.discountedPrice
+          : lowest.price;
+
+        return currentPrice < lowestPrice ? room : lowest;
+      }, this.accommodation.rooms[0]);
     }
   },
   methods: {
@@ -240,6 +273,74 @@ export default {
       alert("리뷰를 작성하려면 로그인 후 이용해주세요."); // 사용자가 원한 알림창
       // 로그인 페이지로 이동 (index.js에 따르면 '/'가 LoginPage입니다.)
       this.$router.push('/');
+    },
+
+    // [추가] 결제 페이지로 이동
+    goToPayment(room) {
+      // 로그인 체크
+      const token = localStorage.getItem('jwtToken');
+      if (!token) {
+        alert('예약하려면 로그인이 필요합니다.');
+        this.$router.push('/login');
+        return;
+      }
+
+      // 체크인/체크아웃 날짜 확인
+      let checkIn = this.$route.query.checkIn;
+      let checkOut = this.$route.query.checkOut;
+
+      // 날짜가 없으면 기본값 설정 (오늘, 내일)
+      if (!checkIn || !checkOut) {
+        const today = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+
+        const formatDate = (d) => d.toISOString().split('T')[0];
+        checkIn = checkIn || formatDate(today);
+        checkOut = checkOut || formatDate(tomorrow);
+      }
+
+      // 결제 페이지로 이동 (accId = room.accId)
+      this.$router.push({
+        path: '/payment',
+        query: {
+          accId: room.accId,
+          checkIn: checkIn,
+          checkOut: checkOut,
+        }
+      });
+    },
+
+    // [추가] 상단 Book now - 최저가 객실로 결제 페이지 이동
+    goToPaymentLowest() {
+      if (!this.lowestPriceRoom) {
+        alert('예약 가능한 객실이 없습니다.');
+        return;
+      }
+      this.goToPayment(this.lowestPriceRoom);
+    },
+
+    // [추가] 호텔 이미지 URL 처리
+    getHotelImageUrl(image) {
+      if (!image) return require('@/assets/img/Hatton_Hotel.jpg');
+      if (image.startsWith('http')) return image;
+      if (image.startsWith('/hotel-images')) return image;
+      if (image.startsWith('/')) return image;
+      return `/hotel-images/${image}`;
+    },
+
+    // [추가] 객실 이미지 URL 처리
+    getRoomImageUrl(image) {
+      if (!image) return require('@/assets/img/Hatton_Hotel.jpg');
+      if (image.startsWith('http')) return image;
+      if (image.startsWith('/parlor-images')) return image;
+      if (image.startsWith('/')) return image;
+      return `/parlor-images/${image}`;
+    },
+
+    // [추가] 이미지 로드 실패 시 기본 이미지로 대체
+    handleImageError(e) {
+      e.target.src = require('@/assets/img/Hatton_Hotel.jpg');
     }
   },
   mounted() {
