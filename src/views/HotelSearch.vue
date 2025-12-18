@@ -144,6 +144,7 @@
 <script>
 import "@/assets/css/HotelSearch.css";
 import CommonLayout from "@/components/common/CommonLayout.vue";
+// 경로가 맞는지 확인해주세요 (components 폴더 안에 discount 폴더가 있다고 가정)
 import discountList from "../components/discount/discountList.vue";
 import axios from "axios";
 
@@ -151,7 +152,7 @@ export default {
   name: "HotelSearch",
   components: {
     CommonLayout,
-    discountList
+    discountList // [중요] 여기에 컴포넌트를 등록해야 화면에 나옵니다!
   },
   data() {
     return {
@@ -161,6 +162,7 @@ export default {
       rooms: 1,
       guests: 2,
       showPeopleModal: false,
+      // travelItems: [], // [삭제] discountList로 이동했으므로 삭제
     };
   },
   computed: {
@@ -180,8 +182,10 @@ export default {
     }
   },
   created() {
+    // 1. 체크인을 '오늘'로 설정
     this.checkin = this.todayDate;
 
+    // 2. 체크아웃을 '내일'로 설정 (체크인만 되어있고 체크아웃이 비어있으면 어색하므로)
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     this.checkout = tomorrow.toISOString().split("T")[0];
@@ -247,6 +251,8 @@ export default {
           return; // 에러 발생 시 이동하지 않음
         }
       }
+
+      // [페이지 이동] 검색어가 없으면 destination은 빈 문자열로 전달됩니다.
       this.$router.push({
         name: "HotelListing",
         query: {

@@ -312,7 +312,7 @@
     display: flex;
     gap: 1%;
     width: max-content;
-    animation: slideLeft 25s linear infinite;
+    animation: slideLeft 13s linear infinite;
 }
 
 .slide_track:hover{
@@ -344,14 +344,14 @@
     bottom: 0;
     left: 0;
     padding: 20px;
-    color: #000000;
+    color: black;
 }
 
 .card_text > h4 {
     text-align: left;
-    color: #000000;
+    color: black;
     font-size: 18px;
-    margin: 0 0 3px;
+    margin: 0 0 5px;
 }
 
 .card_text > p {
@@ -359,15 +359,13 @@
     margin: 0 0 10px;
     text-align: left;
     font-weight: bold;
-    color: #000000;
+    color: black;
 }
 
 .card_text .setting {
     width: 110px;
-    font-size: 12px;
+    font-size: 10px;
     display: flex;
-    color: #B9062F;
-    font-weight: bold;
 }
 
 .card_text button {
@@ -375,7 +373,7 @@
     background-color: #46BD7B;
     border: none;
     border-radius: 3px;
-    color: #000000;
+    color: black;
     font-size: 14px;
     cursor: pointer;
 }

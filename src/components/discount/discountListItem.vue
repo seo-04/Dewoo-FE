@@ -1,9 +1,9 @@
 <template>
   <div class="card">
     <img
-        :src="imageUrl"
-        :alt="`${item.city} ${item.comTitle}`"
-        @error="handleImageError"
+      :src="imageUrl"
+      :alt="`${item.city} ${item.comTitle}`"
+      @error="handleImageError"
     />
     <div class="card_text">
       <h4>{{ item.city }} - {{ item.comTitle }}</h4>
@@ -11,7 +11,7 @@
       <p>
         {{ formatPrice(item.price) }}원
         <span v-if="discountRate > 0" style="color: red; font-weight: bold;">
-          ({{ discountRate }}% {{ formatPrice(discountedPrice) }}원)
+          ({{ discountRate }}% {{ formatPrice(item.discountedPrice) }}원)
         </span>
       </p>
       <button @click="goToDetail">Book a Hotel</button>
@@ -29,80 +29,31 @@ export default {
     },
   },
   computed: {
-    /*
-      이미지 하드코딩
-       */
-    imageMap() {
-      return {
-        2: require("@/assets/main_img/Haeundae.jpg"),
-        3: require("@/assets/main_img/Jejujpg.jpg"),
-        4: require("@/assets/main_img/Songdo.jpg"),
-        5: require("@/assets/main_img/Daegu.jpg"),
-        6: require("@/assets/main_img/Expo.jpg")
-      };
-    },
-
+    // 이미지 경로 처리 (http로 시작하지 않으면 서버 경로 붙이기)
     imageUrl() {
-      return (
-          this.imageMap[this.item.comId] ||
-          require("@/assets/img/construction.jpg")
-      );
+      if (this.item.image && !this.item.image.startsWith("http") && !this.item.image.startsWith("/")) {
+        return `/hotel-images/${this.item.image}`;
+      }
+      return this.item.image || require('@/assets/img/construction.jpg');
     },
-
-    /*
-       하드코딩 할인율
-       */
-    hardcodedDiscountMap() {
-      return {
-        3: 15,
-        4: 20,
-        5: 30,
-        6: 10,
-        7: 15,
-        8: 25,
-        9: 10,
-        10: 20,
-        11: 15,
-      };
-    },
-
+    // 할인율 계산 (백엔드에서 안 넘어올 경우를 대비해 프론트에서도 계산 가능하도록 처리)
     discountRate() {
-      if (this.item.discountRate) return this.item.discountRate;
-
-      if (
-          this.item.price &&
-          this.item.discountedPrice &&
-          this.item.price > this.item.discountedPrice
-      ) {
-        return Math.round(
-            ((this.item.price - this.item.discountedPrice) / this.item.price) *
-            100
-        );
+      if (this.item.discountRate) return this.item.discountRate; // 백엔드 DTO에 있다면 사용
+      if (this.item.price && this.item.discountedPrice) {
+        return Math.round(((this.item.price - this.item.discountedPrice) / this.item.price) * 100);
       }
-
-      return this.hardcodedDiscountMap[this.item.comId] || 0;
-    },
-
-    discountedPrice() {
-      if (this.item.discountedPrice) return this.item.discountedPrice;
-
-      if (this.discountRate > 0) {
-        return Math.round(
-            this.item.price * (1 - this.discountRate / 100)
-        );
-      }
-
-      return this.item.price;
-    },
+      return 0;
+    }
   },
   methods: {
     formatPrice(value) {
       return new Intl.NumberFormat("ko-KR").format(value);
     },
     handleImageError(e) {
-      e.target.src = require("@/assets/img/construction.jpg");
+      e.target.src = require('@/assets/img/construction.jpg');
     },
     goToDetail() {
+      // 부모에게 이벤트를 올리거나, 직접 라우터 이동
       this.$router.push(`/accommodation/${this.item.comId}`);
     },
   },
@@ -110,5 +61,6 @@ export default {
 </script>
 
 <style scoped>
+
 @import "../../assets/css/HotelSearch.css";
 </style>
