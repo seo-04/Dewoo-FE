@@ -310,6 +310,7 @@
 
 .slide_track {
     display: flex;
+    gap: 1%;
     width: max-content;
     animation: slideLeft 25s linear infinite;
 }
@@ -328,12 +329,10 @@
     position: relative;
     overflow: hidden;
     border-radius: 15px;
-    width: 296px;       /* ⭐️ 아이템 너비를 이미지와 동일하게 고정 */
-    margin-right: 15px;
 }
 
 .card img {
-    width: 296px;
+    width: 320px;
     height: 460px;
     object-fit: cover;
     border-radius: 15px;

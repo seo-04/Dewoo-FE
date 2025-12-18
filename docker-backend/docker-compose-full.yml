@@ -11,12 +11,10 @@ services:
   mariadb_container:
     container_name: mariadb_container
     image: mariadb
-    command:
-      - --innodb-use-native-aio=0
     ports:
       - 13306:3306
     volumes:
-      - mariadb_volume:/var/lib/mysql
+      - ./mariadb_data:/var/lib/mysql
     environment:
       - TZ= Asia/Seoul
       - MARIADB_ROOT_PASSWORD=1234
@@ -28,16 +26,13 @@ services:
   #    restart: always
 
   boot-app:
-    image: seojw173/back_image:1.0.3
+    image: seojw173/back_image
     # image: jhh0101/back_image
     container_name: boot_container
     ports:
-      - 18888:8085
-    platform: linux/amd64
-    volumes:
-      - /Users/jwo/image:/Users/jwo/image
+      - 8085:8085
     environment:
-      - SPRING_PROFILES_ACTIVE=local
+      - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb_container:3306/hotels_db
       - SPRING_DATASOURCE_USERNAME=hotels_user
       - SPRING_DATASOURCE_PASSWORD=hotels12345
@@ -52,9 +47,17 @@ services:
       - a_network
 #    restart: always
 
+  front-app:
+    image: ppyuing/front_image
+    container_name: front_container
+    ports:
+      - 18080:80
+      - 10443:443
+    depends_on:
+      - boot-app
+    networks:
+      - a_network
+
 networks:
   a_network:
     driver: bridge
-
-volumes:
-  mariadb_volume:
