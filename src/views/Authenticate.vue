@@ -150,5 +150,5 @@ export default {
 };
 </script>
 <style scoped>
-@import "@/assets/css/Authenticate.css";
+@import "../assets/css/Authenticate.css";
 </style>

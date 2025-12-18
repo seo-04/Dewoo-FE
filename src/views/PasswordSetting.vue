@@ -81,9 +81,9 @@ export default {
       showPassword: false,
       showConfirm: false,
       images: [
-        require("@/assets/img/img.jpg"),
-        require("@/assets/img/img2.jpg"),
-        require("@/assets/img/img3.jpg"),
+        require("../assets/img/img.jpg"),
+        require("../assets/img/img2.jpg"),
+        require("../assets/img/img3.jpg"),
       ],
       currentIndex: 0,
       intervalId: null,
@@ -158,7 +158,7 @@ export default {
 </script>
 
 <style scoped>
-@import "@/assets/css/PasswordSetting.css";
+@import "../assets/css/PasswordSetting.css";
 /* 오른쪽 이미지 영역 */
 .right {
   width: 400px;

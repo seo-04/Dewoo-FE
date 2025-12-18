@@ -169,7 +169,7 @@ export default {
 </script>
 
 <style scoped>
-@import "@/assets/css/PaymentMethod.css";
+@import "../assets/css/PaymentMethod.css";
 /* 오른쪽 이미지 영역 */
 .right {
   width: 400px;

@@ -250,5 +250,5 @@ export default {
 </script>
 
 <style scoped>
-@import '~@/assets/css/SocialSignUp.css';
+@import '../assets/css/SocialSignUp.css';
 </style>

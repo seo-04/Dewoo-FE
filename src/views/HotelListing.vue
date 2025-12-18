@@ -465,5 +465,5 @@ export default {
 </script>
 
 <style>
-@import "@/assets/css/HotelListing.css";
+@import "../assets/css/HotelListing.css";
 </style>

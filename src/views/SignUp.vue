@@ -111,9 +111,9 @@
       </div>
 
       <div class="righting">
-        <img src="@/assets/img/img.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 0 }" />
-        <img src="@/assets/img/img2.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 1 }" />
-        <img src="@/assets/img/img3.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 2 }" />
+        <img src="../assets/img/img.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 0 }" />
+        <img src="../assets/img/img2.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 1 }" />
+        <img src="../assets/img/img3.jpg" alt="hotel image" class="slide" :class="{ active: currentSlide === 2 }" />
 
         <div class="dots">
           <span
@@ -299,5 +299,5 @@ export default {
 </script>
 
 <style scoped>
-@import '~@/assets/css/SignUp.css';
+@import '../assets/css/SignUp.css';
 </style>

@@ -355,5 +355,5 @@ export default {
 </script>
 
 <style scoped>
-@import '@/assets/css/HotelAccommodation.css';
+@import '../assets/css/HotelAccommodation.css';
 </style>
