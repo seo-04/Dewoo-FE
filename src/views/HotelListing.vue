@@ -257,6 +257,7 @@ import bTeamApi from "@/util/axios";
 import CommonLayout from "@/components/common/CommonLayout.vue";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/antd.css";
+import axios from "axios";
 
 export default {
   components: { CommonLayout, VueSlider },
@@ -269,6 +270,7 @@ export default {
       ],
       activeTab: "호텔",
       rooms: [],
+      wishList: [], // 찜 목록 저장
       totalCounts: { 호텔: 0, 모텔: 0, 리조트: 0 },
       visibleCount: { 호텔: 4, 모텔: 4, 리조트: 4 },
       priceRange: [0, 3000000],
@@ -309,7 +311,11 @@ export default {
     this.checkout = this.$route.query.checkout || "";
     this.roomsCount = Number(this.$route.query.rooms) || 1;
     this.guestsCount = Number(this.$route.query.guests) || 2;
-    this.setSearchFilters();
+
+    // 찜 목록 먼저 불러온 후 숙소 검색
+    this.fetchWishList().then(() => {
+      this.setSearchFilters();
+    });
   },
   watch: {
     priceRange() { this.debouncedFilter(); },
@@ -370,8 +376,8 @@ export default {
                   item.reviewAvg >= 3 ? "Good" :
                       item.reviewAvg >= 2 ? "SoSo" :
                           item.reviewAvg >= 1 ? "Bad" : "리뷰 없음",
-          image: item.image,  // getImageUrl에서 처리
-          isFavorite: item.isFavorite || false,
+          image: item.image,
+          isFavorite: this.isWished(item.comId), // 찜 여부 확인
         }));
         this.updateCounts();
       } catch (e) {
@@ -417,9 +423,80 @@ export default {
       return this.rooms.filter(r => r.category === category).length > this.visibleCount[category];
     },
     showMoreResults(category) { this.visibleCount[category] += 4; },
-    toggleHeart(room) {
+
+    // 찜 목록 불러오기
+    async fetchWishList() {
+      const token = localStorage.getItem('jwtToken');
+      if (!token) return; // 로그인 안 했으면 스킵
+
+      try {
+        const response = await axios.get('/api/wish', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.data.code === 'SUCCESS') {
+          this.wishList = response.data.result || [];
+        }
+      } catch (error) {
+        console.error('찜 목록 불러오기 실패:', error);
+      }
+    },
+
+    // 찜한 숙소인지 확인
+    isWished(comId) {
+      return this.wishList.some(wish => wish.accommodationAllDto?.comId === comId);
+    },
+
+    // wishId 찾기
+    getWishId(comId) {
+      const wish = this.wishList.find(w => w.accommodationAllDto?.comId === comId);
+      return wish ? wish.wishId : null;
+    },
+
+    // 찜 토글
+    async toggleHeart(room) {
+      const token = localStorage.getItem('jwtToken');
+      if (!token) {
+        alert('로그인이 필요합니다.');
+        this.$router.push('/login');
+        return;
+      }
+
       const target = this.rooms.find(r => r.comId === room.comId);
-      if (target) target.isFavorite = !target.isFavorite;
+      if (!target) return;
+
+      try {
+        if (target.isFavorite) {
+          // 찜 삭제
+          const wishId = this.getWishId(room.comId);
+          if (wishId) {
+            await axios.delete(`/api/wish/${wishId}`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            // wishList에서 제거
+            this.wishList = this.wishList.filter(w => w.wishId !== wishId);
+          }
+          target.isFavorite = false;
+        } else {
+          // 찜 추가
+          const response = await axios.post('/api/wish', {
+            accommodationAllDto: { comId: room.comId }
+          }, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.data.code === 'SUCCESS') {
+            // 찜 목록 다시 불러오기 (wishId 얻기 위해)
+            await this.fetchWishList();
+            target.isFavorite = true;
+          }
+        }
+      } catch (error) {
+        console.error('찜 처리 실패:', error);
+        alert('찜 처리에 실패했습니다.');
+      }
     },
     openPeopleModal() { this.showPeopleModal = true; },
     closePeopleModal() { this.showPeopleModal = false; },

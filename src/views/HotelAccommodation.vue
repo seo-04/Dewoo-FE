@@ -43,7 +43,10 @@
               <span class="per-night">{{(accommodation.price || 0).toLocaleString()}} ₩</span>
             </div>
             <div class="action-buttons">
-              <button class="icon-button"><i class="fa-regular fa-heart"></i></button>
+              <button class="icon-button" @click="toggleHeart">
+                <i :class="[isFavorite ? 'fa-solid' : 'fa-regular', 'fa-heart']"
+                   :style="{ color: isFavorite ? '#ff5a5f' : 'inherit' }"></i>
+              </button>
               <button class="icon-button"><i class="fa-solid fa-share-nodes"></i></button>
               <button class="book-now-button" @click="goToPaymentLowest">Book now</button>
             </div>
@@ -185,7 +188,9 @@ export default {
       error: null,
       showModal: false,
       showLightbox: false,
-      currentLightboxImage: null
+      currentLightboxImage: null,
+      isFavorite: false, // 찜 여부
+      wishId: null,      // 찜 ID (삭제 시 필요)
     };
   },
   computed: { // [✅ computed 속성 추가]
@@ -341,15 +346,94 @@ export default {
     // [추가] 이미지 로드 실패 시 기본 이미지로 대체
     handleImageError(e) {
       e.target.src = require('@/assets/img/Hatton_Hotel.jpg');
+    },
+
+    // 찜 여부 확인
+    async checkWishStatus() {
+      const token = localStorage.getItem('jwtToken');
+      if (!token) return;
+
+      try {
+        const response = await axios.get('/api/wish', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.data.code === 'SUCCESS') {
+          const wishList = response.data.result || [];
+          const comId = Number(this.$route.params.comId);
+          const wish = wishList.find(w => w.accommodationAllDto?.comId === comId);
+
+          if (wish) {
+            this.isFavorite = true;
+            this.wishId = wish.wishId;
+          } else {
+            this.isFavorite = false;
+            this.wishId = null;
+          }
+        }
+      } catch (error) {
+        console.error('찜 상태 확인 실패:', error);
+      }
+    },
+
+    // 찜 토글
+    async toggleHeart() {
+      const token = localStorage.getItem('jwtToken');
+      if (!token) {
+        alert('로그인이 필요합니다.');
+        this.$router.push('/login');
+        return;
+      }
+
+      const comId = Number(this.$route.params.comId);
+
+      try {
+        if (this.isFavorite) {
+          // 찜 삭제
+          if (this.wishId) {
+            await axios.delete(`/api/wish/${this.wishId}`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            this.isFavorite = false;
+            this.wishId = null;
+          }
+        } else {
+          // 찜 추가
+          const response = await axios.post('/api/wish', {
+            accommodationAllDto: { comId: comId }
+          }, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.data.code === 'SUCCESS') {
+            // 찜 목록 다시 불러와서 wishId 얻기
+            await this.checkWishStatus();
+          }
+        }
+      } catch (error) {
+        console.error('찜 처리 실패:', error);
+        alert('찜 처리에 실패했습니다.');
+      }
     }
   },
   mounted() {
     // 컴포넌트가 로드될 때 API 호출
     this.fetchAccommodationData();
+    // 찜 상태 확인
+    this.checkWishStatus();
   },
   watch: {
     // (선택) 라우트 파라미터(checkIn/checkOut 등)가 변경될 때 데이터를 새로고침
-    '$route': 'fetchAccommodationData'
+    '$route': {
+      handler() {
+        this.fetchAccommodationData();
+        this.checkWishStatus();
+      },
+      immediate: false
+    }
   }
 };
 </script>
