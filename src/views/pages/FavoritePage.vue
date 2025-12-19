@@ -92,14 +92,12 @@ export default {
                 return null; // 또는 기본 객체 반환
               }
 
-              let imageUrl = accom.image;
+              // 이미지 URL - 파일명만 저장 (FavoriteItem에서 처리)
+              let imageUrl = accom.image || '';
 
-              if (imageUrl && !imageUrl.startsWith('http')) {
-                const baseUrl = process.env.VUE_APP_API_URL;
-                imageUrl = `${baseUrl}/api/accommodation/images/file/${imageUrl}`;
-              }
               return {
                 fno: wishItem.wishId,
+                comId: accom.comId,  // 상세 페이지 이동용
                 price: accom.price,
                 stars: accom.star,
                 amenities: accom.amenitiesCount,

@@ -210,11 +210,16 @@ function getFullImageUrl(imagePath) {
   if (!imagePath) return null;
   if (imagePath.startsWith('http')) return imagePath;
 
-  let path = imagePath;
-  if (!path.startsWith('/user-images/')) {
-    path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
+  // /user-images/filename 형식에서 filename 추출
+  let filename = imagePath;
+  if (imagePath.includes('/user-images/')) {
+    filename = imagePath.split('/user-images/')[1];
+  } else if (imagePath.startsWith('/')) {
+    filename = imagePath.substring(1);
   }
-  return `http://mjc813b.softagape.com:8085${path}`;
+
+  // API 엔드포인트를 통해 이미지 로드
+  return `/api/user/file/user-images/${filename}`;
 }
 
 // --- 프로필 이미지 업로드 로직 ---
@@ -224,16 +229,32 @@ function triggerProfileImageUpload() { profileImageInput.value.click(); }
 async function handleProfileImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
+
+  const token = localStorage.getItem('jwtToken');
+  if (!token) {
+    alert('로그인이 필요합니다.');
+    return;
+  }
+
   const formData = new FormData();
   formData.append('image', file);
 
   try {
-    const res = await axios.post('/api/user/profile-image', formData, { headers: {'Content-Type': 'multipart/form-data'} });
+    const res = await axios.post('/api/user/profile-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+      }
+    });
     user.profileImage = getFullImageUrl(res.data.result) + `?t=${Date.now()}`;
     window.dispatchEvent(new CustomEvent('profile-image-updated', { detail: res.data.result }));
     alert('프로필 이미지가 변경되었습니다.');
   } catch (error) {
     console.error("이미지 업로드 실패:", error);
+    if (error.response) {
+      console.error("응답 상태:", error.response.status);
+      console.error("응답 데이터:", error.response.data);
+    }
     alert("이미지 업로드 중 오류가 발생했습니다.");
   }
 }

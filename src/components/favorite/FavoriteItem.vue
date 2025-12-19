@@ -1,61 +1,52 @@
 <template>
-  <div class="card">
-    <div class="card-left">
-      <img :src="info.imageURL" alt="" style="width: 440px; height: 273.5px; "/>
+  <div class="favorite-card">
+    <!-- 왼쪽 이미지 -->
+    <div class="favorite-card-image">
+      <img :src="getImageUrl(info.imageURL)" alt="숙소 이미지" @error="handleImageError"/>
     </div>
 
-    <div class="card-right">
-      <div class="card-right-upper">
-        <section class="desc-area">
-          <h2 class="title">{{ info.name }}</h2>
-          <p class="location" style="display: flex; gap: 5px">
-            <img src="../../assets/img/icon/location.png" alt="" />
+    <!-- 오른쪽 정보 -->
+    <div class="favorite-card-content">
+      <!-- 상단 영역 -->
+      <div class="favorite-card-top">
+        <!-- 왼쪽: 숙소 정보 -->
+        <div class="favorite-info">
+          <h3 class="favorite-title">{{ info.name }}</h3>
+          <p class="favorite-location">
+            <i class="fa-solid fa-location-dot"></i>
             {{ info.location }}
           </p>
-          <ul class="desc-subInfo">
-            <!-- ✅ 몇성 호텔 -->
-            <li style="display: flex; justify-content: center; align-items: center;">
-              <template v-for="star in info.stars">
-                <img src="../../assets/img/icon/star.png" alt="" style="width: 15px; height: 14px;"/>
-              </template>
-              <div style="font-size: 12px ; margin-left: 5px; font-weight: bold"> {{ info.stars }} Star Hotel </div>
-            </li>
-
-            <!-- ✅ 어메니티 -->
-            <li style="display: flex; justify-content: center; align-items: center; gap: 3px">
-              <img src="../../assets/img/icon/coffee.png" alt="" style="width: 13px; height: 12px; border-radius: 0;"/>
-              <template v-if="info.amenities >= 20">
-                <span class="amenity-counts"> 20+ </span>
-              </template>
-              <template v-else>
-                <span class="amenity-counts">
-                  {{ info.amenities }}
-                </span>
-              </template>
-              Amenities
-            </li>
-          </ul>
-          <div class="review-summary">
-            <span class="review-score">{{ info.reviewAvg }}</span>
-            <strong class="average-review">Very Good</strong>
-            <span class="reviews">{{ info.reviews }} reviews</span>
-          </div>
-        </section>
-
-        <section class="price-area">
-          <span class="price-guide1">starting from</span>
-            <span class="favorite-roomPrice">₩{{ formatPrice(info.price)}}~<span class="favorite-nightCount">/1일</span>
+          <div class="favorite-details">
+            <span class="favorite-stars">
+              <i v-for="n in (info.stars || 0)" :key="n" class="fa-solid fa-star"></i>
+              {{ info.stars }} Star Hotel
             </span>
+            <span class="favorite-amenities">
+              <i class="fa-solid fa-mug-saucer"></i>
+              {{ info.amenities >= 20 ? '20+' : (info.amenities || 0) }} Amenities
+            </span>
+          </div>
+          <div class="favorite-review">
+            <span class="review-score-box">{{ info.reviewAvg || 0 }}</span>
+            <span class="review-text">{{ getReviewText(info.reviewAvg) }}</span>
+            <span class="review-count">{{ info.reviews || 0 }} reviews</span>
+          </div>
+        </div>
 
-          <span class="price-guide2">excl. tax</span>
-        </section>
+        <!-- 오른쪽: 가격 -->
+        <div class="favorite-price">
+          <span class="price-label">starting from</span>
+          <span class="price-amount">₩{{ formatPrice(info.price) }}~<span class="price-unit">/1일</span></span>
+          <span class="price-tax">excl. tax</span>
+        </div>
       </div>
 
-      <div class="card-right-bottom">
-        <button class="like-btn" @click="onUnlikeClick">
-          <img src="../../../src/assets/img/icon/blackheart.png" alt="" style="border-radius: 0; width: 16.25px; height: 15px" />
+      <!-- 하단 버튼 영역 -->
+      <div class="favorite-card-bottom">
+        <button class="favorite-heart-btn" @click="onUnlikeClick">
+          <i class="fa-solid fa-heart"></i>
         </button>
-        <button class="go-price-btn" @click="gotoDetailPage">View Price</button>
+        <button class="favorite-view-btn" @click="gotoDetailPage">View Price</button>
       </div>
     </div>
   </div>
@@ -66,7 +57,7 @@ export default {
   props: {
     info: {
       type: Object,
-      default: null,
+      default: () => ({}),
     },
   },
   methods: {
@@ -74,174 +65,207 @@ export default {
       if (price === undefined || price === null) return '0';
       return Number(price).toLocaleString('ko-KR');
     },
-    //나중에 api를 상세 페이지로 쏠 때 쓸거임
-    gotoDetailPage() {
-      this.$router.push(`/accommodation`);
+    getImageUrl(image) {
+      if (!image) return require('@/assets/img/Hatton_Hotel.jpg');
+      if (image.startsWith('http://') || image.startsWith('https://')) return image;
+      if (image.startsWith('/api')) return image;
+      return `/api/accommodation/images/file/${image}`;
     },
-    //찜하기 누르면 빠지게
-    onUnlikeClick(){
+    handleImageError(e) {
+      e.target.src = require('@/assets/img/Hatton_Hotel.jpg');
+    },
+    getReviewText(score) {
+      if (!score) return 'No reviews';
+      if (score >= 4.5) return 'Excellent';
+      if (score >= 4.0) return 'Very Good';
+      if (score >= 3.5) return 'Good';
+      if (score >= 3.0) return 'Average';
+      return 'Poor';
+    },
+    gotoDetailPage() {
+      if (this.info.comId) {
+        this.$router.push(`/accommodation/${this.info.comId}`);
+      }
+    },
+    onUnlikeClick() {
       this.$emit('unlike', this.info.fno);
     },
   },
 };
 </script>
 
-<style scoped lang="scss">
-img{ width: 10px; height: 14px}
-
-.card-left img{
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-}
-
-.card-right-bottom::before {
-  left: 50%;
-  content: '';
-  width: 94%;
-  top: -20px;
-  position: absolute;
-  height: 1px;
-  background-color:rgb(189 195 189);
-  transform: translateX(-50%);
-}
-
-.card {
+<style scoped>
+.favorite-card {
   display: flex;
-  margin-top: 40px;
   background-color: white;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-
-  & .card-right {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    height: 273.5px;
-    gap: 40px;
-
-    & .card-right-upper{
-      padding: 24px 24px 0 24px;
-
-    }
-    .card-right-bottom {
-      padding: 4px 24px 0 24px;
-    }
-
-    & .card-right-upper {
-      display: flex;
-      justify-content: space-between;
-
-      p {
-        text-align: left;
-      }
-
-      & .desc-area {
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        gap: 11px;
-        & .title {
-          font-size: 20px;
-          font-weight: 700;
-        }
-        & .location {
-          display: flex;
-          font-size: 12px;
-          color: rgba(17, 34, 17, 1);
-        }
-
-        & .desc-subInfo {
-          display: flex;
-          gap: 32px;
-          font-size: 12px;
-
-          & .amenity-counts {
-            font-size: 12px;
-            font-weight: 700;
-          }
-        }
-
-        & .review-summary {
-          display: flex;
-          gap: 5px;
-          font-size: 12px;
-          align-items: center;
-
-          & .average-review {
-            font-weight: 700;
-          }
-
-          & .review-score {
-            padding: 8px 11px;
-            border: 1px solid rgba(141, 211, 187, 1);
-            border-radius: 6px;
-          }
-        }
-      }
-
-      & .price-area {
-        display: flex;
-        flex-direction: column;
-        & .price-guide1 {
-          text-align: left;
-          font-size: 12px;
-        }
-        & .price-guide2 {
-          text-align: right;
-          font-size: 12px;
-        }
-
-        & .favorite-price {
-          color: rgba(255, 134, 130, 1);
-          font-size: 14px;
-          & strong {
-            font-size: 24px;
-            font-weight: 700;
-          }
-        }
-      }
-    }
-
-    & .card-right-bottom {
-      position: relative;
-      display: flex;
-      gap: 16px;
-
-      & .like-btn {
-        width: 48px;
-        height: 48px;
-        border: 1px solid rgba(141, 211, 187, 1);
-        justify-items: center;
-        flex-shrink: 0;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-
-      & .go-price-btn {
-        width: 680px;
-        height: 48px;
-        padding: 15px 300px;
-        font-size: 14px;
-        font-weight: 600;
-        background-color: rgba(141, 211, 187, 1);
-        border-radius: 5px;
-        cursor: pointer;
-      }
-    }
-
-    & .info {
-      display: flex;
-    }
-  }
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
 }
-.favorite-roomPrice{
-  font-size: 27px;
+
+.favorite-card-image {
+  width: 300px;
+  min-height: 220px;
+  flex-shrink: 0;
+}
+
+.favorite-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.favorite-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+}
+
+.favorite-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.favorite-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.favorite-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #112211;
+  margin: 0;
+}
+
+.favorite-location {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.favorite-location i {
+  color: #8dd3bb;
+}
+
+.favorite-details {
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+  color: #333;
+}
+
+.favorite-stars i {
+  color: #ff8682;
+  font-size: 12px;
+}
+
+.favorite-amenities i {
+  color: #333;
+  margin-right: 4px;
+}
+
+.favorite-review {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.review-score-box {
+  padding: 6px 10px;
+  border: 1px solid #8dd3bb;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.review-text {
+  font-weight: bold;
+}
+
+.review-count {
+  color: #666;
+}
+
+.favorite-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.price-label {
+  font-size: 12px;
+  color: #888;
+}
+
+.price-amount {
+  font-size: 24px;
   font-weight: bold;
   color: #112211;
 }
 
-.favorite-nightCount{
-  font-size: 19px;
+.price-unit {
+  font-size: 14px;
+  font-weight: normal;
 }
 
+.price-tax {
+  font-size: 12px;
+  color: #888;
+}
 
+.favorite-card-bottom {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.favorite-heart-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #8dd3bb;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-heart-btn i {
+  color: #112211;
+  font-size: 18px;
+}
+
+.favorite-heart-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.favorite-view-btn {
+  flex: 1;
+  height: 48px;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: #8dd3bb;
+  color: #112211;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.favorite-view-btn:hover {
+  background-color: #7ac4ab;
+}
 </style>

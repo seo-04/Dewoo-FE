@@ -141,11 +141,16 @@
         if (!imagePath) return null;
         if (imagePath.startsWith('http')) return imagePath;
 
-        let path = imagePath;
-        if (!path.startsWith('/user-images/')) {
-          path = `/user-images/${path.startsWith('/') ? path.substring(1) : path}`;
+        // /user-images/filename 형식에서 filename 추출
+        let filename = imagePath;
+        if (imagePath.includes('/user-images/')) {
+          filename = imagePath.split('/user-images/')[1];
+        } else if (imagePath.startsWith('/')) {
+          filename = imagePath.substring(1);
         }
-        return `${process.env.VUE_APP_API_URL}${path}`;
+
+        // API 엔드포인트를 통해 이미지 로드
+        return `/api/user/file/user-images/${filename}`;
       },
 
       // ⚡️ [추가] 이미지를 강제로 새로고침하는 함수
@@ -166,6 +171,7 @@
       logout() {
         console.log('로그아웃 처리');
         localStorage.removeItem('jwtToken');
+        localStorage.removeItem('userId');
         this.isLoggedIn = false;
         this.userName = 'Guest';
         this.profileImageUrl = null;
