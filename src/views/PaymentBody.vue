@@ -297,7 +297,7 @@
       script.crossOrigin = 'anonymous';
       script.onload = () => {
         try {
-          const clientKey = 'test_ck_EP59LybZ8BLeQDq27EjbV6GYo7pR';
+          const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
           tossPayments = window.TossPayments(clientKey);
           resolve(tossPayments);
         } catch (error) {
