@@ -8,4 +8,8 @@ module.exports = {
     sourceType: 'module', // 👈 allows 'import'
   },
   plugins: ["vue"],
+  globals: {
+    TossPayments: 'readonly',  // Toss Payments SDK 전역 변수
+    daum: 'readonly',          // 다음 주소 API 전역 변수
+  },
 };

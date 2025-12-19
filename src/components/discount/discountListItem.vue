@@ -1,20 +1,22 @@
 <template>
-  <div class="card">
-    <img
-      :src="imageUrl"
-      :alt="`${item.city} ${item.comTitle}`"
-      @error="handleImageError"
-    />
-    <div class="card_text">
+  <div class="discount_card">
+    <div class="card_image">
+      <img
+        :src="imageUrl"
+        :alt="`${item.city} ${item.comTitle}`"
+        @error="handleImageError"
+      />
+    </div>
+    <div class="card_content">
       <h4>{{ item.city }} - {{ item.comTitle }}</h4>
-      <p class="setting">특특특가 혜택 진행 중</p>
-      <p>
+      <p class="promo_tag">특특특가 혜택 진행 중</p>
+      <p class="price_info">
         {{ formatPrice(item.price) }}원
-        <span v-if="discountRate > 0" style="color: red; font-weight: bold;">
+        <span v-if="discountRate > 0" class="discount_price">
           ({{ discountRate }}% {{ formatPrice(item.discountedPrice) }}원)
         </span>
       </p>
-      <button @click="goToDetail">Book a Hotel</button>
+      <button class="book_btn" @click="goToDetail">Book a Hotel</button>
     </div>
   </div>
 </template>
@@ -84,6 +86,82 @@ export default {
 </script>
 
 <style scoped>
+.discount_card {
+  width: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  transition: transform 0.3s ease;
+}
 
-@import "../../assets/css/HotelSearch.css";
+.discount_card:hover {
+  transform: translateY(-5px);
+}
+
+.card_image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.card_image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.discount_card:hover .card_image img {
+  transform: scale(1.05);
+}
+
+.card_content {
+  padding: 16px;
+}
+
+.card_content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.promo_tag {
+  font-size: 12px;
+  color: #8dd3bb;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.price_info {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.discount_price {
+  color: #e53935;
+  font-weight: bold;
+}
+
+.book_btn {
+  width: 100%;
+  padding: 10px;
+  background: #8dd3bb;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.book_btn:hover {
+  background: #7ac4ab;
+}
 </style>

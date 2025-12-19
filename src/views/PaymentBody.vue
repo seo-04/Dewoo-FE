@@ -21,12 +21,12 @@
                 </span>
               </div>
               <div class="hotel-link">
-                <div style="display: flex; justify-content: center;">
+                <div style="display: flex; justify-content: flex-start;">
                   <div>
-                    <img class="payment-hotel-logo" src="../assets/img/cvk_hotel_logo.png" alt="">
+                    <img class="payment-hotel-logo" :src="getImageUrl(paymentAccommodation.mainImage)" alt="호텔 이미지">
                   </div>
                   <div class="hotel-link-details">
-                    <div style="font-size: 20px;">
+                    <div style="font-size: 20px; text-align: left;">
                       {{ comTitle }}
                     </div>
                     <div style="font-size: 14px; color: #888888; text-align: left">
@@ -198,7 +198,13 @@
         <div class="payment-small">
           <div class="payment-small-body">
             <div class="hotel-details">
-              <img :src="getImageUrl(paymentAccommodation.mainImage)" height="120" width="121" alt="" />
+              <img
+                :src="getRoomTypeImageUrl(roomType.parlorImage)"
+                height="120"
+                width="121"
+                alt="방 타입 이미지"
+                @error="handleRoomImageError"
+              />
               <div>
                 <div style="display: block; font-size: 16px; color: #888888; text-align: left">{{ comTitle }}</div>
                 <div style="font-size: 20px; font-weight: bold; text-align: left; margin-bottom: 15px">
@@ -282,44 +288,22 @@
   const showSuccessToast = ref(false); // 토스트 표시 여부
   const toastTimer = ref(null);      // 토스트 타이머
 
+  // --- Toss Payments SDK (index.html에서 전역으로 로드됨) ---
+  const CLIENT_KEY = 'test_ck_nRQoOaPz8LKqNbMDOdazry47BMw6';
   let tossPayments = null;
-  let tossPaymentsLoadPromise = null;
 
-  // --- Toss Payments SDK 로드 ---
-  const loadTossPayments = () => {
-    if (tossPaymentsLoadPromise) {
-      return tossPaymentsLoadPromise;
+  // SDK 초기화 함수
+  const initTossPayments = () => {
+    if (tossPayments) return tossPayments;
+
+    if (typeof window.TossPayments === 'undefined') {
+      console.error('TossPayments SDK가 로드되지 않았습니다.');
+      return null;
     }
 
-    tossPaymentsLoadPromise = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://js.tosspayments.com/v1/payment.js';
-      script.crossOrigin = 'anonymous';
-      script.onload = () => {
-        try {
-          const clientKey = 'test_ck_EP59LybZ8BLeQDq27EjbV6GYo7pR';
-          tossPayments = window.TossPayments(clientKey);
-          resolve(tossPayments);
-        } catch (error) {
-          reject(error);
-        }
-      };
-      script.onerror = (error) => {
-        tossPaymentsLoadPromise = null; // Allow retrying
-        reject(error);
-      };
-      document.head.appendChild(script);
-    });
-
-    return tossPaymentsLoadPromise;
+    tossPayments = window.TossPayments(CLIENT_KEY);
+    return tossPayments;
   };
-
-  onMounted(() => {
-    loadTossPayments().catch(error => {
-      console.error('Failed to load Toss Payments SDK:', error);
-      alert('결제 모듈을 불러오는 데 실패했습니다. 페이지를 새로고침하거나 다시 시도해주세요.');
-    });
-  });
 
 
   // --- 토스 결제 요청 ---
@@ -336,9 +320,14 @@
       return;
     }
 
-    try {
-      await loadTossPayments();
+    // TossPayments SDK 초기화
+    const payments = initTossPayments();
+    if (!payments) {
+      alert('결제 모듈을 불러오는 데 실패했습니다. 페이지를 새로고침해주세요.');
+      return;
+    }
 
+    try {
       // 결제 정보를 sessionStorage에 저장 (결제 성공 후 사용)
       const reservationData = {
         accId: paymentAccommodation.value.accId,
@@ -354,7 +343,7 @@
 
       console.log('토스 결제 요청 - 금액:', finalAmount, '주문ID:', orderId);
 
-      tossPayments.requestPayment('토스페이', {
+      payments.requestPayment('토스페이', {
         amount: finalAmount,
         orderId: orderId,
         orderName: `${comTitle.value} - ${roomType.value.roomTypeName}`,
@@ -717,12 +706,20 @@
     return Number(price).toLocaleString('ko-KR');
   };
 
-  // 이미지 URL 변환 함수
+  // 이미지 URL 변환 함수 (숙소 메인 이미지)
   const getImageUrl = (image) => {
     if (!image) return require('@/assets/img/Hatton_Hotel.jpg');
     if (image.startsWith('http://') || image.startsWith('https://')) return image;
     if (image.startsWith('/api')) return image;
     return `/api/accommodation/images/file/${image}`;
+  };
+
+  // 방 타입 이미지 URL 변환 함수
+  const getRoomTypeImageUrl = (image) => {
+    if (!image) return require('@/assets/img/Hatton_Hotel.jpg');
+    if (image.startsWith('http://') || image.startsWith('https://')) return image;
+    if (image.startsWith('/api')) return image;
+    return `/api/parlor/images/file/${image}`;
   };
 
   // TotalPrice 계산 속성 (숫자로 반환)
